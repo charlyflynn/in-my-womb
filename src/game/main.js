@@ -26,7 +26,7 @@ class GameScene extends Phaser.Scene {
     preload() {
         this.load.image("background", "assets/bg.png");
         this.load.image("star", "assets/star.png");
-        this.load.audio("bgMusic", "assets/Kokiri-Forest.mp3");
+        this.load.audio("bgMusic", "assets/InMyRoom.mp3");
         this.load.audio("stoneScrape", "assets/stoneScrape.mp3");
     }
 
