@@ -22,13 +22,32 @@ class GameScene extends Phaser.Scene {
         this.background;
         this.currentTarget = { x: 0.5, y: 1 };
         this.controls;
+        this.audioKeys = [
+            "wombBass",
+            "wombVox",
+            "wombStrings",
+            "wombHiPerc",
+            "wombLoPerc",
+            "wombChords",
+        ];
     }
 
     preload() {
+        this.load.plugin(
+            "rexsoundfadeplugin",
+            "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexsoundfadeplugin.min.js",
+            true
+        );
         this.load.image("background", "assets/bg.png");
         this.load.image("star", "assets/star.png");
-        this.load.audio("bgMusic", "assets/InMyRoom.mp3");
+        // this.load.audio("bgMusic", "assets/InMyRoom.mp3");
         this.load.audio("hit", "assets/gruntBirthdayParty.mp3");
+        this.load.audio("wombBass", "assets/womb-6-bass.mp3");
+        this.load.audio("wombVox", "assets/womb-1-vox.mp3");
+        this.load.audio("wombStrings", "assets/womb-2-strings.mp3");
+        this.load.audio("wombChords", "assets/womb-3-guitar+piano.mp3");
+        this.load.audio("wombHiPerc", "assets/womb-4-claps+shakers.mp3");
+        this.load.audio("wombLoPerc", "assets/womb-5-kick+congas.mp3");
     }
 
     resizeBg() {
@@ -39,43 +58,57 @@ class GameScene extends Phaser.Scene {
             this.background.displayWidth = this.sys.game.canvas.width;
     }
 
+    beginWombAudio() {
+        this.audioKeys.forEach((item) => this.audio[item].play());
+    }
+
     create() {
         // environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
-        this.scene.pause("scene-game");
 
         const audioConfig = { loop: true, volume: 0 };
         this.audio = {
-            bg: this.sound.add("bgMusic", {
+            wombBass: this.sound.add("wombBass", {
+                ...audioConfig,
                 volume: 0.7,
-                pan: -0.5,
             }),
-            bga: this.sound.add("bgMusic", {
+            wombVox: this.sound.add("wombVox", {
                 ...audioConfig,
-                pan: -1,
-                detune: -75,
             }),
-            bgb: this.sound.add("bgMusic", {
+            wombStrings: this.sound.add("wombStrings", {
                 ...audioConfig,
-                pan: 1,
-                detune: -50,
+                // pan: 0.7,
             }),
-            bgc: this.sound.add("bgMusic", {
+            wombChords: this.sound.add("wombChords", {
                 ...audioConfig,
-                detune: -100,
+                // pan: -0.7,
+            }),
+            wombHiPerc: this.sound.add("wombHiPerc", {
+                ...audioConfig,
+            }),
+            wombLoPerc: this.sound.add("wombLoPerc", {
+                ...audioConfig,
             }),
         };
         this.audio.hit = this.sound.add("hit", {
-            volume: 0.5,
-            seek: 1,
+            volume: 0.1,
         });
-        this.audio.bg.play();
-        this.audio.bga.play();
-        this.audio.bgb.play();
-        this.audio.bgc.play();
 
-        //ui
+        // set up audio fade ins
+        this.audioKeys.slice(1).forEach((key) => {
+            this.tweens[key] = this.tweens
+                .add({
+                    targets: this.audio[key],
+                    volume: 0.7,
+                    duration: 1500,
+                })
+                .pause();
+        });
+
+        this.beginWombAudio();
+
+        // ui
         this.score.text = this.score.showScore
             ? this.add.text(0, 10, "Placed:", {
                   font: "25px Arial",
@@ -83,7 +116,7 @@ class GameScene extends Phaser.Scene {
               })
             : null;
 
-        //player
+        //player element
         this.player = this.physics.add
             .image(this.sys.game.canvas.width / 2, 0, "star")
             .setOrigin(0.5, 1)
@@ -92,7 +125,7 @@ class GameScene extends Phaser.Scene {
         // this.cursor = this.input.keyboard.createCursorKeys();
 
         // target defintions
-        const targets = [{ key: "a" }, { key: "b" }, { key: "c" }];
+        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
 
         // target elements
         targets.forEach((target, i) => {
@@ -207,10 +240,7 @@ class GameScene extends Phaser.Scene {
         // successful collision effects
         this.audio.hit.play();
         this.emitter[key].start();
-        this.audio[`bg${key}`].setVolume(0.7);
-        this.audio.hit.on("complete", () => {
-            this.audio.hit.detune -= 400;
-        });
+        this.tweens[key].play();
 
         // reset player and target
         this.player.setY(0).setVelocityY(0);
@@ -222,10 +252,10 @@ class GameScene extends Phaser.Scene {
             this.score.text.setText(
                 `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
             );
-        if (this.score.set.size === 3) {
+        if (this.score.set.size === 5) {
             this.player.destroy();
             this.audio.hit.on("complete", () => {
-                this.game.destroy(true, true);
+                this.game.destroy(true, false);
             });
         }
     }

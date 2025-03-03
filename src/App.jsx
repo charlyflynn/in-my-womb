@@ -10,25 +10,23 @@ function App ()
     
     //  References to the PhaserGame component (game and scene are exposed)
     const phaserRef = useRef();
-    const [spritePosition, setSpritePosition] = useState({ x: 0, y: 0 });
+    // const [spritePosition, setSpritePosition] = useState({ x: 0, y: 0 });
 
-    const changeScene = () => {
+    // const changeScene = () => {
 
-        const scene = phaserRef.current.scene;
-
-        if (scene)
-        {
-            scene.changeScene();
-        }
-    }
+    //     if (scene)
+    //     {
+    //         scene.changeScene();
+    //     }
+    // }
     
     const commenceGame = () => {
         const scene = phaserRef.current.game.scene;
         if (scene)
             {
+                phaserRef.current.game.sound.unlock();
                 scene.resume("scene-game");
                 gameStartRef.current.style.display = "none"
-                phaserRef.current.game.sound.unlock()
         }
     }
 
