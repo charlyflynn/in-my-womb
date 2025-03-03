@@ -222,10 +222,12 @@ class GameScene extends Phaser.Scene {
             this.score.text.setText(
                 `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
             );
-        if (this.score.set.size === 3)
+        if (this.score.set.size === 3) {
+            this.player.destroy();
             this.audio.hit.on("complete", () => {
                 this.game.destroy(true, true);
             });
+        }
     }
 }
 
