@@ -208,6 +208,9 @@ class GameScene extends Phaser.Scene {
         this.audio.hit.play();
         this.emitter[key].start();
         this.audio[`bg${key}`].setVolume(0.7);
+        this.audio.hit.on("complete", () => {
+            this.audio.hit.detune -= 400;
+        });
 
         // reset player and target
         this.player.setY(0).setVelocityY(0);
@@ -219,7 +222,10 @@ class GameScene extends Phaser.Scene {
             this.score.text.setText(
                 `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
             );
-        if (this.score.set.size === 3) this.game.destroy(true, true);
+        if (this.score.set.size === 3)
+            this.audio.hit.on("complete", () => {
+                this.game.destroy(true, true);
+            });
     }
 }
 
