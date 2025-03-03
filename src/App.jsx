@@ -24,8 +24,10 @@ function App ()
         const scene = phaserRef.current.game.scene;
         if (scene)
             {
+                // console.log(scene)
                 phaserRef.current.game.sound.unlock();
                 scene.resume("scene-game");
+                // scene.tweens.wombBass.play()
                 gameStartRef.current.style.display = "none"
         }
     }

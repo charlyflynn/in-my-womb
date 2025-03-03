@@ -24,7 +24,7 @@ class GameScene extends Phaser.Scene {
         this.controls;
         this.audioKeys = [
             "wombBass",
-            "wombVox",
+            // "wombVox",
             "wombStrings",
             "wombHiPerc",
             "wombLoPerc",
@@ -43,7 +43,7 @@ class GameScene extends Phaser.Scene {
         // this.load.audio("bgMusic", "assets/InMyRoom.mp3");
         this.load.audio("hit", "assets/gruntBirthdayParty.mp3");
         this.load.audio("wombBass", "assets/womb-6-bass.mp3");
-        this.load.audio("wombVox", "assets/womb-1-vox.mp3");
+        // this.load.audio("wombVox", "assets/womb-1-vox.mp3");
         this.load.audio("wombStrings", "assets/womb-2-strings.mp3");
         this.load.audio("wombChords", "assets/womb-3-guitar+piano.mp3");
         this.load.audio("wombHiPerc", "assets/womb-4-claps+shakers.mp3");
@@ -66,44 +66,49 @@ class GameScene extends Phaser.Scene {
         // environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
+        this.scene.pause();
 
         const audioConfig = { loop: true, volume: 0 };
-        this.audio = {
-            wombBass: this.sound.add("wombBass", {
-                ...audioConfig,
-                volume: 0.7,
-            }),
-            wombVox: this.sound.add("wombVox", {
-                ...audioConfig,
-            }),
-            wombStrings: this.sound.add("wombStrings", {
-                ...audioConfig,
-                // pan: 0.7,
-            }),
-            wombChords: this.sound.add("wombChords", {
-                ...audioConfig,
-                // pan: -0.7,
-            }),
-            wombHiPerc: this.sound.add("wombHiPerc", {
-                ...audioConfig,
-            }),
-            wombLoPerc: this.sound.add("wombLoPerc", {
-                ...audioConfig,
-            }),
-        };
+        this.audioKeys.forEach((key) => {
+            this.audio[key] = this.sound.add(key, audioConfig);
+        });
         this.audio.hit = this.sound.add("hit", {
             volume: 0.1,
         });
 
-        // set up audio fade ins
-        this.audioKeys.slice(1).forEach((key) => {
-            this.tweens[key] = this.tweens
-                .add({
-                    targets: this.audio[key],
-                    volume: 0.7,
-                    duration: 1500,
-                })
-                .pause();
+        // this.audio = {
+        //     wombBass: this.sound.add("wombBass", {
+        //         ...audioConfig,
+        //         volume: 0.7,
+        //     }),
+        //     wombVox: this.sound.add("wombVox", {
+        //         ...audioConfig,
+        //     }),
+        //     wombStrings: this.sound.add("wombStrings", {
+        //         ...audioConfig,
+        //         // pan: 0.7,
+        //     }),
+        //     wombChords: this.sound.add("wombChords", {
+        //         ...audioConfig,
+        //         // pan: -0.7,
+        //     }),
+        //     wombHiPerc: this.sound.add("wombHiPerc", {
+        //         ...audioConfig,
+        //     }),
+        //     wombLoPerc: this.sound.add("wombLoPerc", {
+        //         ...audioConfig,
+        //     }),
+        // };
+
+        // set up audio fade-in tweens
+        this.audioKeys.forEach((key, i) => {
+            this.tweens[key] = this.tweens.add({
+                targets: this.audio[key],
+                volume: 0.7,
+                duration: 1500,
+            });
+
+            if (i >= 1) this.tweens[key].pause();
         });
 
         this.beginWombAudio();
