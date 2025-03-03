@@ -100,7 +100,7 @@ class GameScene extends Phaser.Scene {
         //player element
         this.player = this.physics.add
             .image(this.sys.game.canvas.width / 2, 0, "star")
-            .setOrigin(0.5, 1)
+            .setOrigin(0.5, 0.5)
             .setMaxVelocity(speed.x, speed.y);
         this.player.body.setSize(20, 20);
         // this.cursor = this.input.keyboard.createCursorKeys();
@@ -117,7 +117,10 @@ class GameScene extends Phaser.Scene {
                     (4 / 5) * this.sys.game.canvas.height,
                     "star"
                 )
-                .setOrigin(0.5, 1);
+                .setOrigin(0.5, 0.5);
+            this.targets[target.key].setRotation(
+                Phaser.Math.RND.integerInRange(0, 3) * 90
+            );
             this.targets[target.key].body.setSize(20, 20).allowGravity = false;
         });
 
@@ -148,7 +151,7 @@ class GameScene extends Phaser.Scene {
         // button controls
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2 - 50,
+                this.sys.game.canvas.width / 2 - 100,
                 this.sys.game.canvas.height - 100,
                 "< left",
                 {
@@ -166,7 +169,25 @@ class GameScene extends Phaser.Scene {
             });
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2 + 50,
+                this.sys.game.canvas.width / 2,
+                this.sys.game.canvas.height - 100,
+                "rotate",
+                {
+                    fill: "#f4f",
+                    backgroundColor: "#ddd",
+                    padding: 4,
+                }
+            )
+            .setInteractive()
+            .on("pointerdown", () => {
+                this.player.setAngle(this.player.angle + 90);
+            });
+        // .on("pointerup", () => {
+        //     this.player.setVelocityX(0);
+        // });
+        this.controls = this.add
+            .text(
+                this.sys.game.canvas.width / 2 + 100,
                 this.sys.game.canvas.height - 100,
                 "right >",
                 {
@@ -218,26 +239,28 @@ class GameScene extends Phaser.Scene {
     }
 
     targetHit(key) {
-        // successful collision effects
-        this.audio.hit.play();
-        this.emitter[key].start();
-        this.tweens[key].play();
+        if (this.player.rotation === this.targets[key].rotation) {
+            // successful collision effects
+            this.audio.hit.play();
+            this.emitter[key].start();
+            this.tweens[key].play();
 
-        // reset player and target
-        this.player.setY(0).setVelocityY(0);
-        this.targets[key].destroy();
+            // reset player and target
+            this.player.setY(0).setVelocityY(0);
+            this.targets[key].destroy();
 
-        // update score
-        this.score.set.add(key);
-        this.score.showScore &&
-            this.score.text.setText(
-                `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
-            );
-        if (this.score.set.size === this.audioKeys.length - 1) {
-            this.player.destroy();
-            this.audio.hit.on("complete", () => {
-                this.game.destroy(true, false);
-            });
+            // update score
+            this.score.set.add(key);
+            this.score.showScore &&
+                this.score.text.setText(
+                    `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
+                );
+            if (this.score.set.size === this.audioKeys.length - 1) {
+                this.player.destroy();
+                this.audio.hit.on("complete", () => {
+                    this.game.destroy(true, false);
+                });
+            }
         }
     }
 }
