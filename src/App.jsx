@@ -28,6 +28,7 @@ function App ()
             {
                 scene.resume("scene-game");
                 gameStartRef.current.style.display = "none"
+                phaserRef.current.game.sound.unlock()
         }
     }
 
