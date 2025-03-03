@@ -66,7 +66,6 @@ class GameScene extends Phaser.Scene {
         // environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
-        this.scene.pause();
 
         const audioConfig = { loop: true, volume: 0 };
         this.audioKeys.forEach((key) => {
@@ -76,42 +75,19 @@ class GameScene extends Phaser.Scene {
             volume: 0.1,
         });
 
-        // this.audio = {
-        //     wombBass: this.sound.add("wombBass", {
-        //         ...audioConfig,
-        //         volume: 0.7,
-        //     }),
-        //     wombVox: this.sound.add("wombVox", {
-        //         ...audioConfig,
-        //     }),
-        //     wombStrings: this.sound.add("wombStrings", {
-        //         ...audioConfig,
-        //         // pan: 0.7,
-        //     }),
-        //     wombChords: this.sound.add("wombChords", {
-        //         ...audioConfig,
-        //         // pan: -0.7,
-        //     }),
-        //     wombHiPerc: this.sound.add("wombHiPerc", {
-        //         ...audioConfig,
-        //     }),
-        //     wombLoPerc: this.sound.add("wombLoPerc", {
-        //         ...audioConfig,
-        //     }),
-        // };
+        this.scene.pause();
+        this.sound.pauseOnBlur = false;
+        this.sound.pauseAll();
 
         // set up audio fade-in tweens
         this.audioKeys.forEach((key, i) => {
             this.tweens[key] = this.tweens.add({
                 targets: this.audio[key],
                 volume: 0.7,
-                duration: 1500,
+                duration: i > 0 ? 1500 : 0,
             });
-
-            if (i >= 1) this.tweens[key].pause();
+            if (i > 0) this.tweens[key].pause();
         });
-
-        this.beginWombAudio();
 
         // ui
         this.score.text = this.score.showScore
@@ -257,7 +233,7 @@ class GameScene extends Phaser.Scene {
             this.score.text.setText(
                 `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
             );
-        if (this.score.set.size === 5) {
+        if (this.score.set.size === this.audioKeys.length - 1) {
             this.player.destroy();
             this.audio.hit.on("complete", () => {
                 this.game.destroy(true, false);

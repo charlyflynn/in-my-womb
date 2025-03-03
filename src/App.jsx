@@ -22,12 +22,12 @@ function App ()
     
     const commenceGame = () => {
         const scene = phaserRef.current.game.scene;
+        console.log(phaserRef.current.game)
         if (scene)
             {
-                // console.log(scene)
-                phaserRef.current.game.sound.unlock();
+                // phaserRef.current.game.sound.unlock(true)
+                scene.getScene('scene-game').beginWombAudio()
                 scene.resume("scene-game");
-                // scene.tweens.wombBass.play()
                 gameStartRef.current.style.display = "none"
         }
     }
