@@ -192,7 +192,7 @@ class GameScene extends Phaser.Scene {
         // else this.player.setVelocityX(0);
 
         // out of bounds conditions
-        if (this.player.y >= this.sys.game.canvas.height) {
+        if (this.player.y >= this.sys.game.canvas.height + this.player.height) {
             this.player.setY(0);
         }
         if (this.player.x >= this.sys.game.canvas.width)
