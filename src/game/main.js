@@ -8,7 +8,7 @@ import Phaser from "phaser";
 // Find out more information about the Game Config at:
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
 
-const speed = { x: 300, y: 300 };
+const speed = { x: 100, y: 300 };
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -16,22 +16,19 @@ class GameScene extends Phaser.Scene {
         this.cursor;
         this.player;
         this.targets = {};
-        this.points = 0;
-        this.bgMusic;
-        this.bgMusic1;
-        this.bgMusic2;
-        this.matchSound;
-        this.textScore;
-        this.emitter;
+        this.audio = {};
+        this.score = { showScore: false, set: new Set() };
+        this.emitter = {};
         this.background;
         this.currentTarget = { x: 0.5, y: 1 };
+        this.controls;
     }
 
     preload() {
         this.load.image("background", "assets/bg.png");
         this.load.image("star", "assets/star.png");
         this.load.audio("bgMusic", "assets/InMyRoom.mp3");
-        this.load.audio("stoneScrape", "assets/stoneScrape.mp3");
+        this.load.audio("hit", "assets/gruntBirthdayParty.mp3");
     }
 
     resizeBg() {
@@ -46,60 +43,71 @@ class GameScene extends Phaser.Scene {
         // environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
+        this.scene.pause("scene-game");
 
-        this.bgMusic = this.sound.add("bgMusic");
-        this.matchSound = this.sound.add("stoneScrape");
-        // this.bgMusic.play();
+        const audioConfig = { loop: true, volume: 0 };
+        this.audio = {
+            bg: this.sound.add("bgMusic", {
+                volume: 0.7,
+                pan: -0.5,
+            }),
+            bga: this.sound.add("bgMusic", {
+                ...audioConfig,
+                pan: -1,
+                detune: -75,
+            }),
+            bgb: this.sound.add("bgMusic", {
+                ...audioConfig,
+                pan: 1,
+                detune: -50,
+            }),
+            bgc: this.sound.add("bgMusic", {
+                ...audioConfig,
+                detune: -100,
+            }),
+        };
+        this.audio.hit = this.sound.add("hit", {
+            volume: 0.5,
+            seek: 1,
+        });
+        this.audio.bg.play();
+        this.audio.bga.play();
+        this.audio.bgb.play();
+        this.audio.bgc.play();
 
         //ui
-        this.textScore = this.add.text(0, 10, "Placed:", {
-            font: "25px Arial",
-            fill: "#000000",
-        });
+        this.score.text = this.score.showScore
+            ? this.add.text(0, 10, "Placed:", {
+                  font: "25px Arial",
+                  fill: "#000000",
+              })
+            : null;
 
         //player
         this.player = this.physics.add
             .image(this.sys.game.canvas.width / 2, 0, "star")
             .setOrigin(0.5, 1)
             .setMaxVelocity(speed.x, speed.y);
-        // .setCollideWorldBounds(true, true, false);
         this.player.body.setSize(20, 20);
+        // this.cursor = this.input.keyboard.createCursorKeys();
 
-        this.cursor = this.input.keyboard.createCursorKeys();
-
-        // target
-        // this.target = this.physics.add
-        //     .image(
-        //         this.currentTarget.x * this.sys.game.canvas.width,
-        //         this.sys.game.canvas.height,
-        //         "star"
-        //     )
-        //     .setOrigin(0.5, 1);
-        // // .setCollideWorldBounds(true);
-        // this.target.body.setSize(20, 20).allowGravity = false;
-
+        // target defintions
         const targets = [{ key: "a" }, { key: "b" }, { key: "c" }];
 
+        // target elements
         targets.forEach((target, i) => {
             this.targets[target.key] = this.physics.add
                 .image(
-                    (i / targets.length) * this.sys.game.canvas.width,
-                    this.sys.game.canvas.height,
+                    ((i + 1) * this.sys.game.canvas.width) /
+                        (targets.length + 1),
+                    (4 / 5) * this.sys.game.canvas.height,
                     "star"
                 )
                 .setOrigin(0.5, 1);
             this.targets[target.key].body.setSize(20, 20).allowGravity = false;
         });
 
-        // collision physics
-        // this.physics.add.overlap(
-        //     this.target,
-        //     this.player,
-        //     this.targetHit,
-        //     null,
-        //     this
-        // );
-
+        // target collisions
         targets.forEach((target) => {
             this.physics.add.overlap(
                 this.targets[target.key],
@@ -110,27 +118,66 @@ class GameScene extends Phaser.Scene {
             );
         });
 
-        // particle emitter
-        // this.emitter = this.add
-        //     .particles(0, 0, "star", {
-        //         speed: 100,
-        //         gravityY: speed.y - 200,
-        //         scale: 0.4,
-        //         duration: 100,
-        //     })
-        //     .startFollow(
-        //         this.target,
-        //         this.target.width / 2,
-        //         this.target.height / 2
-        //     );
+        // target particle emitters
+        targets.forEach(({ key }) => {
+            this.emitter[key] = this.add
+                .particles(0, 0, "star", {
+                    speed: 100,
+                    gravityY: speed.y - 200,
+                    scale: 0.4,
+                    duration: 100,
+                })
+                .startFollow(this.targets[key], 0, -32)
+                .stop();
+        });
+
+        // button controls
+        this.controls = this.add
+            .text(
+                this.sys.game.canvas.width / 2 - 50,
+                this.sys.game.canvas.height - 100,
+                "< left",
+                {
+                    fill: "#f4f",
+                    backgroundColor: "#ddd",
+                    padding: 4,
+                }
+            )
+            .setInteractive()
+            .on("pointerdown", () => {
+                this.player.setVelocityX(-speed.x);
+            })
+            .on("pointerup", () => {
+                this.player.setVelocityX(0);
+            });
+        this.controls = this.add
+            .text(
+                this.sys.game.canvas.width / 2 + 50,
+                this.sys.game.canvas.height - 100,
+                "right >",
+                {
+                    fill: "#f4f",
+                    backgroundColor: "#ddd",
+                    padding: 4,
+                }
+            )
+            .setInteractive()
+            .on("pointerdown", () => {
+                this.player.setVelocityX(speed.x);
+            })
+            .on("pointerup", () => {
+                this.player.setVelocityX(0);
+            });
     }
 
     update() {
-        // controls
-        const { left, right } = this.cursor;
-        if (left.isDown) this.player.setVelocityX(-speed.x);
-        else if (right.isDown) this.player.setVelocityX(speed.x);
-        else this.player.setVelocityX(0);
+        // keyboard controls
+        // const { left, right } = this.cursor;
+        // if (left.isDown) this.player.setVelocityX(-speed.x);
+        // else if (right.isDown) this.player.setVelocityX(speed.x);
+        // else this.player.setVelocityX(0);
+
+        // out of bounds conditions
         if (this.player.y >= this.sys.game.canvas.height) {
             this.player.setY(0);
         }
@@ -153,32 +200,26 @@ class GameScene extends Phaser.Scene {
             if (this.player.x >= this.sys.game.canvas.width) {
                 this.player.setX((this.player.x * gameSize.width) / prevWidth);
             }
-            // this.target
-            //     .setY(gameSize.height)
-            //     .setX(Math.floor(this.currentTarget.x * gameSize.width));
         });
     }
 
-    // targetHit() {
-    //     const newTarget = Math.random();
-    //     this.currentTarget.x = newTarget;
-    //     this.matchSound.play();
-    //     this.player.setY(0);
-    //     this.target.setX(Math.floor(newTarget * this.sys.game.canvas.width));
-    //     this.points++;
-    //     this.textScore.setText(`Score: ${this.points}`);
-    //     this.emitter.start();
-    // }
-
     targetHit(key) {
-        // const newTarget = Math.random();
-        // this.currentTarget.x = newTarget;
-        this.matchSound.play();
-        this.player.setY(0);
-        // this.target.setX(Math.floor(newTarget * this.sys.game.canvas.width));
-        this.points++;
-        this.textScore.setText(`${this.textScore.text + key},`);
-        // this.emitter.start();
+        // successful collision effects
+        this.audio.hit.play();
+        this.emitter[key].start();
+        this.audio[`bg${key}`].setVolume(0.7);
+
+        // reset player and target
+        this.player.setY(0).setVelocityY(0);
+        this.targets[key].destroy();
+
+        // update score
+        this.score.set.add(key);
+        this.score.showScore &&
+            this.score.text.setText(
+                `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
+            );
+        if (this.score.set.size === 3) this.game.destroy(true, true);
     }
 }
 
@@ -191,7 +232,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            debug: true,
+            // debug: true,
             gravity: { y: speed.y },
         },
     },

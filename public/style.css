@@ -58,3 +58,25 @@ body {
     width: 500px; */
 }
 
+.start,
+.end {
+    /* width: 100%;
+    height: 100%; */
+    width: 100dvw;
+    height: 100dvh;
+    position: absolute;
+    background-color: red;
+
+    display: flex;
+    flex-direction: col;
+    align-items: center;
+    justify-content: center;
+}
+
+.start {
+    z-index: 2;
+}
+.end {
+    z-index: -1;
+}
+
