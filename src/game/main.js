@@ -118,7 +118,7 @@ class GameScene extends Phaser.Scene {
                     "star"
                 )
                 .setOrigin(0.5, 0.5);
-            this.targets[target.key].setRotation(
+            this.targets[target.key].setAngle(
                 Phaser.Math.RND.integerInRange(0, 3) * 90
             );
             this.targets[target.key].body.setSize(20, 20).allowGravity = false;
@@ -274,7 +274,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            // debug: true,
+            debug: true,
             gravity: { y: speed.y },
         },
     },
