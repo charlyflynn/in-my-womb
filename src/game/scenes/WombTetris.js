@@ -19,6 +19,7 @@ export default class WombTetris extends Phaser.Scene {
         this.playerShadow = {};
         this.targets = {};
         this.audio = {};
+        this.tween = {};
         this.score = {
             showScore: false,
             matched: new Set(),
@@ -64,12 +65,12 @@ export default class WombTetris extends Phaser.Scene {
 
         // set up audio channel fade-in tweens
         this.elements.forEach(({ key }, i) => {
-            this.tweens[key] = this.tweens.add({
+            this.tween[key] = this.tweens.add({
                 targets: this.audio[key],
                 volume: 1,
                 duration: i > 0 ? 1500 : 0,
             });
-            if (i > 0) this.tweens[key].pause();
+            if (i > 0) this.tween[key].pause();
         });
 
         // ui
@@ -291,10 +292,10 @@ export default class WombTetris extends Phaser.Scene {
 
     targetHit(key) {
         // succesful hit with correct rotation
-        if (this.players[key].rotation === this.targets[key].rotation) {
+        if (this.player.rotation === this.targets[key].rotation) {
             this.audio.hit.play();
             this.emitter[key].start();
-            this.tweens[key].play();
+            this.tween[key].play();
 
             // animate in place
             this.physics.world.removeCollider(this.colliders[key]);
@@ -302,7 +303,7 @@ export default class WombTetris extends Phaser.Scene {
             this.players[key].setVelocityY(0);
             this.players[key].setGravityY(0);
 
-            this.tweens.playerShadow = this.tweens.add({
+            this.tween.playerShadow = this.tweens.add({
                 targets: this.playerShadow[key],
                 x: 1,
                 y: 1,
@@ -310,7 +311,7 @@ export default class WombTetris extends Phaser.Scene {
                 ease: Phaser.Math.Easing.Expo.InOut,
             });
 
-            this.tweens.playerSize = this.tweens.add({
+            this.tween.playerSize = this.tweens.add({
                 targets: this.players[key],
                 displayHeight: 80,
                 displayWidth: 80,
@@ -350,22 +351,22 @@ export default class WombTetris extends Phaser.Scene {
             this.score.remaining.delete(key);
             this.score.showScore &&
                 this.score.text.setText(this.updateScoreText());
+
+            // continue game once animation has finished
+            this.tween.playerShadow.on("complete", () => {
+                this.targets[key].destroy();
+                this.player.destroy();
+
+                if (this.score.remaining.size > 0) {
+                    const newPlayerKey = this.randomPlayerKey();
+                    this.setPlayer(newPlayerKey);
+                    this.player.body.allowGravity = true;
+                } else {
+                    this.scene.start("GameOver");
+                    this.scene.destroy();
+                }
+            });
         }
-
-        // continue game once animation has finished
-        this.tweens.playerShadow.on("complete", () => {
-            this.targets[key].destroy();
-            this.player.destroy();
-
-            if (this.score.remaining.size > 0) {
-                const newPlayerKey = this.randomPlayerKey();
-                this.setPlayer(newPlayerKey);
-                this.player.body.allowGravity = true;
-            } else {
-                this.scene.start("GameOver");
-                this.scene.destroy();
-            }
-        });
     }
 }
 
