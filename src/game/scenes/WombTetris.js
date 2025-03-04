@@ -1,14 +1,6 @@
-// import { Boot } from "./scenes/Boot";
-// import { Game } from "./scenes/Game";
-// import { GameOver } from "./scenes/GameOver";
-// import { MainMenu } from "./scenes/MainMenu";
 import Phaser from "phaser";
-// import { Preloader } from "./scenes/Preloader";
 
-// Find out more information about the Game Config at:
-// https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
-
-const speed = { x: 100, y: 300 };
+const speed = { x: 200, y: 350 };
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {
@@ -44,9 +36,9 @@ export default class WombTetris extends Phaser.Scene {
     create() {
         // set up game environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
-        this.resizeBg();
 
-        // this.scene.pause();
+        this.background.displayWidth = 1080;
+        this.background.displayHeight = 1920;
 
         // set up audio channel
         this.sound.pauseOnBlur = false;
@@ -125,30 +117,31 @@ export default class WombTetris extends Phaser.Scene {
         if (this.player.x >= this.sys.game.canvas.width)
             this.player.setX(this.sys.game.canvas.width);
         else if (this.player.x <= 0) this.player.setX(0);
-        // resize background on canvas size change, css 'cover' behaviour
-        // move player and target back into game area
-        this.scale.on("resize", (gameSize, xx, xxx, prevWidth) => {
-            if (this.sys.game.canvas.height > this.background.height)
-                this.background.displayHeight = this.sys.game.canvas.height;
-            if (this.sys.game.canvas.width > this.background.width)
-                this.background.displayWidth = this.sys.game.canvas.width;
-            if (this.player.y >= this.sys.game.canvas.height) {
-                this.player.setY(0);
-            }
-            // player/target on resizing
-            if (this.player.x >= this.sys.game.canvas.width) {
-                this.player.setX((this.player.x * gameSize.width) / prevWidth);
-            }
-        });
+
+        // // resize background on canvas size change, css 'cover' behaviour
+        // // move player and target back into game area
+        // this.scale.on("resize", (gameSize, xx, xxx, prevWidth) => {
+        //     if (this.sys.game.canvas.height > this.background.height)
+        //         this.background.displayHeight = this.sys.game.canvas.height;
+        //     if (this.sys.game.canvas.width > this.background.width)
+        //         this.background.displayWidth = this.sys.game.canvas.width;
+        //     if (this.player.y >= this.sys.game.canvas.height) {
+        //         this.player.setY(0);
+        //     }
+        //     // player/target on resizing
+        //     if (this.player.x >= this.sys.game.canvas.width) {
+        //         this.player.setX((this.player.x * gameSize.width) / prevWidth);
+        //     }
+        // });
     }
 
-    resizeBg() {
-        // image css 'cover' behaviour
-        if (this.sys.game.canvas.height > this.background.height)
-            this.background.displayHeight = this.sys.game.canvas.height;
-        if (this.sys.game.canvas.width > this.background.width)
-            this.background.displayWidth = this.sys.game.canvas.width;
-    }
+    // resizeBg() {
+    //     // image css 'cover' behaviour
+    //     if (this.sys.game.canvas.height > this.background.height)
+    //         this.background.displayHeight = this.sys.game.canvas.height;
+    //     if (this.sys.game.canvas.width > this.background.width)
+    //         this.background.displayWidth = this.sys.game.canvas.width;
+    // }
 
     beginWombAudio() {
         this.elements.forEach(({ key }) => this.audio[key].play());
@@ -161,7 +154,7 @@ export default class WombTetris extends Phaser.Scene {
             this.colliders[key] = this.physics.add.overlap(
                 this.targets[key],
                 this.players[key],
-                () => this.targetHit(key),
+                () => this.onCollision(key),
                 null,
                 this
             );
@@ -170,7 +163,6 @@ export default class WombTetris extends Phaser.Scene {
 
     addParticles() {
         const targets = this.elements.slice(1);
-
         // target particle emitters
         targets.forEach(({ key, tint }) => {
             this.emitter[key] = this.add
@@ -187,17 +179,18 @@ export default class WombTetris extends Phaser.Scene {
     }
 
     addControls() {
-        // button controls
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2 - 200,
-                this.sys.game.canvas.height - 75,
+                this.sys.game.canvas.width * 0.25,
+                this.sys.game.canvas.height * 0.9,
                 "< trasladar al left",
                 {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
                     padding: 10,
-                    fontSize: 18,
+                    fontSize: 42,
+                    align: "left",
+                    wordWrap: { width: 250, useAdvancedWrap: true },
                 }
             )
             .setOrigin(0.5, 0.5)
@@ -207,35 +200,44 @@ export default class WombTetris extends Phaser.Scene {
             })
             .on("pointerup", () => {
                 this.player.setVelocityX(0);
+            })
+            .on("pointerout", () => {
+                this.player.setVelocityX(0);
             });
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2,
-                this.sys.game.canvas.height - 75,
-                "rotacióóón",
+                this.sys.game.canvas.width * 0.5,
+                this.sys.game.canvas.height * 0.9,
+                "rotacióón",
                 {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
                     padding: 10,
                     align: "center",
-                    fontSize: 18,
+                    fontSize: 42,
+                    wordWrap: { width: 250, useAdvancedWrap: true },
                 }
             )
             .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
                 this.player.setAngle(this.player.angle + 90);
+            })
+            .on("pointerout", () => {
+                this.player.setVelocityX(0);
             });
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2 + 200,
-                this.sys.game.canvas.height - 75,
-                "trasladar al right >",
+                this.sys.game.canvas.width * 0.75,
+                this.sys.game.canvas.height * 0.9,
+                "> trasladar al right",
                 {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
                     padding: 10,
-                    fontSize: 18,
+                    fontSize: 42,
+                    align: "right",
+                    wordWrap: { width: 250, useAdvancedWrap: true },
                 }
             )
             .setOrigin(0.5, 0.5)
@@ -245,6 +247,9 @@ export default class WombTetris extends Phaser.Scene {
             })
             .on("pointerup", () => {
                 this.player.setVelocityX(0);
+            })
+            .on("pointerout", () => {
+                this.player.setVelocityX(0);
             });
     }
 
@@ -252,10 +257,10 @@ export default class WombTetris extends Phaser.Scene {
         // falling elements to match to gems
         this.elements.slice(1).forEach(({ key, tint }) => {
             this.players[key] = this.physics.add
-                .image(this.sys.game.canvas.width / 2, -64, "gem")
+                .image(this.sys.game.canvas.width / 2, -200, "gem")
                 .setOrigin(0.5, 0.5)
                 .setMaxVelocity(speed.x, speed.y)
-                .setDisplaySize(100, 100)
+                .setDisplaySize(200, 200)
                 .setDepth(2)
                 .setAngle(Phaser.Math.RND.integerInRange(0, 3) * 90)
                 .setTint(tint);
@@ -300,7 +305,7 @@ export default class WombTetris extends Phaser.Scene {
                     "gem"
                 )
                 .setOrigin(0.5, 0.5)
-                .setDisplaySize(80, 80)
+                .setDisplaySize(180, 180)
                 .setAngle(Phaser.Math.RND.integerInRange(0, 3) * 90)
                 .setTint(tint);
             this.targets[key].body.setSize(200, 200).allowGravity = false;
@@ -308,7 +313,7 @@ export default class WombTetris extends Phaser.Scene {
         });
     }
 
-    targetHit(key) {
+    onCollision(key) {
         // succesful hit with correct rotation
         if (this.player.rotation === this.targets[key].rotation) {
             this.audio.hit.play();
@@ -331,8 +336,8 @@ export default class WombTetris extends Phaser.Scene {
 
             this.tween.playerSize = this.tweens.add({
                 targets: this.players[key],
-                displayHeight: 80,
-                displayWidth: 80,
+                displayHeight: this.targets[key].displayHeight,
+                displayWidth: this.targets[key].displayWidth,
                 x: this.targets[key].x,
                 y: this.targets[key].y,
                 duration: 1000,

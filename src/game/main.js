@@ -22,7 +22,9 @@ const config = {
         },
     },
     scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.FIT,
+        width: 1080,
+        height: 1920,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         zoom: 1,
     },
