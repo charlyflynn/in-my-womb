@@ -324,7 +324,8 @@ class GameScene extends Phaser.Scene {
                 targets: this.playerShadow[key],
                 x: 1,
                 y: 1,
-                duration: 2000,
+                duration: 1000,
+                ease: Phaser.Math.Easing.Expo.InOut,
             });
             this.tweens.playerSize = this.tweens.add({
                 targets: this.players[key],
@@ -332,8 +333,34 @@ class GameScene extends Phaser.Scene {
                 displayWidth: 80,
                 x: this.targets[key].x,
                 y: this.targets[key].y,
-                duration: 2000,
+                duration: 1000,
+                ease: Phaser.Math.Easing.Expo.InOut,
             });
+
+            // this.tweens.addCounter({
+            //     from: 0,
+            //     to: 100,
+            //     duration: 100,
+            //     repeat: -1,
+            //     yoyo: true,
+            //     // ease: Phaser.Math.Easing.Sine.InOut,
+            //     onUpdate: (tween) => {
+            //         const colorObject =
+            //             Phaser.Display.Color.Interpolate.ColorWithColor(
+            //                 Phaser.Display.Color.ValueToColor(this.player.tint),
+            //                 Phaser.Display.Color.ValueToColor(0xffffff),
+            //                 100,
+            //                 tween.getValue()
+            //             );
+            //         this.player.setTint(
+            //             Phaser.Display.Color.GetColor(
+            //                 colorObject.r,
+            //                 colorObject.g,
+            //                 colorObject.b
+            //             )
+            //         );
+            //     },
+            // });
 
             this.tweens.playerShadow.on("complete", () => {
                 this.targets[key].destroy();
