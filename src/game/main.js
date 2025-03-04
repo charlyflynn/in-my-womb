@@ -28,13 +28,12 @@ class GameScene extends Phaser.Scene {
         this.background;
         this.currentTarget = { x: 0.5, y: 1 };
         this.controls;
-        this.audioKeys = [
-            "wombBass",
-            // "wombVox",
-            "wombStrings",
-            "wombHiPerc",
-            "wombLoPerc",
-            "wombChords",
+        this.elements = [
+            { key: "wombBass", tint: 0xffffff },
+            { key: "wombStrings", tint: 0xff0000 },
+            { key: "wombHiPerc", tint: 0xff00ff },
+            { key: "wombLoPerc", tint: 0x00ffff },
+            { key: "wombChords", tint: 0x00ff00 },
         ];
         this.colliders = {};
     }
@@ -62,12 +61,12 @@ class GameScene extends Phaser.Scene {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
 
-        this.audioKeys.slice(1).forEach((item) => {
-            this.score.remaining.add(item);
+        this.elements.slice(1).forEach(({ key }) => {
+            this.score.remaining.add(key);
         });
 
         const audioConfig = { loop: true, volume: 0 };
-        this.audioKeys.forEach((key) => {
+        this.elements.forEach(({ key }) => {
             this.audio[key] = this.sound.add(key, audioConfig);
         });
         this.audio.hit = this.sound.add("hit", {
@@ -79,7 +78,7 @@ class GameScene extends Phaser.Scene {
         this.sound.pauseAll();
 
         // set up audio fade-in tweens
-        this.audioKeys.forEach((key, i) => {
+        this.elements.forEach(({ key }, i) => {
             this.tweens[key] = this.tweens.add({
                 targets: this.audio[key],
                 volume: 0.7,
@@ -170,11 +169,11 @@ class GameScene extends Phaser.Scene {
     }
 
     beginWombAudio() {
-        this.audioKeys.forEach((item) => this.audio[item].play());
+        this.elements.forEach(({ key }) => this.audio[key].play());
     }
 
     addCollisions() {
-        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
+        const targets = this.elements.slice(1);
         // target collisions
         targets.forEach(({ key }) => {
             this.colliders[key] = this.physics.add.overlap(
@@ -188,7 +187,7 @@ class GameScene extends Phaser.Scene {
     }
 
     addParticles() {
-        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
+        const targets = this.elements.slice(1);
 
         // target particle emitters
         targets.forEach(({ key }) => {
@@ -266,13 +265,15 @@ class GameScene extends Phaser.Scene {
     }
 
     addPlayers() {
-        this.audioKeys.slice(1).forEach((key) => {
+        this.elements.slice(1).forEach(({ key, tint }) => {
             this.players[key] = this.physics.add
                 .image(this.sys.game.canvas.width / 2, -64, "gem")
                 .setOrigin(0.5, 0.5)
                 .setMaxVelocity(speed.x, speed.y)
                 .setDisplaySize(100, 100)
-                .setDepth(2);
+                .setDepth(2)
+                .setAngle(Phaser.Math.RND.integerInRange(0, 3) * 90)
+                .setTint(tint);
             this.players[key].body.setSize(200, 200).allowGravity = false;
             this.playerShadow = this.players[key].postFX.addShadow(
                 -10,
@@ -288,11 +289,11 @@ class GameScene extends Phaser.Scene {
 
     addTargets() {
         // target defintions
-        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
+        const targets = this.elements.slice(1);
 
         // target elements
-        targets.forEach((target, i) => {
-            this.targets[target.key] = this.physics.add
+        targets.forEach(({ key, tint }, i) => {
+            this.targets[key] = this.physics.add
                 .image(
                     ((i + 1) * this.sys.game.canvas.width) /
                         (targets.length + 1),
@@ -300,22 +301,11 @@ class GameScene extends Phaser.Scene {
                     "gem"
                 )
                 .setOrigin(0.5, 0.5)
-                .setDisplaySize(80, 80);
-            this.targets[target.key].setAngle(
-                Phaser.Math.RND.integerInRange(0, 3) * 90
-            );
-            this.targets[target.key].body.setSize(
-                200,
-                200
-            ).allowGravity = false;
-            this.targets[target.key].postFX.addShadow(
-                1,
-                1,
-                0.006,
-                0.7,
-                0x333333,
-                2
-            );
+                .setDisplaySize(80, 80)
+                .setAngle(Phaser.Math.RND.integerInRange(0, 3) * 90)
+                .setTint(tint);
+            this.targets[key].body.setSize(200, 200).allowGravity = false;
+            this.targets[key].postFX.addShadow(1, 1, 0.006, 0.7, 0x333333, 2);
         });
     }
 
