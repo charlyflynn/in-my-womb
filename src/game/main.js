@@ -313,6 +313,7 @@ class GameScene extends Phaser.Scene {
         if (this.players[key].rotation === this.targets[key].rotation) {
             this.audio.hit.play();
             this.emitter[key].start();
+            this.tweens[key].play();
 
             // allow animation to play properly
             this.physics.world.removeCollider(this.colliders[key]);
