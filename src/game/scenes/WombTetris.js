@@ -19,7 +19,7 @@ export default class WombTetris extends Phaser.Scene {
         this.playerShadow = {};
         this.targets = {};
         this.audio = {};
-        this.tween = {};
+        this.tween = { hover: {} };
         this.score = {
             showScore: false,
             matched: new Set(),
@@ -268,7 +268,14 @@ export default class WombTetris extends Phaser.Scene {
                 0x333333,
                 2
             );
-            this.players;
+            this.tween.hover[key] = this.tweens.add({
+                targets: this.players[key],
+                displayHeight: this.players[key].displayHeight + 10,
+                displayWidth: this.players[key].displayWidth + 10,
+                duration: 500,
+                yoyo: true,
+                repeat: -1,
+            });
         });
     }
 
@@ -366,10 +373,10 @@ export default class WombTetris extends Phaser.Scene {
                 } else {
                     this.cameras.main
                         .fadeOut(600, 0, 0, 0)
-                        .on("camerafadeoutcomplete", () =>
-                            this.scene.start("GameOver")
-                        );
-                    this.scene.destroy();
+                        .on("camerafadeoutcomplete", () => {
+                            this.scene.start("GameOver");
+                            this.scene.destroy();
+                        });
                 }
             });
         }
