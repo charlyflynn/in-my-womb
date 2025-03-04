@@ -15,7 +15,7 @@ export class GameOver extends Scene {
         };
 
         this.add
-            .text(dims.w / 2, dims.h / 2, "YOU LOSE", {
+            .text(dims.w / 2, dims.h / 2, "YOU LOSE \n ESTAS PERDIDO", {
                 fontFamily: "Arial Black",
                 fontSize: 100,
                 color: "#fff",
@@ -23,7 +23,7 @@ export class GameOver extends Scene {
                 strokeThickness: 20,
                 align: "center",
                 letterSpacing: 20,
-                wordWrap: { width: 450, useAdvancedWrap: true },
+                wordWrap: { width: 450, useAdvancedWrap: false },
             })
             .setOrigin(0.5)
             .setDepth(100);

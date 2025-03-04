@@ -187,13 +187,14 @@ export default class WombTetris extends Phaser.Scene {
         // button controls
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2 - 100,
-                this.sys.game.canvas.height - 100,
-                "< left",
+                this.sys.game.canvas.width / 2 - 200,
+                this.sys.game.canvas.height - 75,
+                "< trasladar al left",
                 {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
-                    padding: 4,
+                    padding: 10,
+                    fontSize: 18,
                 }
             )
             .setOrigin(0.5, 0.5)
@@ -207,13 +208,14 @@ export default class WombTetris extends Phaser.Scene {
         this.controls = this.add
             .text(
                 this.sys.game.canvas.width / 2,
-                this.sys.game.canvas.height - 100,
-                "rotate",
+                this.sys.game.canvas.height - 75,
+                "rotacióóón",
                 {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
-                    padding: 4,
+                    padding: 10,
                     align: "center",
+                    fontSize: 18,
                 }
             )
             .setOrigin(0.5, 0.5)
@@ -223,13 +225,14 @@ export default class WombTetris extends Phaser.Scene {
             });
         this.controls = this.add
             .text(
-                this.sys.game.canvas.width / 2 + 100,
-                this.sys.game.canvas.height - 100,
-                "right >",
+                this.sys.game.canvas.width / 2 + 200,
+                this.sys.game.canvas.height - 75,
+                "trasladar al right >",
                 {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
-                    padding: 4,
+                    padding: 10,
+                    fontSize: 18,
                 }
             )
             .setOrigin(0.5, 0.5)
