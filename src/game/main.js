@@ -20,7 +20,7 @@ class GameScene extends Phaser.Scene {
         this.targets = {};
         this.audio = {};
         this.score = {
-            showScore: true,
+            showScore: false,
             matched: new Set(),
             remaining: new Set(),
         };
@@ -101,7 +101,6 @@ class GameScene extends Phaser.Scene {
         this.addCollisions();
         this.addParticles();
         const playerKey = this.randomPlayerKey();
-        console.log("playerKey", playerKey);
         this.addControls(playerKey);
         this.setCurrentPlayer(playerKey);
     }
@@ -119,7 +118,6 @@ class GameScene extends Phaser.Scene {
 
     randomPlayerKey() {
         const remaining = Array.from(this.score.remaining);
-        console.log("remaining", remaining);
         return remaining[Phaser.Math.RND.between(0, remaining.length - 1)];
     }
 
@@ -365,7 +363,7 @@ const config = {
     physics: {
         default: "arcade",
         arcade: {
-            debug: true,
+            debug: false,
             gravity: { y: speed.y },
         },
     },
