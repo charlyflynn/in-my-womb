@@ -46,7 +46,6 @@ class GameScene extends Phaser.Scene {
         );
         this.load.image("background", "assets/bg.png");
         this.load.image("gem", "assets/gem.png");
-        // this.load.audio("bgMusic", "assets/InMyRoom.mp3");
         this.load.audio("hit", "assets/gruntBirthdayParty.mp3");
         this.load.audio("wombBass", "assets/womb-6-bass.mp3");
         // this.load.audio("wombVox", "assets/womb-1-vox.mp3");
@@ -57,31 +56,30 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        // environment
+        // set up game environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
+        this.scene.pause();
 
+        // set up audio channel
+        this.sound.pauseOnBlur = false;
+        const audioConfig = { loop: true, volume: 0 };
         this.elements.slice(1).forEach(({ key }) => {
             this.score.remaining.add(key);
         });
-
-        const audioConfig = { loop: true, volume: 0 };
         this.elements.forEach(({ key }) => {
             this.audio[key] = this.sound.add(key, audioConfig);
         });
         this.audio.hit = this.sound.add("hit", {
             volume: 0.1,
         });
-
-        this.scene.pause();
-        this.sound.pauseOnBlur = false;
         this.sound.pauseAll();
 
-        // set up audio fade-in tweens
+        // set up audio channel fade-in tweens
         this.elements.forEach(({ key }, i) => {
             this.tweens[key] = this.tweens.add({
                 targets: this.audio[key],
-                volume: 0.7,
+                volume: 1,
                 duration: i > 0 ? 1500 : 0,
             });
             if (i > 0) this.tweens[key].pause();
@@ -95,14 +93,15 @@ class GameScene extends Phaser.Scene {
               })
             : null;
 
-        //player element
+        // initialise game
         this.addPlayers();
         this.addTargets();
         this.addCollisions();
         this.addParticles();
         const playerKey = this.randomPlayerKey();
-        this.addControls(playerKey);
-        this.setCurrentPlayer(playerKey);
+        this.setPlayer(playerKey);
+        this.player.body.allowGravity = true;
+        this.addControls();
     }
 
     updateScoreText() {
@@ -121,16 +120,11 @@ class GameScene extends Phaser.Scene {
         return remaining[Phaser.Math.RND.between(0, remaining.length - 1)];
     }
 
-    setCurrentPlayer(key) {
+    setPlayer(key) {
         this.player = this.players[key];
     }
 
     update() {
-        // keyboard controls
-        // const { left, right } = this.cursor;
-        // if (left.isDown) this.player.setVelocityX(-speed.x);
-        // else if (right.isDown) this.player.setVelocityX(speed.x);
-        // else this.player.setVelocityX(0);
         // // out of bounds conditions
         if (
             this.player.y >=
@@ -202,9 +196,7 @@ class GameScene extends Phaser.Scene {
         });
     }
 
-    addControls(key) {
-        // this.cursor = this.input.keyboard.createCursorKeys();
-        this.players[key].body.allowGravity = true;
+    addControls() {
         // button controls
         this.controls = this.add
             .text(
@@ -220,10 +212,10 @@ class GameScene extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
-                this.players[key].setVelocityX(-speed.x);
+                this.player.setVelocityX(-speed.x);
             })
             .on("pointerup", () => {
-                this.players[key].setVelocityX(0);
+                this.player.setVelocityX(0);
             });
         this.controls = this.add
             .text(
@@ -240,7 +232,7 @@ class GameScene extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
-                this.players[key].setAngle(this.players[key].angle + 90);
+                this.player.setAngle(this.player.angle + 90);
             });
         this.controls = this.add
             .text(
@@ -256,14 +248,15 @@ class GameScene extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
-                this.players[key].setVelocityX(speed.x);
+                this.player.setVelocityX(speed.x);
             })
             .on("pointerup", () => {
-                this.players[key].setVelocityX(0);
+                this.player.setVelocityX(0);
             });
     }
 
     addPlayers() {
+        // falling elements to match to gems
         this.elements.slice(1).forEach(({ key, tint }) => {
             this.players[key] = this.physics.add
                 .image(this.sys.game.canvas.width / 2, -64, "gem")
@@ -287,10 +280,8 @@ class GameScene extends Phaser.Scene {
     }
 
     addTargets() {
-        // target defintions
+        // target elements to be matched with
         const targets = this.elements.slice(1);
-
-        // target elements
         targets.forEach(({ key, tint }, i) => {
             this.targets[key] = this.physics.add
                 .image(
@@ -315,7 +306,7 @@ class GameScene extends Phaser.Scene {
             this.emitter[key].start();
             this.tweens[key].play();
 
-            // allow animation to play properly
+            // animate in place
             this.physics.world.removeCollider(this.colliders[key]);
             this.players[key].body.allowGravity = false;
             this.players[key].setVelocityY(0);
@@ -328,6 +319,7 @@ class GameScene extends Phaser.Scene {
                 duration: 1000,
                 ease: Phaser.Math.Easing.Expo.InOut,
             });
+
             this.tweens.playerSize = this.tweens.add({
                 targets: this.players[key],
                 displayHeight: 80,
@@ -363,23 +355,24 @@ class GameScene extends Phaser.Scene {
             //     },
             // });
 
-            this.tweens.playerShadow.on("complete", () => {
-                this.targets[key].destroy();
-                this.players[key].destroy();
-
-                if (this.score.remaining.size > 0) {
-                    const newPlayerKey = this.randomPlayerKey();
-                    this.setCurrentPlayer(newPlayerKey);
-                    this.addControls(newPlayerKey);
-                } else this.game.destroy(true, true);
-            });
-
             // update score
             this.score.matched.add(key);
             this.score.remaining.delete(key);
             this.score.showScore &&
                 this.score.text.setText(this.updateScoreText());
         }
+
+        // continue game once animation has finished
+        this.tweens.playerShadow.on("complete", () => {
+            this.targets[key].destroy();
+            this.player.destroy();
+
+            if (this.score.remaining.size > 0) {
+                const newPlayerKey = this.randomPlayerKey();
+                this.setPlayer(newPlayerKey);
+                this.player.body.allowGravity = true;
+            } else this.game.destroy(true, true);
+        });
     }
 }
 
