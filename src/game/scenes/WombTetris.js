@@ -73,6 +73,8 @@ export default class WombTetris extends Phaser.Scene {
             if (i > 0) this.tween[key].pause();
         });
 
+        this.cameras.main.fadeIn(600, 0, 0, 0);
+
         // ui
         this.score.text = this.score.showScore
             ? this.add.text(0, 10, this.updateScoreText(), {
@@ -362,7 +364,11 @@ export default class WombTetris extends Phaser.Scene {
                     this.setPlayer(newPlayerKey);
                     this.player.body.allowGravity = true;
                 } else {
-                    this.scene.start("GameOver");
+                    this.cameras.main
+                        .fadeOut(600, 0, 0, 0)
+                        .on("camerafadeoutcomplete", () =>
+                            this.scene.start("GameOver")
+                        );
                     this.scene.destroy();
                 }
             });

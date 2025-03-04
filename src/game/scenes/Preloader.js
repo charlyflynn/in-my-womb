@@ -10,7 +10,7 @@ export default class Preloader extends Scene {
     init() {
         //  We loaded this image in our Boot Scene, so we can display it here
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
-
+        this.background.flipY = true;
         const dims = {
             h: this.sys.game.canvas.height,
             w: this.sys.game.canvas.width,
@@ -62,7 +62,11 @@ export default class Preloader extends Scene {
                     this.startButton.setStyle({ backgroundColor: "#dddddd88" });
                 })
                 .on("pointerup", () => {
-                    this.scene.start("WombTetris");
+                    this.cameras.main
+                        .fadeOut(600, 0, 0, 0)
+                        .on("camerafadeoutcomplete", () =>
+                            this.scene.start("WombTetris")
+                        );
                 });
         });
     }
