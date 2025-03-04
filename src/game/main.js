@@ -16,7 +16,7 @@ class GameScene extends Phaser.Scene {
         this.cursor;
         this.player;
         this.players = {};
-        this.playerShadow;
+        this.playerShadow = {};
         this.targets = {};
         this.audio = {};
         this.score = {
@@ -188,13 +188,14 @@ class GameScene extends Phaser.Scene {
         const targets = this.elements.slice(1);
 
         // target particle emitters
-        targets.forEach(({ key }) => {
+        targets.forEach(({ key, tint }) => {
             this.emitter[key] = this.add
                 .particles(0, 0, "gem", {
                     speed: 100,
                     gravityY: speed.y - 75,
                     scale: 0.05,
                     duration: 100,
+                    tint: tint,
                 })
                 .startFollow(this.targets[key], 0, -32)
                 .stop();
@@ -273,7 +274,7 @@ class GameScene extends Phaser.Scene {
                 .setAngle(Phaser.Math.RND.integerInRange(0, 3) * 90)
                 .setTint(tint);
             this.players[key].body.setSize(200, 200).allowGravity = false;
-            this.playerShadow = this.players[key].postFX.addShadow(
+            this.playerShadow[key] = this.players[key].postFX.addShadow(
                 -10,
                 10,
                 0.006,
@@ -320,7 +321,7 @@ class GameScene extends Phaser.Scene {
             this.players[key].setGravityY(0);
 
             this.tweens.playerShadow = this.tweens.add({
-                targets: this.playerShadow,
+                targets: this.playerShadow[key],
                 x: 1,
                 y: 1,
                 duration: 2000,
