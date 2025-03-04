@@ -19,7 +19,7 @@ export default class WombTetris extends Phaser.Scene {
         this.playerShadow = {};
         this.targets = {};
         this.audio = {};
-        this.tween = { hover: {} };
+        this.tween = { hover: {}, shadow: {} };
         this.score = {
             showScore: false,
             matched: new Set(),
@@ -261,17 +261,26 @@ export default class WombTetris extends Phaser.Scene {
                 .setTint(tint);
             this.players[key].body.setSize(200, 200).allowGravity = false;
             this.playerShadow[key] = this.players[key].postFX.addShadow(
-                -10,
-                10,
+                -15,
+                15,
                 0.006,
                 0.7,
                 0x333333,
-                2
+                2,
+                0.7
             );
             this.tween.hover[key] = this.tweens.add({
                 targets: this.players[key],
                 displayHeight: this.players[key].displayHeight + 10,
                 displayWidth: this.players[key].displayWidth + 10,
+                duration: 500,
+                yoyo: true,
+                repeat: -1,
+            });
+            this.tweens.add({
+                targets: this.playerShadow[key],
+                x: this.playerShadow[key].x - 8,
+                y: this.playerShadow[key].y + 8,
                 duration: 500,
                 yoyo: true,
                 repeat: -1,
