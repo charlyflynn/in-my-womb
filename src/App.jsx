@@ -25,9 +25,9 @@ function App ()
         if (scene)
             {
                 // phaserRef.current.game.sound.unlock(true)
-                scene.getScene('scene-game').beginWombAudio()
-                scene.resume("scene-game");
-                gameStartRef.current.style.display = "none"
+                // scene.getScene('WombTetris').beginWombAudio()
+                // scene.resume("WombTetris");
+                // gameStartRef.current.style.display = "none"
         }
     }
 
@@ -81,8 +81,8 @@ function App ()
     return (
         <div id="app">
             <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
-            <div id="gameStartDiv" className="start" ref={gameStartRef} ><button onClick={commenceGame}>commence</button></div>
-            <div id="gameEndDiv" className="end" >{"that's all folks"}</div>
+            {/* <div id="gameStartDiv" className="start" ref={gameStartRef} ><button onClick={commenceGame}>commence</button></div>
+            <div id="gameEndDiv" className="end" >{"that's all folks"}</div> */}
             {/* <div>
                 <div>
                     <button className="button" onClick={changeScene}>Change Scene</button>

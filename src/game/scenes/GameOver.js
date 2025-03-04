@@ -1,30 +1,38 @@
-import { EventBus } from '../EventBus';
-import { Scene } from 'phaser';
+import { EventBus } from "../EventBus";
+import { Scene } from "phaser";
 
-export class GameOver extends Scene
-{
-    constructor ()
-    {
-        super('GameOver');
+export class GameOver extends Scene {
+    constructor() {
+        super("GameOver");
     }
 
-    create ()
-    {
+    create() {
         this.cameras.main.setBackgroundColor(0xff0000);
 
-        this.add.image(512, 384, 'background').setAlpha(0.5);
+        const dims = {
+            h: this.sys.game.canvas.height,
+            w: this.sys.game.canvas.width,
+        };
 
-        this.add.text(512, 384, 'Game Over', {
-            fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5).setDepth(100);
+        this.add
+            .text(dims.w / 2, dims.h / 2, "YOU LOSE", {
+                fontFamily: "Arial Black",
+                fontSize: 100,
+                color: "#fff",
+                stroke: "#000",
+                strokeThickness: 20,
+                align: "center",
+                letterSpacing: 20,
+                wordWrap: { width: 450, useAdvancedWrap: true },
+            })
+            .setOrigin(0.5)
+            .setDepth(100);
 
-        EventBus.emit('current-scene-ready', this);
+        EventBus.emit("current-scene-ready", this);
     }
 
-    changeScene ()
-    {
-        this.scene.start('MainMenu');
+    changeScene() {
+        // this.scene.start("MainMenu");
     }
 }
+
