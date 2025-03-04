@@ -15,9 +15,15 @@ class GameScene extends Phaser.Scene {
         super("scene-game");
         this.cursor;
         this.player;
+        this.players = {};
+        this.playerShadow;
         this.targets = {};
         this.audio = {};
-        this.score = { showScore: false, set: new Set() };
+        this.score = {
+            showScore: true,
+            matched: new Set(),
+            remaining: new Set(),
+        };
         this.emitter = {};
         this.background;
         this.currentTarget = { x: 0.5, y: 1 };
@@ -30,6 +36,7 @@ class GameScene extends Phaser.Scene {
             "wombLoPerc",
             "wombChords",
         ];
+        this.colliders = {};
     }
 
     preload() {
@@ -39,7 +46,7 @@ class GameScene extends Phaser.Scene {
             true
         );
         this.load.image("background", "assets/bg.png");
-        this.load.image("star", "assets/star.png");
+        this.load.image("gem", "assets/gem.png");
         // this.load.audio("bgMusic", "assets/InMyRoom.mp3");
         this.load.audio("hit", "assets/gruntBirthdayParty.mp3");
         this.load.audio("wombBass", "assets/womb-6-bass.mp3");
@@ -50,22 +57,14 @@ class GameScene extends Phaser.Scene {
         this.load.audio("wombLoPerc", "assets/womb-5-kick+congas.mp3");
     }
 
-    resizeBg() {
-        // image css 'cover' behaviour
-        if (this.sys.game.canvas.height > this.background.height)
-            this.background.displayHeight = this.sys.game.canvas.height;
-        if (this.sys.game.canvas.width > this.background.width)
-            this.background.displayWidth = this.sys.game.canvas.width;
-    }
-
-    beginWombAudio() {
-        this.audioKeys.forEach((item) => this.audio[item].play());
-    }
-
     create() {
         // environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.resizeBg();
+
+        this.audioKeys.slice(1).forEach((item) => {
+            this.score.remaining.add(item);
+        });
 
         const audioConfig = { loop: true, volume: 0 };
         this.audioKeys.forEach((key) => {
@@ -91,63 +90,123 @@ class GameScene extends Phaser.Scene {
 
         // ui
         this.score.text = this.score.showScore
-            ? this.add.text(0, 10, "Placed:", {
+            ? this.add.text(0, 10, this.updateScoreText(), {
                   font: "25px Arial",
                   fill: "#000000",
               })
             : null;
 
         //player element
-        this.player = this.physics.add
-            .image(this.sys.game.canvas.width / 2, 0, "star")
-            .setOrigin(0.5, 0.5)
-            .setMaxVelocity(speed.x, speed.y);
-        this.player.body.setSize(20, 20);
-        // this.cursor = this.input.keyboard.createCursorKeys();
+        this.addPlayers();
+        this.addTargets();
+        this.addCollisions();
+        this.addParticles();
+        const playerKey = this.randomPlayerKey();
+        console.log("playerKey", playerKey);
+        this.addControls(playerKey);
+        this.setCurrentPlayer(playerKey);
+    }
 
-        // target defintions
-        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
+    updateScoreText() {
+        return `Matched: ${this.score.matched
+            .keys()
+            .reduce(
+                (a, b) => a + ", " + b,
+                ""
+            )} || Remaining: ${this.score.remaining
+            .keys()
+            .reduce((a, b) => a + ", " + b, "")}`;
+    }
 
-        // target elements
-        targets.forEach((target, i) => {
-            this.targets[target.key] = this.physics.add
-                .image(
-                    ((i + 1) * this.sys.game.canvas.width) /
-                        (targets.length + 1),
-                    (4 / 5) * this.sys.game.canvas.height,
-                    "star"
-                )
-                .setOrigin(0.5, 0.5);
-            this.targets[target.key].setAngle(
-                Phaser.Math.RND.integerInRange(0, 3) * 90
-            );
-            this.targets[target.key].body.setSize(20, 20).allowGravity = false;
+    randomPlayerKey() {
+        const remaining = Array.from(this.score.remaining);
+        console.log("remaining", remaining);
+        return remaining[Phaser.Math.RND.between(0, remaining.length - 1)];
+    }
+
+    setCurrentPlayer(key) {
+        this.player = this.players[key];
+    }
+
+    update() {
+        // keyboard controls
+        // const { left, right } = this.cursor;
+        // if (left.isDown) this.player.setVelocityX(-speed.x);
+        // else if (right.isDown) this.player.setVelocityX(speed.x);
+        // else this.player.setVelocityX(0);
+        // // out of bounds conditions
+        if (
+            this.player.y >=
+            this.sys.game.canvas.height + this.player.displayHeight
+        ) {
+            this.player.setY(0 - this.player.displayHeight / 2);
+        }
+        if (this.player.x >= this.sys.game.canvas.width)
+            this.player.setX(this.sys.game.canvas.width);
+        else if (this.player.x <= 0) this.player.setX(0);
+        // resize background on canvas size change, css 'cover' behaviour
+        // move player and target back into game area
+        this.scale.on("resize", (gameSize, xx, xxx, prevWidth) => {
+            if (this.sys.game.canvas.height > this.background.height)
+                this.background.displayHeight = this.sys.game.canvas.height;
+            if (this.sys.game.canvas.width > this.background.width)
+                this.background.displayWidth = this.sys.game.canvas.width;
+            if (this.player.y >= this.sys.game.canvas.height) {
+                this.player.setY(0);
+            }
+            // player/target on resizing
+            if (this.player.x >= this.sys.game.canvas.width) {
+                this.player.setX((this.player.x * gameSize.width) / prevWidth);
+            }
         });
+    }
 
+    resizeBg() {
+        // image css 'cover' behaviour
+        if (this.sys.game.canvas.height > this.background.height)
+            this.background.displayHeight = this.sys.game.canvas.height;
+        if (this.sys.game.canvas.width > this.background.width)
+            this.background.displayWidth = this.sys.game.canvas.width;
+    }
+
+    beginWombAudio() {
+        this.audioKeys.forEach((item) => this.audio[item].play());
+    }
+
+    addCollisions() {
+        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
         // target collisions
-        targets.forEach((target) => {
-            this.physics.add.overlap(
-                this.targets[target.key],
-                this.player,
-                () => this.targetHit(target.key),
+        targets.forEach(({ key }) => {
+            this.colliders[key] = this.physics.add.overlap(
+                this.targets[key],
+                this.players[key],
+                () => this.targetHit(key),
                 null,
                 this
             );
         });
+    }
+
+    addParticles() {
+        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
 
         // target particle emitters
         targets.forEach(({ key }) => {
             this.emitter[key] = this.add
-                .particles(0, 0, "star", {
+                .particles(0, 0, "gem", {
                     speed: 100,
-                    gravityY: speed.y - 200,
-                    scale: 0.4,
+                    gravityY: speed.y - 75,
+                    scale: 0.05,
                     duration: 100,
                 })
                 .startFollow(this.targets[key], 0, -32)
                 .stop();
         });
+    }
 
+    addControls(key) {
+        // this.cursor = this.input.keyboard.createCursorKeys();
+        this.players[key].body.allowGravity = true;
         // button controls
         this.controls = this.add
             .text(
@@ -160,12 +219,13 @@ class GameScene extends Phaser.Scene {
                     padding: 4,
                 }
             )
+            .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
-                this.player.setVelocityX(-speed.x);
+                this.players[key].setVelocityX(-speed.x);
             })
             .on("pointerup", () => {
-                this.player.setVelocityX(0);
+                this.players[key].setVelocityX(0);
             });
         this.controls = this.add
             .text(
@@ -176,15 +236,14 @@ class GameScene extends Phaser.Scene {
                     fill: "#f4f",
                     backgroundColor: "#ddd",
                     padding: 4,
+                    align: "center",
                 }
             )
+            .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
-                this.player.setAngle(this.player.angle + 90);
+                this.players[key].setAngle(this.players[key].angle + 90);
             });
-        // .on("pointerup", () => {
-        //     this.player.setVelocityX(0);
-        // });
         this.controls = this.add
             .text(
                 this.sys.game.canvas.width / 2 + 100,
@@ -196,71 +255,113 @@ class GameScene extends Phaser.Scene {
                     padding: 4,
                 }
             )
+            .setOrigin(0.5, 0.5)
             .setInteractive()
             .on("pointerdown", () => {
-                this.player.setVelocityX(speed.x);
+                this.players[key].setVelocityX(speed.x);
             })
             .on("pointerup", () => {
-                this.player.setVelocityX(0);
+                this.players[key].setVelocityX(0);
             });
     }
 
-    update() {
-        // keyboard controls
-        // const { left, right } = this.cursor;
-        // if (left.isDown) this.player.setVelocityX(-speed.x);
-        // else if (right.isDown) this.player.setVelocityX(speed.x);
-        // else this.player.setVelocityX(0);
+    addPlayers() {
+        this.audioKeys.slice(1).forEach((key) => {
+            this.players[key] = this.physics.add
+                .image(this.sys.game.canvas.width / 2, -64, "gem")
+                .setOrigin(0.5, 0.5)
+                .setMaxVelocity(speed.x, speed.y)
+                .setDisplaySize(100, 100)
+                .setDepth(2);
+            this.players[key].body.setSize(200, 200).allowGravity = false;
+            this.playerShadow = this.players[key].postFX.addShadow(
+                -10,
+                10,
+                0.006,
+                0.7,
+                0x333333,
+                2
+            );
+            this.players;
+        });
+    }
 
-        // out of bounds conditions
-        if (this.player.y >= this.sys.game.canvas.height + this.player.height) {
-            this.player.setY(0);
-        }
-        if (this.player.x >= this.sys.game.canvas.width)
-            this.player.setX(this.sys.game.canvas.width);
-        else if (this.player.x <= 0) this.player.setX(0);
+    addTargets() {
+        // target defintions
+        const targets = this.audioKeys.slice(1).map((item) => ({ key: item }));
 
-        // resize background on canvas size change, css 'cover' behaviour
-        // move player and target back into game area
-        this.scale.on("resize", (gameSize, xx, xxx, prevWidth) => {
-            if (this.sys.game.canvas.height > this.background.height)
-                this.background.displayHeight = this.sys.game.canvas.height;
-            if (this.sys.game.canvas.width > this.background.width)
-                this.background.displayWidth = this.sys.game.canvas.width;
-            if (this.player.y >= this.sys.game.canvas.height) {
-                this.player.setY(0);
-            }
-
-            // player/target on resizing
-            if (this.player.x >= this.sys.game.canvas.width) {
-                this.player.setX((this.player.x * gameSize.width) / prevWidth);
-            }
+        // target elements
+        targets.forEach((target, i) => {
+            this.targets[target.key] = this.physics.add
+                .image(
+                    ((i + 1) * this.sys.game.canvas.width) /
+                        (targets.length + 1),
+                    (4 / 5) * this.sys.game.canvas.height,
+                    "gem"
+                )
+                .setOrigin(0.5, 0.5)
+                .setDisplaySize(80, 80);
+            this.targets[target.key].setAngle(
+                Phaser.Math.RND.integerInRange(0, 3) * 90
+            );
+            this.targets[target.key].body.setSize(
+                200,
+                200
+            ).allowGravity = false;
+            this.targets[target.key].postFX.addShadow(
+                1,
+                1,
+                0.006,
+                0.7,
+                0x333333,
+                2
+            );
         });
     }
 
     targetHit(key) {
-        if (this.player.rotation === this.targets[key].rotation) {
-            // successful collision effects
+        // succesful hit with correct rotation
+        if (this.players[key].rotation === this.targets[key].rotation) {
             this.audio.hit.play();
             this.emitter[key].start();
-            this.tweens[key].play();
 
-            // reset player and target
-            this.player.setY(0).setVelocityY(0);
-            this.targets[key].destroy();
+            // allow animation to play properly
+            this.physics.world.removeCollider(this.colliders[key]);
+            this.players[key].body.allowGravity = false;
+            this.players[key].setVelocityY(0);
+            this.players[key].setGravityY(0);
+
+            this.tweens.playerShadow = this.tweens.add({
+                targets: this.playerShadow,
+                x: 1,
+                y: 1,
+                duration: 2000,
+            });
+            this.tweens.playerSize = this.tweens.add({
+                targets: this.players[key],
+                displayHeight: 80,
+                displayWidth: 80,
+                x: this.targets[key].x,
+                y: this.targets[key].y,
+                duration: 2000,
+            });
+
+            this.tweens.playerShadow.on("complete", () => {
+                this.targets[key].destroy();
+                this.players[key].destroy();
+
+                if (this.score.remaining.size > 0) {
+                    const newPlayerKey = this.randomPlayerKey();
+                    this.setCurrentPlayer(newPlayerKey);
+                    this.addControls(newPlayerKey);
+                } else this.game.destroy(true, true);
+            });
 
             // update score
-            this.score.set.add(key);
+            this.score.matched.add(key);
+            this.score.remaining.delete(key);
             this.score.showScore &&
-                this.score.text.setText(
-                    `Placed: ${this.score.set.keys().reduce((a, b) => a + b)}`
-                );
-            if (this.score.set.size === this.audioKeys.length - 1) {
-                this.player.destroy();
-                this.audio.hit.on("complete", () => {
-                    this.game.destroy(true, false);
-                });
-            }
+                this.score.text.setText(this.updateScoreText());
         }
     }
 }

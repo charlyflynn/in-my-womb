@@ -22,7 +22,6 @@ function App ()
     
     const commenceGame = () => {
         const scene = phaserRef.current.game.scene;
-        console.log(phaserRef.current.game)
         if (scene)
             {
                 // phaserRef.current.game.sound.unlock(true)
