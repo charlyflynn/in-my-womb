@@ -7,7 +7,7 @@ export class GameOver extends Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor(0xff0000);
+        this.cameras.main.setBackgroundColor(0x333333);
 
         const dims = {
             h: this.sys.game.canvas.height,
@@ -15,12 +15,10 @@ export class GameOver extends Scene {
         };
 
         this.add
-            .text(dims.w / 2, dims.h / 2, "YOU LOSE \n ESTAS PERDIDO", {
+            .text(dims.w / 2, dims.h / 2, "YOU\nWON!", {
                 fontFamily: "Arial Black",
                 fontSize: 100,
-                color: "#fff",
-                stroke: "#000",
-                strokeThickness: 20,
+                color: "#cccccc",
                 align: "center",
                 letterSpacing: 20,
                 wordWrap: { width: 450, useAdvancedWrap: false },
