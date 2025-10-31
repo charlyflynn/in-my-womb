@@ -66,7 +66,7 @@ export default class Preloader extends Scene {
                     this.cameras.main
                         .fadeOut(600, 0, 0, 0)
                         .on("camerafadeoutcomplete", () =>
-                            this.scene.start("WombTetris")
+                            this.scene.start("Aurosymbology")
                         );
                 });
         });
@@ -88,12 +88,12 @@ export default class Preloader extends Scene {
         this.load.audio("wombChords", "womb-3-guitar+piano.mp3");
         this.load.audio("wombHiPerc", "womb-4-claps+shakers.mp3");
         this.load.audio("wombLoPerc", "womb-5-kick+congas.mp3");
+        this.load.audio("grunts", "gruntBirthdayParty.mp3");
     }
 
     create() {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
     }
 }
 
