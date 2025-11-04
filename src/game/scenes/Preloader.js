@@ -72,10 +72,13 @@ export default class Preloader extends Scene {
     }
 
     preload() {
-        this.load.setPath("assets");
+        this.load.setPath("./assets");
+
         this.load.audio("grunts", "gruntBirthdayParty.mp3");
 
         // level 1
+        this.load.setPath("assets/l1");
+
         this.load.image("altavoz-in", "altavoz-in.png");
         this.load.image("altavoz-out", "altavoz-out.png");
         this.load.image("splinter-in", "splinter-in.png");
@@ -96,6 +99,7 @@ export default class Preloader extends Scene {
         this.load.audio("fireworm", "fireworm.mp3");
 
         // level 2
+        this.load.setPath("assets/l2");
 
         this.load.image("gem", "gem.png");
         this.load.image("wombStone", "womb-stone.png");
