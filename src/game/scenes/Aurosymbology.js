@@ -8,11 +8,11 @@ export default class Aurosymbology extends Phaser.Scene {
         this.symbolElements = {};
         this.selectedAudio = "";
         this.elements = [
-            { key: "FIREWORM" },
-            { key: "FINALISE" },
-            { key: "NIÑO" },
-            { key: "THE SPLINTER" },
-            { key: "IN MY WOMB" },
+            { key: "fireworm" },
+            { key: "finalise" },
+            { key: "nino" },
+            { key: "splinter" },
+            { key: "womb" },
         ];
         this.score = {
             matched: new Set(),
@@ -23,13 +23,28 @@ export default class Aurosymbology extends Phaser.Scene {
     create() {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
 
-        this.audio.grunts = this.sound.add("grunts");
+        this.elements.forEach(({ key }) => {
+            this.audio[key] = this.sound.add(key);
+        });
 
-        this.elements.forEach(({ key }, i) => {
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        const shuffledElements = [...this.elements];
+
+        shuffledElements.forEach(({ key }, i) => {
             this.audioElements[key] = this.add
-                .sprite(225, (i + 1) * (1920 / 6), "wombStone")
+                .sprite(
+                    225,
+                    (i + 1) * (1920 / (this.elements.length + 1)),
+                    "altavoz-in"
+                )
                 .setOrigin(0.5, 0.5)
-                .setScale(0.2)
+                .setScale(0.5)
                 .setInteractive({ useHandCursor: true })
                 .on("pointerup", () => {
                     this.elements.forEach(({ key }) => {
@@ -38,20 +53,26 @@ export default class Aurosymbology extends Phaser.Scene {
                     });
                     this.selectedAudio = key;
                     this.audioElements[key].setTint(0xaaaaaa);
-                    this.audio.grunts.play();
+                    this.game.sound.stopAll();
+                    this.audio[key].play();
                 });
         });
         this.elements.forEach(({ key }, i) => {
             this.symbolElements[key] = this.add
-                .image(1080 - 225, (i + 1) * (1920 / 6), "wombStone")
+                .image(
+                    1080 - 225,
+                    (i + 1) * (1920 / (this.elements.length + 1)),
+                    `${key}-in`
+                )
                 .setOrigin(0.5, 0.5)
-                .setScale(0.2)
+                .setScale(0.5)
                 .setInteractive({ useHandCursor: true })
                 .on("pointerup", () => {
                     if (this.selectedAudio === key) {
-                        this.audioElements[key].setTint(0xaaaaaa);
+                        this.audioElements[key].setTexture("altavoz-out");
+                        this.audioElements[key].clearTint();
                         this.audioElements[key].disableInteractive();
-                        this.symbolElements[key].setTint(0xaaaaaa);
+                        this.symbolElements[key].setTexture(`${key}-out`);
                         this.symbolElements[key].disableInteractive();
                         this.score.matched.add(key);
 

@@ -35,7 +35,7 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombStrings",
-                tint: 0xff0000,
+                tint: 0x5c0b22,
                 shape: "wombGems",
                 position: 235,
                 size: {
@@ -45,7 +45,7 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombHiPerc",
-                tint: 0xff00ff,
+                tint: 0x040536,
                 shape: "wombBrackets",
                 position: 540,
                 size: {
@@ -55,7 +55,7 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombLoPerc",
-                tint: 0x00ffff,
+                tint: 0x040536,
                 shape: "womb0",
                 position: 540,
                 size: {
