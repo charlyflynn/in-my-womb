@@ -8,7 +8,6 @@ export default class Preloader extends Scene {
     }
 
     init() {
-        //  We loaded this image in our Boot Scene, so we can display it here
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
 
         const dims = {
@@ -73,15 +72,10 @@ export default class Preloader extends Scene {
     }
 
     preload() {
-        //  Load the assets for the game - Replace with your own assets
         this.load.setPath("assets");
+        this.load.audio("grunts", "gruntBirthdayParty.mp3");
 
-        this.load.image("gem", "gem.png");
-        this.load.image("wombStone", "womb-stone.png");
-        this.load.image("wombGems", "womb-gems.png");
-        this.load.image("womb0", "womb-0.png");
-        this.load.image("wombBrackets", "womb-brackets.png");
-
+        // level 1
         this.load.image("altavoz-in", "altavoz-in.png");
         this.load.image("altavoz-out", "altavoz-out.png");
         this.load.image("splinter-in", "splinter-in.png");
@@ -95,21 +89,27 @@ export default class Preloader extends Scene {
         this.load.image("fireworm-in", "fireworm-in.png");
         this.load.image("fireworm-out", "fireworm-out.png");
 
-        this.load.audio("hit", "stoneScrape.mp3");
-        this.load.audio("grunts", "gruntBirthdayParty.mp3");
+        this.load.audio("splinter", "splinter.mp3");
+        this.load.audio("womb", "womb.mp3");
+        this.load.audio("finalise", "finalise.mp3");
+        this.load.audio("nino", "nino.mp3");
+        this.load.audio("fireworm", "fireworm.mp3");
 
+        // level 2
+
+        this.load.image("gem", "gem.png");
+        this.load.image("wombStone", "womb-stone.png");
+        this.load.image("wombGems", "womb-gems.png");
+        this.load.image("womb0", "womb-0.png");
+        this.load.image("wombBrackets", "womb-brackets.png");
+
+        this.load.audio("hit", "stoneScrape.mp3");
         this.load.audio("wombVox", "womb-1-vox.mp3");
         this.load.audio("wombStrings", "womb-2-strings.mp3");
         this.load.audio("wombChords", "womb-3-guitar+piano.mp3");
         this.load.audio("wombHiPerc", "womb-4-claps+shakers.mp3");
         this.load.audio("wombLoPerc", "womb-5-kick+congas.mp3");
         this.load.audio("wombBass", "womb-6-bass.mp3");
-
-        this.load.audio("splinter", "splinter.mp3");
-        this.load.audio("womb", "womb.mp3");
-        this.load.audio("finalise", "finalise.mp3");
-        this.load.audio("nino", "nino.mp3");
-        this.load.audio("fireworm", "fireworm.mp3");
     }
 
     create() {
