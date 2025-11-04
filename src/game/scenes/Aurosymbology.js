@@ -27,14 +27,16 @@ export default class Aurosymbology extends Phaser.Scene {
             this.audio[key] = this.sound.add(key);
         });
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
-
-        const shuffledElements = [...this.elements];
+        const shuffledElements = this.elements
+            .map((element) => ({
+                ...element,
+                index: Math.random(),
+            }))
+            .sort((a, b) => {
+                if (a.index < b.index) return -1;
+                else if (a.index > b.index) return 1;
+                else return 0;
+            });
 
         shuffledElements.forEach(({ key }, i) => {
             this.audioElements[key] = this.add
