@@ -102,10 +102,11 @@ export default class Preloader extends Scene {
         this.load.setPath("assets/l2");
 
         this.load.image("gem", "gem.png");
-        this.load.image("wombStone", "womb-stone.png");
-        this.load.image("wombGems", "womb-gems.png");
-        this.load.image("womb0", "womb-0.png");
-        this.load.image("wombBrackets", "womb-brackets.png");
+        this.load.image("womb-piedra", "womb-piedra.png");
+        this.load.image("womb-gemas", "womb-gemas.png");
+        this.load.image("womb-0", "womb-0.png");
+        this.load.image("womb-parentesis-l", "womb-parentesis-l.png");
+        this.load.image("womb-parentesis-r", "womb-parentesis-r.png");
 
         this.load.audio("hit", "stoneScrape.mp3");
         this.load.audio("wombVox", "womb-1-vox.mp3");

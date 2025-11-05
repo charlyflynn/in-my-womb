@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 
 const speed = { x: 200, y: 350 };
+const speedScale = [1, 1.5, 1.9, 2.2, 2.5];
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {
@@ -20,67 +21,66 @@ export default class WombTetris extends Phaser.Scene {
         this.emitter = {};
         this.background;
         this.currentTarget = { x: 0.5, y: 1 };
-        this.controls;
+        this.controls = {};
         this.elements = [
             {
                 key: "wombBass",
                 img: "",
-                tint: 0xffffff,
-                shape: "",
-                position: 0,
-                size: {
-                    x: 35,
-                    y: 35,
-                },
             },
             {
                 key: "wombStrings",
                 tint: 0x5c0b22,
-                shape: "wombGems",
-                position: 235,
+                shape: "womb-gemas",
+                position: { x: 235, y: (4 / 5) * 1920 + 12 },
                 size: {
-                    x: 35,
-                    y: 35,
+                    x: 70,
+                    y: 70,
                 },
             },
             {
                 key: "wombHiPerc",
                 tint: 0x040536,
-                shape: "wombBrackets",
-                position: 540,
+                shape: "womb-parentesis-l",
+                position: { x: 366, y: (4 / 5) * 1920 },
                 size: {
-                    x: 35,
-                    y: 35,
+                    x: 70,
+                    y: 70,
                 },
             },
             {
                 key: "wombLoPerc",
                 tint: 0x040536,
-                shape: "womb0",
-                position: 540,
+                shape: "womb-0",
+                position: { x: 540, y: (4 / 5) * 1920 - 22 },
                 size: {
-                    x: 35,
-                    y: 35,
+                    x: 70,
+                    y: 70,
                 },
             },
-            // {
-            //     key: "wombChords",
-            //     tint: 0x00ff00,
-            //     shape: "wombBrackets",
-            //     position: 1080 - 360,
-            //     size: {
-            //         x: 200,
-            //         y: 200,
-            //     },
-            // },
+            {
+                key: "wombChords",
+                tint: 0x00ff00,
+                shape: "womb-parentesis-r",
+                position: {
+                    x: 1080 - 364,
+                    y: (4 / 5) * 1920,
+                },
+                size: {
+                    x: 70,
+                    y: 70,
+                },
+            },
             {
                 key: "wombVox",
                 tint: 0xffff00,
-                shape: "wombGems",
-                position: 1080 - 235,
+                shape: "womb-gemas",
+                position: {
+                    x: 1080 - 230,
+                    y: (4 / 5) * 1920 + 12,
+                },
                 size: {
-                    x: 35,
-                    y: 35,
+                    x: 70,
+                    y: 70,
                 },
             },
         ];
@@ -135,22 +135,11 @@ export default class WombTetris extends Phaser.Scene {
         this.addPlayers();
         this.addTargets();
         this.addCollisions();
-        this.addParticles();
+        // this.addParticles();
         const playerKey = this.randomPlayerKey();
         this.setPlayer(playerKey);
         this.player.body.allowGravity = true;
         this.addControls();
-    }
-
-    updateScoreText() {
-        return `Matched: ${this.score.matched
-            .keys()
-            .reduce(
-                (a, b) => a + ", " + b,
-                ""
-            )} || Remaining: ${this.score.remaining
-            .keys()
-            .reduce((a, b) => a + ", " + b, "")}`;
     }
 
     randomPlayerKey() {
@@ -168,6 +157,7 @@ export default class WombTetris extends Phaser.Scene {
             this.player.y >=
             this.sys.game.canvas.height + this.player.displayHeight
         ) {
+            this.player.setX(Phaser.Math.RND.integerInRange(100, 980));
             this.player.setY(0 - this.player.displayHeight / 2);
         }
         if (this.player.x >= this.sys.game.canvas.width)
@@ -193,25 +183,8 @@ export default class WombTetris extends Phaser.Scene {
         });
     }
 
-    addParticles() {
-        const targets = this.elements.slice(1);
-        // target particle emitters
-        targets.forEach(({ key, tint }) => {
-            this.emitter[key] = this.add
-                .particles(0, 0, "gem", {
-                    speed: 100,
-                    gravityY: speed.y - 75,
-                    scale: 0.05,
-                    duration: 100,
-                    tint: tint,
-                })
-                .startFollow(this.targets[key], 0, -32)
-                .stop();
-        });
-    }
-
     addControls() {
-        this.controls = this.add
+        this.controls.left = this.add
             .text(
                 this.sys.game.canvas.width * 0.25,
                 this.sys.game.canvas.height * 0.95,
@@ -228,7 +201,9 @@ export default class WombTetris extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
-                this.player.setVelocityX(-speed.x);
+                this.player.setVelocityX(
+                    -speed.x * speedScale[this.score.matched.size]
+                );
             })
             .on("pointerup", () => {
                 this.player.setVelocityX(0);
@@ -236,7 +211,7 @@ export default class WombTetris extends Phaser.Scene {
             .on("pointerout", () => {
                 this.player.setVelocityX(0);
             });
-        this.controls = this.add
+        this.controls.rotate = this.add
             .text(
                 this.sys.game.canvas.width * 0.5,
                 this.sys.game.canvas.height * 0.95,
@@ -253,13 +228,13 @@ export default class WombTetris extends Phaser.Scene {
             )
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
-            .on("pointerdown", () => {
-                this.player.setAngle(this.player.angle + 90);
-            })
-            .on("pointerout", () => {
-                this.player.setVelocityX(0);
+            .on("pointerdown", () => {})
+            .on("pointerup", () => {
+                if (this.player.angle === 0) this.player.setAngle(90);
+                else if (this.player.angle === 90) this.player.setAngle(0);
+                //     this.player.setVelocityX(0);
             });
-        this.controls = this.add
+        this.controls.right = this.add
             .text(
                 this.sys.game.canvas.width * 0.75,
                 this.sys.game.canvas.height * 0.95,
@@ -276,7 +251,9 @@ export default class WombTetris extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
-                this.player.setVelocityX(speed.x);
+                this.player.setVelocityX(
+                    speed.x * speedScale[this.score.matched.size]
+                );
             })
             .on("pointerup", () => {
                 this.player.setVelocityX(0);
@@ -286,19 +263,41 @@ export default class WombTetris extends Phaser.Scene {
             });
     }
 
-    addPlayers() {
-        // falling elements to match to gems
+    enableControls() {
+        for (let key in this.controls) {
+            this.controls[key].setInteractive();
+        }
+    }
+    disableControls() {
+        for (let key in this.controls) {
+            this.controls[key].disableInteractive();
+        }
+    }
 
+    addPlayers() {
         // falling gems to match to slots
-        this.elements.slice(1).forEach(({ key, shape, size: { x, y } }) => {
+
+        const shuffledElements = this.elements
+            .slice(1)
+            .map((element) => ({
+                ...element,
+                index: Math.random(),
+            }))
+            .sort((a, b) => {
+                if (a.index < b.index) return -1;
+                else if (a.index > b.index) return 1;
+                else return 0;
+            });
+
+        shuffledElements.forEach(({ key, shape, size: { x, y } }) => {
             this.players[key] = this.physics.add
-                .image(this.sys.game.canvas.width / 2, -400, shape)
+                .image(Phaser.Math.RND.integerInRange(100, 980), -400, shape)
                 .setOrigin(0.5, 0.5)
                 .setMaxVelocity(speed.x, speed.y)
                 // .setDisplaySize(200, 200)
-                .setScale(1.3)
+                .setScale(0.65)
                 .setDepth(2)
-                .setAngle(Phaser.Math.RND.integerInRange(0, 3) * 90);
+                .setAngle(Phaser.Math.RND.integerInRange(0, 1) * 90);
             // .setTint(tint);
             this.players[key].body.setSize(x, y).allowGravity = false;
             this.playerShadow[key] = this.players[key].postFX.addShadow(
@@ -335,7 +334,7 @@ export default class WombTetris extends Phaser.Scene {
             .image(
                 0.5 * this.sys.game.canvas.width,
                 (4 / 5) * this.sys.game.canvas.height,
-                "wombStone"
+                "womb-piedra"
             )
             .setOrigin(0.5, 0.5)
             .setScale(0.5625)
@@ -343,9 +342,9 @@ export default class WombTetris extends Phaser.Scene {
 
         // target slots
         const targets = this.elements.slice(1);
-        targets.forEach(({ key, position }) => {
+        targets.forEach(({ key, position: { x, y } }) => {
             this.targets[key] = this.physics.add
-                .image(position, (4 / 5) * this.sys.game.canvas.height, "gem")
+                .image(x, y, "gem")
                 .setOrigin(0.5, 0.5)
                 .setDepth(-1);
             this.targets[key].body.setSize(35, 35).allowGravity = false;
@@ -356,10 +355,10 @@ export default class WombTetris extends Phaser.Scene {
         // succesful hit with correct rotation
         if (this.player.rotation === this.targets[key].rotation) {
             this.audio.hit.play();
-            // this.emitter[key].start();
             this.tween[key].play();
 
             // animate in place
+            this.disableControls();
             this.physics.world.removeCollider(this.colliders[key]);
             this.players[key].body.allowGravity = false;
             this.players[key].setVelocityY(0);
@@ -376,7 +375,7 @@ export default class WombTetris extends Phaser.Scene {
 
             this.tween.playerSize = this.tweens.add({
                 targets: this.players[key],
-                scale: 1.1,
+                scale: 0.55,
                 x: this.targets[key].x,
                 y: this.targets[key].y,
                 duration: 1000,
@@ -398,7 +397,12 @@ export default class WombTetris extends Phaser.Scene {
                 if (this.score.remaining.size > 0) {
                     const newPlayerKey = this.randomPlayerKey();
                     this.setPlayer(newPlayerKey);
+                    this.player.setMaxVelocity(
+                        speed.x * speedScale[this.score.matched.size],
+                        speed.y * speedScale[this.score.matched.size]
+                    );
                     this.player.body.allowGravity = true;
+                    this.enableControls();
                 } else {
                     this.cameras.main
                         .fadeOut(600, 0, 0, 0)
