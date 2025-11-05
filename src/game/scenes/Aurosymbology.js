@@ -24,8 +24,10 @@ export default class Aurosymbology extends Phaser.Scene {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
 
         this.elements.forEach(({ key }) => {
-            this.audio[key] = this.sound.add(key);
+            this.audio[key] = this.sound.add(key, { volume: 3 });
         });
+        this.audio.stonescrape = this.sound.add("stonescrape", { volume: 0.3 });
+        this.audio.unselect = this.sound.add("unselect", { volume: 1 });
 
         const shuffledElements = this.elements
             .map((element) => ({
@@ -40,10 +42,10 @@ export default class Aurosymbology extends Phaser.Scene {
 
         shuffledElements.forEach(({ key }, i) => {
             this.audioElements[key] = this.add
-                .sprite(
+                .image(
                     225,
                     (i + 1) * (1920 / (this.elements.length + 1)),
-                    "altavoz-in"
+                    "altavoz-out"
                 )
                 .setOrigin(0.5, 0.5)
                 .setScale(0.5)
@@ -54,7 +56,7 @@ export default class Aurosymbology extends Phaser.Scene {
                             this.audioElements[key].clearTint();
                     });
                     this.selectedAudio = key;
-                    this.audioElements[key].setTint(0xaaaaaa);
+                    this.audioElements[key].setTint(0xcccccc);
                     this.game.sound.stopAll();
                     this.audio[key].play();
                 });
@@ -64,19 +66,22 @@ export default class Aurosymbology extends Phaser.Scene {
                 .image(
                     1080 - 225,
                     (i + 1) * (1920 / (this.elements.length + 1)),
-                    `${key}-in`
+                    `${key}-out`
                 )
                 .setOrigin(0.5, 0.5)
                 .setScale(0.5)
                 .setInteractive({ useHandCursor: true })
                 .on("pointerup", () => {
                     if (this.selectedAudio === key) {
-                        this.audioElements[key].setTexture("altavoz-out");
+                        this.audioElements[key].setTexture("altavoz-in");
                         this.audioElements[key].clearTint();
                         this.audioElements[key].disableInteractive();
-                        this.symbolElements[key].setTexture(`${key}-out`);
+                        this.symbolElements[key].setTexture(`${key}-in`);
                         this.symbolElements[key].disableInteractive();
                         this.score.matched.add(key);
+
+                        this.game.sound.stopAll();
+                        this.audio.stonescrape.play();
 
                         if (this.score.matched.size === this.elements.length) {
                             this.cameras.main
@@ -89,6 +94,8 @@ export default class Aurosymbology extends Phaser.Scene {
                     } else {
                         this.audioElements[this.selectedAudio].clearTint();
                         this.selectedAudio = "";
+                        this.game.sound.stopAll();
+                        this.audio.unselect.play();
                     }
                 });
         });

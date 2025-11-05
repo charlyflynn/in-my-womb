@@ -1,10 +1,13 @@
 import { Scene } from "phaser";
 
+const preProd = true;
+const levelKeys = ["AuroSymbology", "WombTetris", "GameOver"];
 export default class Preloader extends Scene {
     constructor() {
         super("Preloader");
         this.background;
         this.startButton;
+        this.levelButtons = {};
     }
 
     init() {
@@ -68,6 +71,45 @@ export default class Preloader extends Scene {
                             this.scene.start("Aurosymbology")
                         );
                 });
+
+            preProd &&
+                levelKeys.forEach((levelKey, i) => {
+                    this.levelButtons[levelKey] = this.add
+                        .text(
+                            this.sys.game.canvas.width / 2,
+                            this.sys.game.canvas.height / 2 +
+                                200 +
+                                (i + 1) * 140,
+                            `L${i + 1}: ${levelKey}`,
+                            {
+                                fill: "#333333",
+                                backgroundColor: "#cccccc",
+                                padding: 24,
+                                fontSize: 40,
+                                align: "left",
+                                fontFamily: "Arial Black",
+                            }
+                        )
+                        .setOrigin(0.5, 0.5)
+                        .setInteractive({ useHandCursor: true })
+                        .on("pointerover", () => {
+                            this.startButton.setStyle({
+                                backgroundColor: "#cccccc",
+                            });
+                        })
+                        .on("pointerout", () => {
+                            this.startButton.setStyle({
+                                backgroundColor: "#cccccc",
+                            });
+                        })
+                        .on("pointerup", () => {
+                            this.cameras.main
+                                .fadeOut(600, 0, 0, 0)
+                                .on("camerafadeoutcomplete", () =>
+                                    this.scene.start(levelKey)
+                                );
+                        });
+                });
         });
     }
 
@@ -75,6 +117,8 @@ export default class Preloader extends Scene {
         this.load.setPath("./assets");
 
         this.load.audio("grunts", "gruntBirthdayParty.mp3");
+        this.load.audio("stonescrape", "stonescrape.mp3");
+        this.load.audio("unselect", "unselect.mp3");
 
         // level 1
         this.load.setPath("assets/l1");
@@ -108,7 +152,6 @@ export default class Preloader extends Scene {
         this.load.image("womb-parentesis-l", "womb-parentesis-l.png");
         this.load.image("womb-parentesis-r", "womb-parentesis-r.png");
 
-        this.load.audio("hit", "stoneScrape.mp3");
         this.load.audio("wombVox", "womb-1-vox.mp3");
         this.load.audio("wombStrings", "womb-2-strings.mp3");
         this.load.audio("wombChords", "womb-3-guitar+piano.mp3");

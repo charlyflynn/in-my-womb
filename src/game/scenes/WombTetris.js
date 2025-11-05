@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 const speed = { x: 200, y: 350 };
-const speedScale = [1, 1.5, 1.9, 2.2, 2.5];
+const speedScale = [1, 1.4, 1.7, 2.0, 2.3];
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {
@@ -105,7 +105,7 @@ export default class WombTetris extends Phaser.Scene {
         this.elements.forEach(({ key }) => {
             this.audio[key] = this.sound.add(key, audioConfig);
         });
-        this.audio.hit = this.sound.add("hit", {
+        this.audio.stonescrape = this.sound.add("stonescrape", {
             volume: 0.1,
         });
         this.beginWombAudio();
@@ -157,7 +157,7 @@ export default class WombTetris extends Phaser.Scene {
             this.player.y >=
             this.sys.game.canvas.height + this.player.displayHeight
         ) {
-            this.player.setX(Phaser.Math.RND.integerInRange(100, 980));
+            // this.player.setX(Phaser.Math.RND.integerInRange(100, 980));
             this.player.setY(0 - this.player.displayHeight / 2);
         }
         if (this.player.x >= this.sys.game.canvas.width)
@@ -354,7 +354,7 @@ export default class WombTetris extends Phaser.Scene {
     onCollision(key) {
         // succesful hit with correct rotation
         if (this.player.rotation === this.targets[key].rotation) {
-            this.audio.hit.play();
+            this.audio.stonescrape.play();
             this.tween[key].play();
 
             // animate in place
