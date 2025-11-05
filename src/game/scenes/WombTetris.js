@@ -361,6 +361,7 @@ export default class WombTetris extends Phaser.Scene {
             this.disableControls();
             this.physics.world.removeCollider(this.colliders[key]);
             this.players[key].body.allowGravity = false;
+            this.players[key].setVelocityX(0);
             this.players[key].setVelocityY(0);
             this.players[key].setGravityY(0);
             this.players[key].setDepth(1);
