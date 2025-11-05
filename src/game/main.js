@@ -1,9 +1,10 @@
 import Phaser from "phaser";
 import Boot from "./scenes/Boot";
 import PreLoader from "./scenes/Preloader";
-import { GameOver } from "./scenes/GameOver";
-import Aurosymbology from "./scenes/Aurosymbology";
+import AuroSymbology from "./scenes/AuroSymbology";
 import WombTetris from "./scenes/WombTetris";
+import LuteMan from "./scenes/LuteMan";
+import Fin from "./scenes/Fin";
 
 // Find out more information about the Game Config at:
 // https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -11,8 +12,8 @@ import WombTetris from "./scenes/WombTetris";
 const config = {
     type: Phaser.AUTO,
     parent: "game-container",
-    backgroundColor: "#028af8",
-    scene: [Boot, PreLoader, Aurosymbology, WombTetris, GameOver],
+    backgroundColor: "#333333",
+    scene: [Boot, PreLoader, AuroSymbology, WombTetris, LuteMan, Fin],
     physics: {
         default: "arcade",
         arcade: {

@@ -1,9 +1,9 @@
 import { EventBus } from "../EventBus";
 import { Scene } from "phaser";
 
-export class GameOver extends Scene {
+export default class Fin extends Scene {
     constructor() {
-        super("GameOver");
+        super("Fin");
     }
 
     create() {

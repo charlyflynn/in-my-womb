@@ -93,9 +93,6 @@ export default class WombTetris extends Phaser.Scene {
         // set up game environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
 
-        // this.background.displayWidth = 1080;
-        // this.background.displayHeight = 1920;
-
         // set up audio channel
         this.sound.pauseOnBlur = false;
         const audioConfig = { loop: true, volume: 0 };
@@ -109,7 +106,6 @@ export default class WombTetris extends Phaser.Scene {
             volume: 0.1,
         });
         this.beginWombAudio();
-        // this.sound.pauseAll();
 
         // set up audio channel fade-in tweens
         this.elements.forEach(({ key }, i) => {
@@ -122,14 +118,6 @@ export default class WombTetris extends Phaser.Scene {
         });
 
         this.cameras.main.fadeIn(600, 0, 0, 0);
-
-        // ui
-        this.score.text = this.score.showScore
-            ? this.add.text(0, 10, this.updateScoreText(), {
-                  font: "25px Arial",
-                  fill: "#333333",
-              })
-            : null;
 
         // initialise game
         this.addPlayers();
@@ -408,7 +396,7 @@ export default class WombTetris extends Phaser.Scene {
                     this.cameras.main
                         .fadeOut(600, 0, 0, 0)
                         .on("camerafadeoutcomplete", () => {
-                            this.scene.start("GameOver");
+                            this.scene.start("Fin");
                             this.scene.destroy();
                         });
                 }

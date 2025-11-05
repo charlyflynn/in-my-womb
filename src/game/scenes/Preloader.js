@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
 
 const preProd = true;
-const levelKeys = ["AuroSymbology", "WombTetris", "GameOver"];
+const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
 export default class Preloader extends Scene {
     constructor() {
         super("Preloader");
@@ -47,7 +47,7 @@ export default class Preloader extends Scene {
                 .text(
                     this.sys.game.canvas.width / 2,
                     this.sys.game.canvas.height / 2 + 100,
-                    "BEGIN",
+                    "COMENZAR",
                     {
                         fill: "#333333",
                         backgroundColor: "#cccccc",
@@ -68,7 +68,7 @@ export default class Preloader extends Scene {
                     this.cameras.main
                         .fadeOut(600, 0, 0, 0)
                         .on("camerafadeoutcomplete", () =>
-                            this.scene.start("Aurosymbology")
+                            this.scene.start("AuroSymbology")
                         );
                 });
 
@@ -158,6 +158,11 @@ export default class Preloader extends Scene {
         this.load.audio("wombHiPerc", "womb-4-claps+shakers.mp3");
         this.load.audio("wombLoPerc", "womb-5-kick+congas.mp3");
         this.load.audio("wombBass", "womb-6-bass.mp3");
+
+        // level 3
+        this.load.setPath("assets/l3");
+
+        this.load.image("lute-man", "lute-man.png");
     }
 
     create() {

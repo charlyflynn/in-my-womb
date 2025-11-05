@@ -1,8 +1,8 @@
 import Phaser from "phaser";
 
-export default class Aurosymbology extends Phaser.Scene {
+export default class AuroSymbology extends Phaser.Scene {
     constructor() {
-        super("Aurosymbology");
+        super("AuroSymbology");
         this.audio = {};
         this.audioElements = {};
         this.symbolElements = {};
