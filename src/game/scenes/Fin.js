@@ -27,6 +27,7 @@ export default class Fin extends Scene {
             .setDepth(100);
 
         EventBus.emit("current-scene-ready", this);
+        this.cameras.main.fadeIn(1500);
     }
 
     changeScene() {

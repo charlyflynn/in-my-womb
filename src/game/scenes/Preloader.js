@@ -111,6 +111,7 @@ export default class Preloader extends Scene {
                         });
                 });
         });
+        this.cameras.main.fadeIn(1500);
     }
 
     preload() {

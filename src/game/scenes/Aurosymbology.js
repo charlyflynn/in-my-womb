@@ -98,6 +98,8 @@ export default class AuroSymbology extends Phaser.Scene {
                         this.audio.unselect.play();
                     }
                 });
+
+            this.cameras.main.fadeIn(1500);
         });
     }
 }

@@ -3,6 +3,7 @@ import Phaser from "phaser";
 export default class WombTetris extends Phaser.Scene {
     constructor() {
         super("LuteMan");
+        this.luteMan;
         this.elements = [
             {
                 key: "wombBass",
@@ -85,13 +86,19 @@ export default class WombTetris extends Phaser.Scene {
             this.add.image(x, y, shape).setOrigin(0.5, 0.5).setScale(0.55);
         });
 
-        this.add
-            .image(888, 1920, "lute-man")
+        this.luteMan = this.add
+            .image(888, 3000, "lute-man")
             .setOrigin(0.5, 1)
             .setScale(0.5)
             .setAngle(-10);
-    }
 
+        this.tweens.add({
+            targets: this.luteMan,
+            y: 1920,
+            duration: 1500,
+            ease: "Bounce.easeOut",
+        });
+    }
     update() {}
 }
 

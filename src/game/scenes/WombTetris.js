@@ -9,6 +9,7 @@ export default class WombTetris extends Phaser.Scene {
         this.cursor;
         this.player;
         this.players = {};
+        this.womb;
         this.playerShadow = {};
         this.targets = {};
         this.audio = {};
@@ -117,7 +118,7 @@ export default class WombTetris extends Phaser.Scene {
             if (i > 0) this.tween[key].pause();
         });
 
-        this.cameras.main.fadeIn(600, 0, 0, 0);
+        this.cameras.main.fadeIn(1500, 0, 0, 0);
 
         // initialise game
         this.addPlayers();
@@ -318,15 +319,22 @@ export default class WombTetris extends Phaser.Scene {
 
     addTargets() {
         // wombstone
-        this.add
-            .image(
-                0.5 * this.sys.game.canvas.width,
-                (4 / 5) * this.sys.game.canvas.height,
-                "womb-piedra"
-            )
+        this.womb = this.add
+            .image(1080 - 225, (5 / 6) * 1920, "womb-piedra")
             .setOrigin(0.5, 0.5)
-            .setScale(0.5625)
+            .setScale(450 / 1920)
             .setDepth(0);
+
+        console.log(this.womb.displayWidth);
+        this.tweens.add({
+            targets: this.womb,
+            x: 540,
+            y: (4 / 5) * 1920,
+            scale: 0.5625,
+            delay: 1000,
+            duration: 1500,
+            ease: "Quart.easeInOut",
+        });
 
         // target slots
         const targets = this.elements.slice(1);
@@ -359,7 +367,7 @@ export default class WombTetris extends Phaser.Scene {
                 x: 1,
                 y: 1,
                 duration: 1000,
-                ease: Phaser.Math.Easing.Expo.InOut,
+                ease: "Quart.easeInOut",
             });
 
             this.tween.playerSize = this.tweens.add({
@@ -368,7 +376,7 @@ export default class WombTetris extends Phaser.Scene {
                 x: this.targets[key].x,
                 y: this.targets[key].y,
                 duration: 1000,
-                ease: Phaser.Math.Easing.Expo.InOut,
+                ease: "Quart.easeInOut",
             });
 
             // update score
@@ -394,9 +402,9 @@ export default class WombTetris extends Phaser.Scene {
                     this.enableControls();
                 } else {
                     this.cameras.main
-                        .fadeOut(600, 0, 0, 0)
+                        .fadeOut(0, 0, 0, 0)
                         .on("camerafadeoutcomplete", () => {
-                            this.scene.start("Fin");
+                            this.scene.start("LuteMan");
                             this.scene.destroy();
                         });
                 }

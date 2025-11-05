@@ -12,7 +12,7 @@ import Fin from "./scenes/Fin";
 const config = {
     type: Phaser.AUTO,
     parent: "game-container",
-    backgroundColor: "#333333",
+    backgroundColor: "#000000",
     scene: [Boot, PreLoader, AuroSymbology, WombTetris, LuteMan, Fin],
     physics: {
         default: "arcade",
