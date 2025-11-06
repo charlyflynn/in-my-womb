@@ -118,13 +118,11 @@ export default class WombTetris extends Phaser.Scene {
             if (i > 0) this.tween[key].pause();
         });
 
-        this.cameras.main.fadeIn(1500, 0, 0, 0);
-
         // initialise game
         this.addPlayers();
         this.addTargets();
         this.addCollisions();
-        // this.addParticles();
+
         const playerKey = this.randomPlayerKey();
         this.setPlayer(playerKey);
         this.player.body.allowGravity = true;
@@ -146,7 +144,6 @@ export default class WombTetris extends Phaser.Scene {
             this.player.y >=
             this.sys.game.canvas.height + this.player.displayHeight
         ) {
-            // this.player.setX(Phaser.Math.RND.integerInRange(100, 980));
             this.player.setY(0 - this.player.displayHeight / 2);
         }
         if (this.player.x >= this.sys.game.canvas.width)
@@ -174,19 +171,14 @@ export default class WombTetris extends Phaser.Scene {
 
     addControls() {
         this.controls.left = this.add
-            .text(
-                this.sys.game.canvas.width * 0.25,
-                this.sys.game.canvas.height * 0.95,
-                "<",
-                {
-                    fill: "#333333",
-                    backgroundColor: "#cccccc",
-                    padding: 18,
-                    fontSize: 64,
-                    fontFamily: "Arial Black",
-                    align: "center",
-                }
-            )
+            .text(this.sys.game.canvas.width * 0.25, 2040, "<", {
+                fill: "#333333",
+                backgroundColor: "#cccccc",
+                padding: 18,
+                fontSize: 64,
+                fontFamily: "Arial Black",
+                align: "center",
+            })
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
@@ -201,20 +193,15 @@ export default class WombTetris extends Phaser.Scene {
                 this.player.setVelocityX(0);
             });
         this.controls.rotate = this.add
-            .text(
-                this.sys.game.canvas.width * 0.5,
-                this.sys.game.canvas.height * 0.95,
-                "↻",
-                {
-                    fill: "#333333",
-                    backgroundColor: "#cccccc",
-                    padding: 18,
-                    fontSize: 64,
-                    fontFamily: "Arial Black",
-                    align: "center",
-                    fontStyle: "bold",
-                }
-            )
+            .text(this.sys.game.canvas.width * 0.5, 2040, "↻", {
+                fill: "#333333",
+                backgroundColor: "#cccccc",
+                padding: 18,
+                fontSize: 64,
+                fontFamily: "Arial Black",
+                align: "center",
+                fontStyle: "bold",
+            })
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {})
@@ -224,19 +211,14 @@ export default class WombTetris extends Phaser.Scene {
                 //     this.player.setVelocityX(0);
             });
         this.controls.right = this.add
-            .text(
-                this.sys.game.canvas.width * 0.75,
-                this.sys.game.canvas.height * 0.95,
-                ">",
-                {
-                    fill: "#333333",
-                    backgroundColor: "#cccccc",
-                    padding: 18,
-                    fontSize: 64,
-                    fontFamily: "Arial Black",
-                    align: "center",
-                }
-            )
+            .text(this.sys.game.canvas.width * 0.75, 2040, ">", {
+                fill: "#333333",
+                backgroundColor: "#cccccc",
+                padding: 18,
+                fontSize: 64,
+                fontFamily: "Arial Black",
+                align: "center",
+            })
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
@@ -250,6 +232,17 @@ export default class WombTetris extends Phaser.Scene {
             .on("pointerout", () => {
                 this.player.setVelocityX(0);
             });
+
+        this.tweens.add({
+            targets: [
+                this.controls.left,
+                this.controls.rotate,
+                this.controls.right,
+            ],
+            y: this.sys.game.canvas.height * 0.95,
+            duration: 1000,
+            ease: "Quart.easeInOut",
+        });
     }
 
     enableControls() {
@@ -266,6 +259,7 @@ export default class WombTetris extends Phaser.Scene {
     addPlayers() {
         // falling gems to match to slots
 
+        // set play order randomly
         const shuffledElements = this.elements
             .slice(1)
             .map((element) => ({
@@ -325,7 +319,6 @@ export default class WombTetris extends Phaser.Scene {
             .setScale(450 / 1920)
             .setDepth(0);
 
-        console.log(this.womb.displayWidth);
         this.tweens.add({
             targets: this.womb,
             x: 540,
@@ -401,12 +394,21 @@ export default class WombTetris extends Phaser.Scene {
                     this.player.body.allowGravity = true;
                     this.enableControls();
                 } else {
-                    this.cameras.main
-                        .fadeOut(0, 0, 0, 0)
-                        .on("camerafadeoutcomplete", () => {
+                    // Object.keys(this.controls).forEach((control) => {
+                    this.tweens.add({
+                        targets: [
+                            this.controls.left,
+                            this.controls.rotate,
+                            this.controls.right,
+                        ],
+                        y: 2040,
+                        duration: 1000,
+                        ease: "Quart.easeInOut",
+                        onComplete: () => {
                             this.scene.start("LuteMan");
                             this.scene.destroy();
-                        });
+                        },
+                    });
                 }
             });
         }

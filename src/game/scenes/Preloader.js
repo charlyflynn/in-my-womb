@@ -66,7 +66,7 @@ export default class Preloader extends Scene {
                 })
                 .on("pointerup", () => {
                     this.cameras.main
-                        .fadeOut(600, 0, 0, 0)
+                        .fadeOut(1000, 0, 0, 0)
                         .on("camerafadeoutcomplete", () =>
                             this.scene.start("AuroSymbology")
                         );
@@ -104,14 +104,14 @@ export default class Preloader extends Scene {
                         })
                         .on("pointerup", () => {
                             this.cameras.main
-                                .fadeOut(600, 0, 0, 0)
+                                .fadeOut(1000, 0, 0, 0)
                                 .on("camerafadeoutcomplete", () =>
                                     this.scene.start(levelKey)
                                 );
                         });
                 });
         });
-        this.cameras.main.fadeIn(1500);
+        this.cameras.main.fadeIn(1000);
     }
 
     preload() {

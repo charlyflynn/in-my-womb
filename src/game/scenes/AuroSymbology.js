@@ -22,6 +22,11 @@ export default class AuroSymbology extends Phaser.Scene {
 
     create() {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+        this.womb = this.add
+            .image(1080 - 225, (5 / 6) * 1920, "womb-piedra")
+            .setOrigin(0.5, 0.5)
+            .setScale(450 / 1920)
+            .setDepth(0);
 
         this.elements.forEach(({ key }) => {
             this.audio[key] = this.sound.add(key, { volume: 3 });
@@ -73,25 +78,43 @@ export default class AuroSymbology extends Phaser.Scene {
                 .setInteractive({ useHandCursor: true })
                 .on("pointerup", () => {
                     if (this.selectedAudio === key) {
+                        // corect audio-symbol matching logic
                         this.audioElements[key].setTexture("altavoz-in");
                         this.audioElements[key].clearTint();
                         this.audioElements[key].disableInteractive();
                         this.symbolElements[key].setTexture(`${key}-in`);
                         this.symbolElements[key].disableInteractive();
+
                         this.score.matched.add(key);
 
                         this.game.sound.stopAll();
-                        this.audio.stonescrape.play();
+                        this.audio.stonescrape.play(); // confirmation sound
 
                         if (this.score.matched.size === this.elements.length) {
-                            this.cameras.main
-                                .fadeOut(600, 0, 0, 0)
-                                .on("camerafadeoutcomplete", () => {
+                            // game success
+                            this.tweens.add({
+                                targets: [
+                                    ...Object.keys(this.audioElements).map(
+                                        (audioKey) =>
+                                            this.audioElements[audioKey]
+                                    ),
+                                    ...Object.keys(this.symbolElements)
+                                        // .slice(0, -1)
+                                        .map(
+                                            (symbolKey) =>
+                                                this.symbolElements[symbolKey]
+                                        ),
+                                ],
+                                duration: 1000,
+                                alpha: 0,
+                                onComplete: () => {
                                     this.scene.start("WombTetris");
                                     this.scene.destroy();
-                                });
+                                },
+                            });
                         }
                     } else {
+                        // incorrect element match
                         this.audioElements[this.selectedAudio].clearTint();
                         this.selectedAudio = "";
                         this.game.sound.stopAll();
@@ -99,7 +122,7 @@ export default class AuroSymbology extends Phaser.Scene {
                     }
                 });
 
-            this.cameras.main.fadeIn(1500);
+            this.cameras.main.fadeIn(1000);
         });
     }
 }
