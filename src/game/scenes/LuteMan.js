@@ -4,6 +4,29 @@ export default class WombTetris extends Phaser.Scene {
     constructor() {
         super("LuteMan");
         this.luteMan;
+        this.backBoard;
+        this.targets = [
+            [
+                { x: 260, y: 510 },
+                { x: 450, y: 510 },
+                { x: 1080 - 442, y: 510 },
+                { x: 1080 - 252, y: 510 },
+            ],
+            [
+                { x: 260, y: 698 },
+                { x: 450, y: 698 },
+                { x: 1080 - 442, y: 698 },
+                { x: 1080 - 252, y: 698 },
+            ],
+            [
+                { x: 260, y: 888 },
+                { x: 450, y: 888 },
+                { x: 1080 - 442, y: 888 },
+                { x: 1080 - 252, y: 888 },
+            ],
+        ];
+        // targets['note']['position']
+        this.targetElements = [...this.targets];
         this.elements = [
             {
                 key: "wombBass",
@@ -11,7 +34,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombStrings",
-                tint: 0x5c0b22,
                 shape: "womb-gemas",
                 position: { x: 235, y: (4 / 5) * 1920 + 12 },
                 size: {
@@ -21,7 +43,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombHiPerc",
-                tint: 0x040536,
                 shape: "womb-parentesis-l",
                 position: { x: 366, y: (4 / 5) * 1920 },
                 size: {
@@ -31,7 +52,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombLoPerc",
-                tint: 0x040536,
                 shape: "womb-0",
                 position: { x: 540, y: (4 / 5) * 1920 - 22 },
                 size: {
@@ -41,7 +61,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombChords",
-                tint: 0x00ff00,
                 shape: "womb-parentesis-r",
                 position: {
                     x: 1080 - 364,
@@ -54,7 +73,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombVox",
-                tint: 0xffff00,
                 shape: "womb-gemas",
                 position: {
                     x: 1080 - 230,
@@ -86,11 +104,13 @@ export default class WombTetris extends Phaser.Scene {
             this.add.image(x, y, shape).setOrigin(0.5, 0.5).setScale(0.55);
         });
 
+        // luteman enters
         this.luteMan = this.add
             .image(888, 3000, "lute-man")
             .setOrigin(0.5, 1)
             .setScale(0.5)
-            .setAngle(-10);
+            .setAngle(-10)
+            .setDepth(1);
 
         this.tweens.add({
             targets: this.luteMan,
@@ -98,7 +118,25 @@ export default class WombTetris extends Phaser.Scene {
             duration: 1500,
             ease: "Bounce.easeOut",
         });
+
+        this.backBoard = this.add
+            .image(540, 700, "backboard")
+            .setOrigin(0.5, 0.5)
+            .setScale(0.7);
+
+        this.targetElements = this.targets.map((row) =>
+            row.map(
+                ({ x, y }) =>
+                    (this.physics.add.existing(
+                        this.add
+                            .rectangle(x, y, 75, 75)
+                            .setSize(90, 90)
+                            .setInteractive({ cursor: "pointer" })
+                    ).body.allowGravity = false)
+            )
+        );
     }
+
     update() {}
 }
 

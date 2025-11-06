@@ -117,7 +117,6 @@ export default class Preloader extends Scene {
     preload() {
         this.load.setPath("./assets");
 
-        this.load.audio("grunts", "gruntBirthdayParty.mp3");
         this.load.audio("stonescrape", "stonescrape.mp3");
         this.load.audio("unselect", "unselect.mp3");
 
@@ -164,6 +163,8 @@ export default class Preloader extends Scene {
         this.load.setPath("assets/l3");
 
         this.load.image("lute-man", "lute-man.png");
+        this.load.image("backboard", "backboard.png");
+        this.load.image("marble", "marble.png");
     }
 
     create() {
