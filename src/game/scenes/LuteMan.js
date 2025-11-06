@@ -25,6 +25,8 @@ export default class WombTetris extends Phaser.Scene {
                 { x: 1080 - 252, y: 888 },
             ],
         ];
+        this.marbles = [...new Array(4)];
+        this.marbleElements = [];
         // targets['note']['position']
         this.targetElements = [...this.targets];
         this.elements = [
@@ -119,6 +121,7 @@ export default class WombTetris extends Phaser.Scene {
             ease: "Bounce.easeOut",
         });
 
+        // backboard setup
         this.backBoard = this.add
             .image(540, 700, "backboard")
             .setOrigin(0.5, 0.5)
@@ -134,6 +137,14 @@ export default class WombTetris extends Phaser.Scene {
                             .setInteractive({ cursor: "pointer" })
                     ).body.allowGravity = false)
             )
+        );
+
+        // add marbles
+        this.marbleElements = this.marbles.map((_, i) =>
+            this.add
+                .image(this.targets[0][i].x, 255, "marble")
+                .setOrigin(0.5, 0.5)
+                .setScale(0.22)
         );
     }
 
