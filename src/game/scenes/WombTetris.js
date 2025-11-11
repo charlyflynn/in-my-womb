@@ -3,6 +3,13 @@ import Phaser from "phaser";
 const speed = { x: 200, y: 350 };
 const speedScale = [1, 1.4, 1.7, 2.0, 2.3];
 
+// const bar3 = 4.642;
+// const bar7 = 4.642;
+// const beat1 = 0.71;
+// const beat2 = 0.697;
+// const beat3 = 0.936;
+// const beat4 = 1.787;
+
 export default class WombTetris extends Phaser.Scene {
     constructor() {
         super("WombTetris");
@@ -30,7 +37,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombStrings",
-                tint: 0x5c0b22,
                 shape: "womb-gemas",
                 position: { x: 235, y: (4 / 5) * 1920 + 12 },
                 size: {
@@ -40,7 +46,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombHiPerc",
-                tint: 0x040536,
                 shape: "womb-parentesis-l",
                 position: { x: 366, y: (4 / 5) * 1920 },
                 size: {
@@ -50,7 +55,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombLoPerc",
-                tint: 0x040536,
                 shape: "womb-0",
                 position: { x: 540, y: (4 / 5) * 1920 - 22 },
                 size: {
@@ -60,7 +64,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombChords",
-                tint: 0x00ff00,
                 shape: "womb-parentesis-r",
                 position: {
                     x: 1080 - 364,
@@ -73,7 +76,6 @@ export default class WombTetris extends Phaser.Scene {
             },
             {
                 key: "wombVox",
-                tint: 0xffff00,
                 shape: "womb-gemas",
                 position: {
                     x: 1080 - 230,
@@ -97,15 +99,32 @@ export default class WombTetris extends Phaser.Scene {
         // set up audio channel
         this.sound.pauseOnBlur = false;
         const audioConfig = { loop: true, volume: 0 };
+        this.audio.stonescrape = this.sound.add("stonescrape", {
+            volume: 1,
+        });
+        this.audio.beat1 = this.sound.add("stonescrape");
+        this.audio.beat2 = this.sound.add("stonescrape");
+        this.audio.beat3 = this.sound.add("stonescrape");
+        this.audio.beat4 = this.sound.add("stonescrape");
+
         this.elements.slice(1).forEach(({ key }) => {
             this.score.remaining.add(key);
         });
         this.elements.forEach(({ key }) => {
-            this.audio[key] = this.sound.add(key, audioConfig);
+            this.audio[key] = this.sound
+                .add(key, audioConfig)
+                .on("looped", () => {
+                    this.audio.beat1.play({ delay: bar3 + beat1 + offset });
+                    this.audio.beat2.play({ delay: bar3 + beat2 + offset });
+                    this.audio.beat3.play({ delay: bar3 + beat3 + offset });
+                    this.audio.beat4.play({ delay: bar3 + beat4 + offset });
+                    this.audio.beat1.play({ delay: bar7 + beat1 + offset });
+                    this.audio.beat2.play({ delay: bar7 + beat2 + offset });
+                    this.audio.beat3.play({ delay: bar7 + beat3 + offset });
+                    this.audio.beat4.play({ delay: bar7 + beat4 + offset });
+                });
         });
-        this.audio.stonescrape = this.sound.add("stonescrape", {
-            volume: 0.1,
-        });
+
         this.beginWombAudio();
 
         // set up audio channel fade-in tweens
