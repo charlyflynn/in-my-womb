@@ -40,6 +40,7 @@ export default class WombTetris extends Phaser.Scene {
 
     preload() {
         this.load.audio("clave", "assets/l3/clave.mp3");
+        this.load.audio("gruntBirthdayParty", "assets/gruntBirthdayParty.mp3");
         this.load.texture("luteManClosed", {
             IMG: { textureURL: "assets/l3/luteManClosed.png" },
         });
@@ -164,6 +165,8 @@ export default class WombTetris extends Phaser.Scene {
                     this.selected[3] === 1,
                 run: () => {
                     this.win = true;
+                    this.sound.add("gruntBirthdayParty");
+                    this.sound.get("gruntBirthdayParty").play();
                 },
             },
             {

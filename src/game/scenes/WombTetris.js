@@ -26,7 +26,6 @@ export default class WombTetris extends Phaser.Scene {
             matched: new Set(),
             remaining: new Set(),
         };
-        this.emitter = {};
         this.background;
         this.currentTarget = { x: 0.5, y: 1 };
         this.controls = {};
