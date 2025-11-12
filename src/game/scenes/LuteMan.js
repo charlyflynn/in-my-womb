@@ -51,6 +51,7 @@ export default class WombTetris extends Phaser.Scene {
 
     create() {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+        this.sound.add("gruntBirthdayParty");
 
         // luteman enters
         this.luteMan = this.add
@@ -165,7 +166,6 @@ export default class WombTetris extends Phaser.Scene {
                     this.selected[3] === 1,
                 run: () => {
                     this.win = true;
-                    this.sound.add("gruntBirthdayParty");
                     this.sound.get("gruntBirthdayParty").play();
                 },
             },
@@ -186,6 +186,7 @@ export default class WombTetris extends Phaser.Scene {
                     this.selected[3] === 1,
                 run: () => {
                     this.win = true;
+                    this.sound.get("gruntBirthdayParty").play();
                 },
             },
             {
