@@ -1,9 +1,8 @@
 import Phaser from "phaser";
 
-const bar3 = 4.571;
-const bar7 = 11.427;
-const beatMs = 0.571;
-const offset = 0;
+const bar3 = 4568;
+const bar7 = 13704;
+const beatMs = 571;
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {
@@ -11,6 +10,7 @@ export default class WombTetris extends Phaser.Scene {
         this.audio = { beat: [] };
         this.luteMan;
         this.backBoard;
+        this.selected = [1, 0, 2, 1];
         this.targets = [
             [
                 { x: 260, y: 510 },
@@ -33,66 +33,7 @@ export default class WombTetris extends Phaser.Scene {
         ];
         this.marbles = [...new Array(4)];
         this.marbleElements = [];
-        // targets['note']['position']
         this.targetElements = [...this.targets];
-        this.flashes = [];
-        // this.elements = [
-        //     {
-        //         key: "wombBass",
-        //         img: "",
-        //     },
-        //     {
-        //         key: "wombStrings",
-        //         shape: "womb-gemas",
-        //         position: { x: 235, y: (4 / 5) * 1920 + 12 },
-        //         size: {
-        //             x: 70,
-        //             y: 70,
-        //         },
-        //     },
-        //     {
-        //         key: "wombHiPerc",
-        //         shape: "womb-parentesis-l",
-        //         position: { x: 366, y: (4 / 5) * 1920 },
-        //         size: {
-        //             x: 70,
-        //             y: 70,
-        //         },
-        //     },
-        //     {
-        //         key: "wombLoPerc",
-        //         shape: "womb-0",
-        //         position: { x: 540, y: (4 / 5) * 1920 - 22 },
-        //         size: {
-        //             x: 70,
-        //             y: 70,
-        //         },
-        //     },
-        //     {
-        //         key: "wombChords",
-        //         shape: "womb-parentesis-r",
-        //         position: {
-        //             x: 1080 - 364,
-        //             y: (4 / 5) * 1920,
-        //         },
-        //         size: {
-        //             x: 70,
-        //             y: 70,
-        //         },
-        //     },
-        //     {
-        //         key: "wombVox",
-        //         shape: "womb-gemas",
-        //         position: {
-        //             x: 1080 - 230,
-        //             y: (4 / 5) * 1920 + 12,
-        //         },
-        //         size: {
-        //             x: 70,
-        //             y: 70,
-        //         },
-        //     },
-        // ];
     }
 
     preload() {
@@ -102,39 +43,9 @@ export default class WombTetris extends Phaser.Scene {
     create() {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
 
-        if (this.sound.getAll("audio").length === 0) {
-            [
-                "wombBass",
-                "wombStrings",
-                "wombHiPerc",
-                "wombLoPerc",
-                "wombChords",
-                "wombVox",
-            ].forEach((key) => {
-                this.sound.play(key, { loop: true });
-            });
-        }
-
-        [...new Array(8)].forEach((_, i) => {
-            this.audio.beat[i] = this.sound.add("clave");
-        });
-
-        // this.add
-        //     .image(
-        //         0.5 * this.sys.game.canvas.width,
-        //         (4 / 5) * this.sys.game.canvas.height,
-        //         "womb-piedra"
-        //     )
-        //     .setOrigin(0.5, 0.5)
-        //     .setScale(0.5625);
-
-        // this.elements.slice(1).forEach(({ shape, position: { x, y } }) => {
-        //     this.add.image(x, y, shape).setOrigin(0.5, 0.5).setScale(0.55);
-        // });
-
         // luteman enters
         this.luteMan = this.add
-            .image(950, 3000, "lute-man")
+            .image(950, 3000, "luteMan")
             .setOrigin(0.5, 1)
             .setScale(0.5)
             .setAngle(-10)
@@ -157,10 +68,8 @@ export default class WombTetris extends Phaser.Scene {
             row.map(
                 ({ x, y }) =>
                     (this.physics.add.existing(
-                        this.add
-                            .rectangle(x, y, 75, 75)
-                            .setSize(90, 90)
-                            .setInteractive({ cursor: "pointer" })
+                        this.add.rectangle(x, y, 75, 75).setSize(90, 90)
+                        // .setInteractive({ cursor: "pointer" })
                     ).body.allowGravity = false)
             )
         );
@@ -171,46 +80,60 @@ export default class WombTetris extends Phaser.Scene {
                 .image(this.targets[0][i].x, 500, "marble")
                 .setOrigin(0.5, 0.5)
                 .setScale(0.22)
+                .setInteractive({ cursor: "pointer" })
+                .on("pointerup", () => {
+                    if (this.selected[i] < 2)
+                        this.selected[i] = this.selected[i] + 1;
+                    else this.selected[i] = 0;
+
+                    console.log(this.selected);
+                })
         );
 
-        this.sound.get("wombBass").on("looped", () => {
-            playBeat(0, this.marbleElements[0]);
-            playBeat(1, this.marbleElements[1]);
-            playBeat(2, this.marbleElements[2]);
-            playBeat(3, this.marbleElements[3]);
-            playBeat(4, this.marbleElements[0]);
-            playBeat(5, this.marbleElements[1]);
-            playBeat(6, this.marbleElements[2]);
-            playBeat(7, this.marbleElements[3]);
-        });
+        const tracks = [
+            { sound: "wombBass", at: 0 },
+            { sound: "wombStrings", at: 0 },
+            { sound: "wombHiPerc", at: 0 },
+            { sound: "wombLoPerc", at: 0 },
+            { sound: "wombChords", at: 0 },
+            { sound: "wombVox", at: 0 },
+        ];
 
-        const playBeat = (beat, marble) => {
-            const delay = (beat < 4 ? bar3 : bar7) + beat * beatMs + offset;
-            this.audio.beat[beat].play({
-                delay,
-            });
-            setTimeout(() => {
-                marble.setTint(0xaaaaaa);
-                setTimeout(() => {
-                    marble.clearTint();
-                }, 100);
-            }, delay * 1000);
+        const sounds = ["clave", "clave", "clave"];
+        const beats = [
+            bar3,
+            bar3 + beatMs,
+            bar3 + 2 * beatMs,
+            bar3 + 3 * beatMs,
+            bar7,
+            bar7 + beatMs,
+            bar7 + 2 * beatMs,
+            bar7 + 3 * beatMs,
+        ];
+        const timedEvents = beats
+            .map((beat, beatIndex) =>
+                sounds.map((sound, soundIndex) => ({
+                    sound,
+                    at: beat,
+                    if: () => this.selected[beatIndex % 4] === soundIndex,
+                    run: () => {
+                        // todo: replace with tween
+                        this.marbleElements[beatIndex % 4].setTint(0xcccccc);
+                        setTimeout(() => {
+                            this.marbleElements[beatIndex % 4].clearTint();
+                        }, 100);
+                    },
+                }))
+            )
+            .flat();
 
-            // this.tweens.addCounter({
-            //     from: 0,
-            //     to: 255,
-            //     duration: 1000,
-            //     ease: "Cubic.EaseIn",
-            //     delay: delay * 1000,
-            //     onUpdate: function (tween) {
-            //         const value = Math.ceil(tween.getValue());
+        const timeline = this.add.timeline([
+            ...tracks,
+            ...timedEvents,
+            { at: 18272 },
+        ]);
 
-            //         marble.setTint(
-            //             Phaser.Display.Color.GetColor(value, value, value)
-            //         );
-            //     },
-            // });
-        };
+        timeline.repeat().play();
     }
 
     update() {}
