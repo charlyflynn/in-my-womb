@@ -97,7 +97,6 @@ export default class WombTetris extends Phaser.Scene {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
 
         // set up audio channel
-        this.sound.pauseOnBlur = false;
         const audioConfig = { loop: true, volume: 0 };
         this.audio.stonescrape = this.sound.add("stonescrape", {
             volume: 1,

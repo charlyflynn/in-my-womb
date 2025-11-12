@@ -162,9 +162,6 @@ export default class Preloader extends Scene {
         // level 3
         this.load.setPath("assets/l3");
 
-        this.load.image("luteMan", "lute-man.png");
-        this.load.image("luteManClosed", "luteManClosed.png");
-        this.load.image("luteManOpen", "luteManOpen.png");
         this.load.image("backboard", "backboard.png");
         this.load.image("marble", "marble.png");
     }

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 
+// 150BPM converted to ms
 const beatMs = 571;
 const barMs = beatMs * 4;
 const bar3 = barMs * 2;
@@ -8,7 +9,6 @@ const bar7 = barMs * 6;
 export default class WombTetris extends Phaser.Scene {
     constructor() {
         super("LuteMan");
-        this.audio = { beat: [] };
         this.luteMan;
         this.backBoard;
         this.selected = [3, 3, 3, 3];
@@ -40,6 +40,12 @@ export default class WombTetris extends Phaser.Scene {
 
     preload() {
         this.load.audio("clave", "assets/l3/clave.mp3");
+        this.load.texture("luteManClosed", {
+            IMG: { textureURL: "assets/l3/luteManClosed.png" },
+        });
+        this.load.texture("luteManOpen", {
+            IMG: { textureURL: "assets/l3/luteManOpen.png" },
+        });
     }
 
     create() {
@@ -47,7 +53,7 @@ export default class WombTetris extends Phaser.Scene {
 
         // luteman enters
         this.luteMan = this.add
-            .image(950, 3000, "luteMan")
+            .sprite(950, 3000, "luteManClosed")
             .setOrigin(0.5, 1)
             .setScale(0.5)
             .setAngle(-10)
@@ -58,6 +64,23 @@ export default class WombTetris extends Phaser.Scene {
             y: 2300,
             duration: 1500,
             ease: "Bounce.easeOut",
+        });
+
+        this.anims.create({
+            key: "sing",
+            duration: 571,
+            frames: [
+                {
+                    key: "luteManOpen",
+                    frame: 0,
+                    duration: 400,
+                },
+                {
+                    key: "luteManClosed",
+                    frame: 0,
+                    duration: 171,
+                },
+            ],
         });
 
         // backboard setup
@@ -121,6 +144,8 @@ export default class WombTetris extends Phaser.Scene {
                     run: () => {
                         // todo: replace with tween
                         this.marbleElements[beatIndex % 4].setTint(0xcccccc);
+                        this.anims.play("sing", [this.luteMan]);
+
                         setTimeout(() => {
                             this.marbleElements[beatIndex % 4].clearTint();
                         }, 100);
