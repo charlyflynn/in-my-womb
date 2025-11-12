@@ -1,8 +1,9 @@
 import Phaser from "phaser";
 
-const bar3 = 4568;
-const bar7 = 13704;
 const beatMs = 571;
+const barMs = beatMs * 4;
+const bar3 = barMs * 2;
+const bar7 = barMs * 6;
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {
@@ -10,7 +11,8 @@ export default class WombTetris extends Phaser.Scene {
         this.audio = { beat: [] };
         this.luteMan;
         this.backBoard;
-        this.selected = [1, 0, 2, 1];
+        this.selected = [3, 3, 3, 3];
+        this.win = false;
         this.targets = [
             [
                 { x: 260, y: 510 },
@@ -99,7 +101,7 @@ export default class WombTetris extends Phaser.Scene {
             { sound: "wombVox", at: 0 },
         ];
 
-        const sounds = ["clave", "clave", "clave"];
+        const sounds = ["clave", "clave", "clave", "clave"]; // low, med, hi, no pitch respectively
         const beats = [
             bar3,
             bar3 + beatMs,
@@ -127,9 +129,51 @@ export default class WombTetris extends Phaser.Scene {
             )
             .flat();
 
+        const winConditionCheck = [
+            {
+                at: barMs * 3,
+                if: () =>
+                    this.selected[0] === 1 &&
+                    this.selected[1] === 0 &&
+                    this.selected[2] === 2 &&
+                    this.selected[3] === 1,
+                run: () => {
+                    this.win = true;
+                },
+            },
+            {
+                at: barMs * 4,
+                if: () => this.win,
+                run: () => {
+                    timeline.stop();
+                    this.scene.start("Fin");
+                },
+            },
+            {
+                at: barMs * 7,
+                if: () =>
+                    this.selected[0] === 1 &&
+                    this.selected[1] === 0 &&
+                    this.selected[2] === 2 &&
+                    this.selected[3] === 1,
+                run: () => {
+                    this.win = true;
+                },
+            },
+            {
+                at: barMs * 8,
+                if: () => this.win,
+                run: () => {
+                    timeline.stop();
+                    this.scene.start("Fin");
+                },
+            },
+        ];
+
         const timeline = this.add.timeline([
             ...tracks,
             ...timedEvents,
+            ...winConditionCheck,
             { at: 18272 },
         ]);
 
