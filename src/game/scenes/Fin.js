@@ -7,14 +7,14 @@ export default class Fin extends Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor(0x333333);
+        const bg = this.add.image(0, 0, "background").setOrigin(0, 0);
 
         const dims = {
             h: this.sys.game.canvas.height,
             w: this.sys.game.canvas.width,
         };
 
-        this.add
+        const acceptButton = this.add
             .text(dims.w / 2, dims.h / 2, "CLAIM\nYOUR\nPRIZE", {
                 fontFamily: "Arial Black",
                 fontSize: 72,
@@ -25,17 +25,25 @@ export default class Fin extends Scene {
                 letterSpacing: 20,
                 wordWrap: { width: 450, useAdvancedWrap: false },
             })
-            .setOrigin(0.5)
+            .setOrigin(0.5, 0.5)
             .setDepth(100)
             .setInteractive({ useHandCursor: true })
             .on("pointerup", () => {
-                const url = "assets/download/WMI.mp3";
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = url.split("/").pop();
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                this.cameras.main
+                    .fadeOut(1500, 255, 255, 255)
+                    .on("camerafadeoutcomplete", () => {
+                        acceptButton.destroy();
+                        bg.destroy();
+                        document.getElementById("success").style.zIndex = -1;
+                        // this.cameras.main.setBackgroundColor(0xffffff);
+                        this.cameras.main
+                            .fadeIn(1500, 255, 255, 255)
+                            .on("camerafadeincomplete", () => {
+                                document.getElementById(
+                                    "success"
+                                ).style.zIndex = 0;
+                            });
+                    });
             });
 
         EventBus.emit("current-scene-ready", this);

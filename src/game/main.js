@@ -12,6 +12,7 @@ import Fin from "./scenes/Fin";
 const config = {
     type: Phaser.AUTO,
     parent: "game-container",
+    dom: { createContainer: true },
     backgroundColor: "#000000",
     scene: [Boot, PreLoader, AuroSymbology, WombTetris, LuteMan, Fin],
     physics: {
@@ -28,6 +29,7 @@ const config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
         zoom: 1,
     },
+    transparent: true,
 };
 
 const StartGame = (parent) => {
