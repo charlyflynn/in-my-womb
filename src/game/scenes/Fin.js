@@ -34,14 +34,14 @@ export default class Fin extends Scene {
                     .on("camerafadeoutcomplete", () => {
                         acceptButton.destroy();
                         bg.destroy();
-                        document.getElementById("success").style.zIndex = -1;
+                        const success = document.getElementById("success");
+                        success.style.zIndex = -1;
+                        success.style.display = "block";
                         // this.cameras.main.setBackgroundColor(0xffffff);
                         this.cameras.main
                             .fadeIn(1500, 255, 255, 255)
                             .on("camerafadeincomplete", () => {
-                                document.getElementById(
-                                    "success"
-                                ).style.zIndex = 0;
+                                success.style.zIndex = 0;
                             });
                     });
             });
