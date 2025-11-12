@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { draggable } from "./draggable";
 
 // 150BPM converted to ms
 const beatMs = 571;
@@ -11,7 +12,8 @@ export default class WombTetris extends Phaser.Scene {
         super("LuteMan");
         this.luteMan;
         this.backBoard;
-        this.selected = [3, 3, 3, 3];
+        this.selectedTones = [3, 3, 3, 3];
+        this.selection;
         this.win = false;
         this.targets = [
             [
@@ -92,30 +94,32 @@ export default class WombTetris extends Phaser.Scene {
             .setScale(1080 / 1200);
 
         this.targetElements = this.targets.map((row) =>
-            row.map(
-                ({ x, y }) =>
-                    (this.physics.add.existing(
-                        this.add.rectangle(x, y, 75, 75).setSize(90, 90)
-                        // .setInteractive({ cursor: "pointer" })
-                    ).body.allowGravity = false)
+            row.map(({ x, y }) =>
+                this.physics.add.existing(
+                    this.add.zone(x, y, 75, 75),
+                    true
+                    // .setInteractive({ cursor: "pointer" })
+                )
             )
         );
 
         // add marbles
         this.marbleElements = this.marbles.map((_, i) =>
-            this.add
-                .image(this.targets[0][i].x, 500, "marble")
-                .setOrigin(0.5, 0.5)
-                .setScale(0.22)
-                .setInteractive({ cursor: "pointer" })
-                .on("pointerup", () => {
-                    if (this.selected[i] < 2)
-                        this.selected[i] = this.selected[i] + 1;
-                    else this.selected[i] = 0;
-
-                    console.log(this.selected);
-                })
+            draggable(
+                this.physics.add
+                    .image(this.targets[0][i].x, 250, "marble")
+                    .setOrigin(0.5, 0.5)
+                    .setScale(0.22)
+            )
         );
+
+        this.marbleElements.forEach((marble, i) => {
+            this.targetElements.forEach((target, j) => {
+                this.physics.add.overlap(marble, target, () => {
+                    this.selectedTones[i] = j;
+                });
+            });
+        });
 
         const tracks = [
             { sound: "wombBass", at: 0 },
@@ -126,7 +130,7 @@ export default class WombTetris extends Phaser.Scene {
             { sound: "wombVox", at: 0 },
         ];
 
-        const sounds = ["clave", "clave", "clave", "clave"]; // low, med, hi, no pitch respectively
+        const sounds = ["clave", "clave", "clave", "clave"]; // hi, med, low, no pitch respectively
         const beats = [
             bar3,
             bar3 + beatMs,
@@ -142,7 +146,7 @@ export default class WombTetris extends Phaser.Scene {
                 sounds.map((sound, soundIndex) => ({
                     sound,
                     at: beat,
-                    if: () => this.selected[beatIndex % 4] === soundIndex,
+                    if: () => this.selectedTones[beatIndex % 4] === soundIndex,
                     run: () => {
                         // todo: replace with tween
                         this.marbleElements[beatIndex % 4].setTint(0xcccccc);
@@ -160,10 +164,10 @@ export default class WombTetris extends Phaser.Scene {
             {
                 at: barMs * 3,
                 if: () =>
-                    this.selected[0] === 1 &&
-                    this.selected[1] === 0 &&
-                    this.selected[2] === 2 &&
-                    this.selected[3] === 1,
+                    this.selectedTones[0] === 1 &&
+                    this.selectedTones[1] === 2 &&
+                    this.selectedTones[2] === 0 &&
+                    this.selectedTones[3] === 1,
                 run: () => {
                     this.win = true;
                     this.sound.get("gruntBirthdayParty").play();
@@ -180,10 +184,10 @@ export default class WombTetris extends Phaser.Scene {
             {
                 at: barMs * 7,
                 if: () =>
-                    this.selected[0] === 1 &&
-                    this.selected[1] === 0 &&
-                    this.selected[2] === 2 &&
-                    this.selected[3] === 1,
+                    this.selectedTones[0] === 1 &&
+                    this.selectedTones[1] === 0 &&
+                    this.selectedTones[2] === 2 &&
+                    this.selectedTones[3] === 1,
                 run: () => {
                     this.win = true;
                     this.sound.get("gruntBirthdayParty").play();
