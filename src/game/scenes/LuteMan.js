@@ -17,22 +17,22 @@ export default class WombTetris extends Phaser.Scene {
         this.win = false;
         this.targets = [
             [
-                { x: 260, y: 510 },
-                { x: 450, y: 510 },
-                { x: 1080 - 442, y: 510 },
-                { x: 1080 - 252, y: 510 },
+                { x: 182, y: 642 },
+                { x: 425, y: 642 },
+                { x: 666, y: 642 },
+                { x: 905, y: 642 },
             ],
             [
-                { x: 260, y: 698 },
-                { x: 450, y: 698 },
-                { x: 1080 - 442, y: 698 },
-                { x: 1080 - 252, y: 698 },
+                { x: 182, y: 885 },
+                { x: 425, y: 885 },
+                { x: 666, y: 885 },
+                { x: 905, y: 885 },
             ],
             [
-                { x: 260, y: 888 },
-                { x: 450, y: 888 },
-                { x: 1080 - 442, y: 888 },
-                { x: 1080 - 252, y: 888 },
+                { x: 182, y: 1130 },
+                { x: 425, y: 1130 },
+                { x: 666, y: 1130 },
+                { x: 905, y: 1130 },
             ],
         ];
         this.marbles = [...new Array(4)];
@@ -41,8 +41,6 @@ export default class WombTetris extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio("clave", "assets/l3/clave.mp3");
-        this.load.audio("gruntBirthdayParty", "assets/gruntBirthdayParty.mp3");
         this.load.texture("luteManClosed", {
             IMG: { textureURL: "assets/l3/luteManClosed.png" },
         });
@@ -96,7 +94,7 @@ export default class WombTetris extends Phaser.Scene {
         this.targetElements = this.targets.map((row) =>
             row.map(({ x, y }) =>
                 this.physics.add.existing(
-                    this.add.zone(x, y, 75, 75),
+                    this.add.zone(x, y, 120, 120),
                     true
                     // .setInteractive({ cursor: "pointer" })
                 )
@@ -107,9 +105,9 @@ export default class WombTetris extends Phaser.Scene {
         this.marbleElements = this.marbles.map((_, i) =>
             draggable(
                 this.physics.add
-                    .image(this.targets[0][i].x, 250, "marble")
+                    .image(this.targets[0][i].x, 250, "moneda")
                     .setOrigin(0.5, 0.5)
-                    .setScale(0.22)
+                    .setScale(0.15)
             )
         );
 
@@ -117,6 +115,7 @@ export default class WombTetris extends Phaser.Scene {
             this.targetElements.forEach((target, j) => {
                 this.physics.add.overlap(marble, target, () => {
                     this.selectedTones[i] = j;
+                    console.log(this.selectedTones);
                 });
             });
         });
@@ -130,7 +129,7 @@ export default class WombTetris extends Phaser.Scene {
             { sound: "wombVox", at: 0 },
         ];
 
-        const sounds = ["clave", "clave", "clave", "clave"]; // hi, med, low, no pitch respectively
+        const sounds = ["gRhodes", "fRhodes", "eRhodes", "clave"]; // hi, med, low, no pitch respectively
         const beats = [
             bar3,
             bar3 + beatMs,
@@ -185,8 +184,8 @@ export default class WombTetris extends Phaser.Scene {
                 at: barMs * 7,
                 if: () =>
                     this.selectedTones[0] === 1 &&
-                    this.selectedTones[1] === 0 &&
-                    this.selectedTones[2] === 2 &&
+                    this.selectedTones[1] === 2 &&
+                    this.selectedTones[2] === 0 &&
                     this.selectedTones[3] === 1,
                 run: () => {
                     this.win = true;

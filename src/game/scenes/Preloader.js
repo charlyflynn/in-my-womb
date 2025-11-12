@@ -163,7 +163,13 @@ export default class Preloader extends Scene {
         this.load.setPath("assets/l3");
 
         this.load.image("backboard", "backboard.png");
-        this.load.image("marble", "marble.png");
+        this.load.image("moneda", "moneda.png");
+
+        this.load.audio("eRhodes", "E rhodes.mp3");
+        this.load.audio("fRhodes", "F rhodes.mp3");
+        this.load.audio("gRhodes", "G rhodes.mp3");
+        this.load.audio("clave", "clave.mp3");
+        this.load.audio("gruntBirthdayParty", "gruntBirthdayParty.mp3");
     }
 
     create() {
