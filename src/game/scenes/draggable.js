@@ -2,8 +2,7 @@ export const draggable = (object) => {
     object.setInteractive({ cursor: "pointer" });
     object.body.allowGravity = false;
 
-    const onDrag = ({ x, y }) => {
-        object.x = x;
+    const onDrag = ({ y }) => {
         object.y = y;
     };
     const stopDrag = () => {
