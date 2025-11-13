@@ -3,13 +3,6 @@ import Phaser from "phaser";
 const speed = { x: 200, y: 350 };
 const speedScale = [1, 1.4, 1.7, 2.0, 2.3];
 
-// const bar3 = 4.642;
-// const bar7 = 4.642;
-// const beat1 = 0.71;
-// const beat2 = 0.697;
-// const beat3 = 0.936;
-// const beat4 = 1.787;
-
 export default class WombTetris extends Phaser.Scene {
     constructor() {
         super("WombTetris");
@@ -100,27 +93,12 @@ export default class WombTetris extends Phaser.Scene {
         this.audio.stonescrape = this.sound.add("stonescrape", {
             volume: 1,
         });
-        this.audio.beat1 = this.sound.add("stonescrape");
-        this.audio.beat2 = this.sound.add("stonescrape");
-        this.audio.beat3 = this.sound.add("stonescrape");
-        this.audio.beat4 = this.sound.add("stonescrape");
 
         this.elements.slice(1).forEach(({ key }) => {
             this.score.remaining.add(key);
         });
         this.elements.forEach(({ key }) => {
-            this.audio[key] = this.sound
-                .add(key, audioConfig)
-                .on("looped", () => {
-                    this.audio.beat1.play({ delay: bar3 + beat1 + offset });
-                    this.audio.beat2.play({ delay: bar3 + beat2 + offset });
-                    this.audio.beat3.play({ delay: bar3 + beat3 + offset });
-                    this.audio.beat4.play({ delay: bar3 + beat4 + offset });
-                    this.audio.beat1.play({ delay: bar7 + beat1 + offset });
-                    this.audio.beat2.play({ delay: bar7 + beat2 + offset });
-                    this.audio.beat3.play({ delay: bar7 + beat3 + offset });
-                    this.audio.beat4.play({ delay: bar7 + beat4 + offset });
-                });
+            this.audio[key] = this.sound.add(key, audioConfig);
         });
 
         this.beginWombAudio();
@@ -422,7 +400,9 @@ export default class WombTetris extends Phaser.Scene {
                         duration: 1000,
                         ease: "Quart.easeInOut",
                         onComplete: () => {
+                            this.sound.stopAll();
                             this.scene.start("LuteMan");
+
                             this.scene.destroy();
                         },
                     });
