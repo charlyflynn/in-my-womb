@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { draggable } from "./draggable";
 
 // 150BPM converted to ms
 const beatMs = 571;
@@ -7,6 +6,8 @@ const barMs = beatMs * 4;
 const bar3 = barMs * 2;
 const bar7 = barMs * 6;
 
+const objectSize = 120;
+const objectScale = 0.15;
 export default class WombTetris extends Phaser.Scene {
     constructor() {
         super("LuteMan");
@@ -15,7 +16,7 @@ export default class WombTetris extends Phaser.Scene {
         this.selectedTones = [3, 3, 3, 3];
         this.selection;
         this.win = false;
-        this.targets = [
+        this.targetPositions = [
             [
                 { x: 182, y: 642 },
                 { x: 425, y: 642 },
@@ -34,10 +35,15 @@ export default class WombTetris extends Phaser.Scene {
                 { x: 666, y: 1130 },
                 { x: 905, y: 1130 },
             ],
+            [
+                { x: 182, y: 295 },
+                { x: 425, y: 295 },
+                { x: 666, y: 295 },
+                { x: 905, y: 295 },
+            ],
         ];
-        this.marbles = [...new Array(4)];
-        this.marbleElements = [];
-        this.targetElements = [...this.targets];
+        this.draggableObjects = [];
+        this.dropZoneObjects = [];
     }
 
     preload() {
@@ -91,28 +97,55 @@ export default class WombTetris extends Phaser.Scene {
             .setOrigin(0.5, 0.5)
             .setScale(1080 / 1200);
 
-        this.targetElements = this.targets.map((row) =>
+        // drop zones for draggable objects
+        this.dropZoneObjects = this.targetPositions.map((row) =>
             row.map(({ x, y }) =>
-                this.physics.add.existing(this.add.zone(x, y, 120, 120), true)
+                this.physics.add.existing(
+                    this.add.zone(x, y, objectSize, objectSize),
+                    true
+                )
             )
         );
 
-        // add marbles
-        this.marbleElements = this.marbles.map((_, i) =>
-            draggable(
-                this.physics.add
-                    .image(this.targets[0][i].x, 250, "moneda")
-                    .setOrigin(0.5, 0.5)
-                    .setScale(0.15)
-                    .on("pointerout", () => {
-                        this.selectedTones[i] = 3;
-                    })
-            )
-        );
+        // add draggable objects
+        this.draggableObjects = [...new Array(4)].map((_, objectIndex) => {
+            const object = this.physics.add
+                .image(
+                    this.targetPositions[3][objectIndex].x,
+                    this.targetPositions[3][objectIndex].y,
+                    "moneda"
+                )
+                .setOrigin(0.5, 0.5)
+                .setInteractive({ cursor: "pointer", draggable: true })
+                .on("dragleave", () => {
+                    this.selectedTones[objectIndex] = 3;
+                })
+                .on("drag", (_, dragX, dragY) =>
+                    // draggable through y axis
+                    object.setY(dragY)
+                )
+                .on("dragend", () => {
+                    // snap to target zones
+                    object.setY(
+                        this.targetPositions[this.selectedTones[objectIndex]][
+                            this.selectedTones[objectIndex]
+                        ].y
+                    );
+                });
+            // snap to position
+            object.setScale(objectScale);
+            object.body.setSize(
+                objectSize / objectScale,
+                objectSize / objectScale
+            );
+            object.body.allowGravity = false;
+            return object;
+        });
 
-        this.marbleElements.forEach((marble, i) => {
-            this.targetElements.forEach((target, j) => {
-                this.physics.add.overlap(marble, target, () => {
+        // select tones to play
+        this.draggableObjects.forEach((object, i) => {
+            this.dropZoneObjects.forEach((target, j) => {
+                this.physics.add.overlap(object, target, () => {
                     this.selectedTones[i] = j;
                 });
             });
@@ -146,12 +179,12 @@ export default class WombTetris extends Phaser.Scene {
                     if: () => this.selectedTones[beatIndex % 4] === soundIndex,
                     run: () => {
                         // todo: replace with tween
-                        this.marbleElements[beatIndex % 4].setTint(0xcccccc);
+                        this.draggableObjects[beatIndex % 4].setTint(0xcccccc);
                         if (this.selectedTones[beatIndex % 4] < 3)
                             this.anims.play("sing", [this.luteMan]);
 
                         setTimeout(() => {
-                            this.marbleElements[beatIndex % 4].clearTint();
+                            this.draggableObjects[beatIndex % 4].clearTint();
                         }, 100);
                     },
                 }))
