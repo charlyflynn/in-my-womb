@@ -18,11 +18,11 @@ export default class Preloader extends Scene {
 
         //  A simple progress bar. This is the outline of the bar.
         this.add
-            .rectangle(dims.w / 2, 1450, 468, 50)
-            .setStrokeStyle(1, 0xcccccc);
+            .rectangle(dims.w / 2, 1550, 468, 50)
+            .setStrokeStyle(1, 0x333333);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(dims.w / 2 - 230, 1450, 4, 46, 0xcccccc);
+        const bar = this.add.rectangle(dims.w / 2 - 230, 1550, 4, 46, 0x333333);
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on("progress", (progress) => {
@@ -46,7 +46,11 @@ export default class Preloader extends Scene {
                     1700,
                     "Please make sure your phone is unmuted.\nWearing headphones is recommended.",
                     {
+                        fontFamily: "nobody",
                         fontSize: 28,
+                        align: "center",
+                        color: "#333333",
+                        lineSpacing: 40,
                     }
                 )
                 .setOrigin(0.5, 0.5)
@@ -111,6 +115,19 @@ export default class Preloader extends Scene {
     preload() {
         this.load.setPath("./assets");
 
+        const loadFont = (name, url) => {
+            var newFont = new FontFace(name, `url(${url})`);
+            newFont
+                .load()
+                .then(function (loaded) {
+                    document.fonts.add(loaded);
+                })
+                .catch(function (error) {
+                    return error;
+                });
+        };
+
+        loadFont("nobody", "/assets/NOBODY-Sick.otf");
         this.load.audio("bgFin", "bgFin.jpg");
 
         this.load.audio("stonescrape", "stonescrape.mp3");
