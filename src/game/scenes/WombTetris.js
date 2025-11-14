@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 const speed = { x: 200, y: 350 };
-const speedScale = [1, 1.4, 1.7, 2.0, 2.3];
+const speedScale = [1, 1.3, 1.6, 1.8, 2.0];
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {

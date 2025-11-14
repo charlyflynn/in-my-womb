@@ -5,36 +5,24 @@ const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
 export default class Preloader extends Scene {
     constructor() {
         super("Preloader");
-        this.background;
-        this.startButton;
         this.levelButtons = {};
     }
 
     init() {
-        this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+        this.add.image(0, 0, "bgMain").setOrigin(0, 0);
 
         const dims = {
             h: this.sys.game.canvas.height,
             w: this.sys.game.canvas.width,
         };
-        if (dims.h > this.background.height)
-            this.background.displayHeight = dims.h;
-        if (dims.w > this.background.width)
-            this.background.displayWidth = dims.w;
 
         //  A simple progress bar. This is the outline of the bar.
         this.add
-            .rectangle(dims.w / 2, dims.h / 2, 468, 32)
+            .rectangle(dims.w / 2, 1450, 468, 50)
             .setStrokeStyle(1, 0xcccccc);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(
-            dims.w / 2 - 230,
-            dims.h / 2,
-            4,
-            28,
-            0xcccccc
-        );
+        const bar = this.add.rectangle(dims.w / 2 - 230, 1450, 4, 46, 0xcccccc);
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on("progress", (progress) => {
@@ -42,80 +30,88 @@ export default class Preloader extends Scene {
             bar.width = 4 + 460 * progress;
         });
 
+        const startSequence = () => {
+            this.cameras.main
+                .fadeOut(1000, 0, 0, 0)
+                .on("camerafadeoutcomplete", () =>
+                    this.scene.start("AuroSymbology")
+                );
+        };
+
+        // enable rock to be clicked to start game
         this.load.on("complete", () => {
-            this.startButton = this.add
+            this.add
                 .text(
-                    this.sys.game.canvas.width / 2,
-                    this.sys.game.canvas.height / 2 + 100,
-                    "COMENZAR",
+                    dims.w / 2,
+                    1700,
+                    "Please make sure your phone is unmuted.\nWearing headphones is recommended.",
                     {
-                        fill: "#333333",
-                        backgroundColor: "#cccccc",
-                        padding: 24,
-                        fontSize: 64,
-                        fontFamily: "Arial Black",
+                        fontSize: 28,
                     }
                 )
                 .setOrigin(0.5, 0.5)
+                .setDepth(100);
+            // rock clickable overlapping areas
+            this.add
+                .rectangle(
+                    this.sys.game.canvas.width / 2,
+                    this.sys.game.canvas.height / 2 - 100,
+                    890,
+                    550
+                )
+                .setOrigin(0.5, 0.5)
                 .setInteractive({ useHandCursor: true })
-                .on("pointerover", () => {
-                    this.startButton.setStyle({ backgroundColor: "#cccccc" });
-                })
-                .on("pointerout", () => {
-                    this.startButton.setStyle({ backgroundColor: "#cccccc" });
-                })
+                .setAlpha(0.5)
                 .on("pointerup", () => {
-                    this.cameras.main
-                        .fadeOut(1000, 0, 0, 0)
-                        .on("camerafadeoutcomplete", () =>
-                            this.scene.start("AuroSymbology")
-                        );
+                    startSequence();
                 });
-
-            preProd &&
-                levelKeys.forEach((levelKey, i) => {
-                    this.levelButtons[levelKey] = this.add
-                        .text(
-                            this.sys.game.canvas.width / 2,
-                            this.sys.game.canvas.height / 2 +
-                                200 +
-                                (i + 1) * 140,
-                            `L${i + 1}: ${levelKey}`,
-                            {
-                                fill: "#333333",
-                                backgroundColor: "#cccccc",
-                                padding: 24,
-                                fontSize: 40,
-                                align: "left",
-                                fontFamily: "Arial Black",
-                            }
-                        )
-                        .setOrigin(0.5, 0.5)
-                        .setInteractive({ useHandCursor: true })
-                        .on("pointerover", () => {
-                            this.startButton.setStyle({
-                                backgroundColor: "#cccccc",
-                            });
-                        })
-                        .on("pointerout", () => {
-                            this.startButton.setStyle({
-                                backgroundColor: "#cccccc",
-                            });
-                        })
-                        .on("pointerup", () => {
-                            this.cameras.main
-                                .fadeOut(1000, 0, 0, 0)
-                                .on("camerafadeoutcomplete", () =>
-                                    this.scene.start(levelKey)
-                                );
-                        });
+            this.add
+                .rectangle(350, 550, 500, 250)
+                .setOrigin(0.5, 0.5)
+                .setInteractive({ useHandCursor: true })
+                .setAlpha(0.5)
+                .on("pointerup", () => {
+                    startSequence();
+                });
+            this.add
+                .rectangle(600, 1065, 500, 250)
+                .setOrigin(0.5, 0.5)
+                .setInteractive({ useHandCursor: true })
+                .setAlpha(0.5)
+                .on("pointerup", () => {
+                    startSequence();
                 });
         });
+
+        // level skips for dev
+        preProd &&
+            levelKeys.forEach((levelKey, i) => {
+                this.levelButtons[levelKey] = this.add
+                    .text(25, 50 + i * 100, `L${i + 1}: ${levelKey}`, {
+                        fill: "#333333",
+                        backgroundColor: "#cccccc",
+                        padding: 24,
+                        fontSize: 40,
+                        align: "left",
+                        fontFamily: "Arial Black",
+                    })
+                    .setOrigin(0, 0.5)
+                    .setInteractive({ useHandCursor: true })
+                    .on("pointerup", () => {
+                        this.cameras.main
+                            .fadeOut(1000, 0, 0, 0)
+                            .on("camerafadeoutcomplete", () =>
+                                this.scene.start(levelKey)
+                            );
+                    });
+            });
         this.cameras.main.fadeIn(1000);
     }
 
     preload() {
         this.load.setPath("./assets");
+
+        this.load.audio("bgFin", "bgFin.jpg");
 
         this.load.audio("stonescrape", "stonescrape.mp3");
         this.load.audio("unselect", "unselect.mp3");
