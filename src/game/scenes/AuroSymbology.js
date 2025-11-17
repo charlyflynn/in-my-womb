@@ -37,12 +37,22 @@ export default class AuroSymbology extends Phaser.Scene {
 
         // add tooltip
         const questionMark = this.add
-            .image(100, 1820, "questionMark")
+            .image(1080 / 2, 1920 - 100, "questionMark")
             .setScale(0.12);
-        const tooltipContent = this.add.container(0, 0);
-        const rect = this.add.rectangle(0, 0, 300, 300, 0x333333);
-        tooltipContent.add(rect);
-        addTooltip(100, 1820, questionMark, tooltipContent, this);
+        const rect = this.add.rectangle(0, -50, 750, 320, 0xcccccc);
+        const text = this.add
+            .text(
+                0,
+                -150,
+                "Tap on the sonic rocks to hear each typing sound\nand match it with the respective typed symbol",
+                { align: "center", color: 0xccc }
+            )
+            .setOrigin(0.5, 1);
+        // .setOrigin(0.5, 0.5);
+        const keyboard = this.add.image(0, -20, "keyboard").setScale(0.5);
+        // .setOrigin(0.5, 1);
+        const tooltipContent = this.add.container(0, 0, [rect, keyboard, text]);
+        addTooltip(1080 / 2, 1920 - 100, questionMark, tooltipContent, this);
 
         // add all other elements
         this.elements.forEach(({ key }) => {

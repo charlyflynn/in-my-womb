@@ -143,6 +143,7 @@ export default class Preloader extends Scene {
         // level 1
         this.load.setPath("assets/l1");
 
+        this.load.image("keyboard", "keyboard.png");
         this.load.image("altavoz-in", "altavoz-in.png");
         this.load.image("altavoz-out", "altavoz-out.png");
         this.load.image("splinter-in", "splinter-in.png");
