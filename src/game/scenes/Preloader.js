@@ -31,11 +31,11 @@ export default class Preloader extends Scene {
 
         //  A simple progress bar. This is the outline of the bar.
         this.add
-            .rectangle(dims.w / 2, 1720, 468, 50)
+            .rectangle(dims.w / 2, 1590, 468, 14)
             .setStrokeStyle(1, 0x333333);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(dims.w / 2 - 230, 1720, 4, 46, 0x333333);
+        const bar = this.add.rectangle(dims.w / 2 - 230, 1590, 4, 10, 0x333333);
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on("progress", (progress) => {
@@ -43,41 +43,49 @@ export default class Preloader extends Scene {
             bar.width = 4 + 460 * progress;
         });
 
-        this.add
-            .rectangle(1080 / 2, 1660, 700, 450)
-            .setStrokeStyle(2, 0x333333);
-
         this.load.on("complete", () => {
             this.add
                 .text(
                     dims.w / 2,
-                    1565,
-                    "CLICK ON THE ROCK\nTO BEGIN THE GAME\n>>>>",
+                    200,
+                    "Resolve the next 3 sonic puzzles to receive a free song by elsas",
                     {
-                        fontFamily: "nobody",
-                        fontSize: 38,
+                        fontFamily: "roobert",
+                        fontSize: 26,
                         align: "center",
                         color: "#333333",
                         lineSpacing: 30,
-                        fontStyle: "bold",
-                        letterSpacing: 2,
+                        letterSpacing: 1.2,
                     }
                 )
-                .setOrigin(0.5, 0.5)
-                .setDepth(100);
-
+                .setOrigin(0.5, 0.5);
             this.add
                 .text(
                     dims.w / 2,
-                    1827,
-                    "PLEASE MAKE SURE YOUR PHONE IS UNMUTED\nWEARING HEADPHONES IS RECOMMENDED",
-                    // "Please make sure your phone is unmuted.\nWearing headphones is recommended.",
+                    1450,
+                    "↑\nClick on the rock to begin the game",
                     {
-                        fontFamily: "roobert",
-                        fontSize: 20,
+                        fontFamily: "nobody",
+                        fontSize: 30,
                         align: "center",
                         color: "#333333",
+                        lineSpacing: 30,
+                        letterSpacing: 1.5,
+                    }
+                )
+                .setOrigin(0.5, 0.5);
+            this.add
+                .text(
+                    dims.w / 2,
+                    1715,
+                    "Please make sure your phone is unmuted\nWearing headphones is recommended",
+                    {
+                        fontFamily: "roobert",
+                        fontSize: 26,
+                        align: "center",
+                        color: "#e34727",
                         lineSpacing: 15,
+                        letterSpacing: 1.2,
                     }
                 )
                 .setOrigin(0.5, 0.5)
@@ -122,7 +130,7 @@ export default class Preloader extends Scene {
                 });
         };
         loadFont("nobody", "/assets/nobody.otf");
-        loadFont("roobert", "/assets/roobert.ttf");
+        loadFont("roobert", "/assets/roobert.otf");
 
         this.load.setPath("./assets");
 
