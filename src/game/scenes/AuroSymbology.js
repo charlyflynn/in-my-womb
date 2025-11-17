@@ -50,7 +50,7 @@ export default class AuroSymbology extends Phaser.Scene {
             .setDepth(0);
 
         // add titles
-        this.add
+        const title = this.add
             .text(1080 / 2, 125, "SOUND TO SYMBOL ASSOCIATION", {
                 fontFamily: "nobody",
                 fontSize: 38,
@@ -173,6 +173,7 @@ export default class AuroSymbology extends Phaser.Scene {
                                             (symbolKey) =>
                                                 this.symbolElements[symbolKey]
                                         ),
+                                    title,
                                 ],
                                 duration: 1000,
                                 alpha: 0,

@@ -66,6 +66,28 @@ export default class Fin extends Scene {
                 endSequence();
             });
 
+        this.add
+            .rectangle(1080 / 2, 1660, 700, 450)
+            .setStrokeStyle(2, 0x333333);
+
+        this.add
+            .text(
+                1080 / 2,
+                1665,
+                "CONGRATULATIONS\nCLICK ON THE ROCK\nTO CLAIM YOUR PRIZE\n>>>>",
+                {
+                    fontFamily: "nobody",
+                    fontSize: 38,
+                    align: "center",
+                    color: "#333333",
+                    lineSpacing: 30,
+                    fontStyle: "bold",
+                    letterSpacing: 2,
+                }
+            )
+            .setOrigin(0.5, 0.5)
+            .setDepth(100);
+
         // const dims = {
         //     h: this.sys.game.canvas.height,
         //     w: this.sys.game.canvas.width,
@@ -101,7 +123,6 @@ export default class Fin extends Scene {
         //                         success.style.zIndex = 0;
         //                     });
         //             });
-        //     });
 
         EventBus.emit("current-scene-ready", this);
         this.cameras.main.fadeIn(1500);

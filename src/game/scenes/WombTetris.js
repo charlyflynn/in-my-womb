@@ -187,17 +187,26 @@ export default class WombTetris extends Phaser.Scene {
             .on("pointerout", () => {
                 this.player.setVelocityX(0);
             });
-        this.controls.rotate = this.add
-            .text(this.sys.game.canvas.width * 0.5, 2040, "↻", {
-                fill: "#333333",
-                backgroundColor: "#cccccc",
-                padding: 18,
-                fontSize: 64,
-                fontFamily: "Arial Black",
-                align: "center",
-                fontStyle: "bold",
-            })
+        this.controls.left = this.add
+            .image(this.sys.game.canvas.width * 0.25, 2040, "arrowL")
             .setOrigin(0.5, 0.5)
+            .setScale(0.18)
+            .setInteractive({ useHandCursor: true })
+            .on("pointerdown", () => {
+                this.player.setVelocityX(
+                    -speed.x * speedScale[this.score.matched.size]
+                );
+            })
+            .on("pointerup", () => {
+                this.player.setVelocityX(0);
+            })
+            .on("pointerout", () => {
+                this.player.setVelocityX(0);
+            });
+        this.controls.rotate = this.add
+            .image(this.sys.game.canvas.width * 0.5, 2040, "rotacion")
+            .setOrigin(0.5, 0.5)
+            .setScale(0.18)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {})
             .on("pointerup", () => {
@@ -206,15 +215,9 @@ export default class WombTetris extends Phaser.Scene {
                 //     this.player.setVelocityX(0);
             });
         this.controls.right = this.add
-            .text(this.sys.game.canvas.width * 0.75, 2040, ">", {
-                fill: "#333333",
-                backgroundColor: "#cccccc",
-                padding: 18,
-                fontSize: 64,
-                fontFamily: "Arial Black",
-                align: "center",
-            })
+            .image(this.sys.game.canvas.width * 0.75, 2040, "arrowR")
             .setOrigin(0.5, 0.5)
+            .setScale(0.18)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
                 this.player.setVelocityX(

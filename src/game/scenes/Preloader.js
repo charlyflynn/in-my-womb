@@ -61,7 +61,6 @@ export default class Preloader extends Scene {
                         lineSpacing: 30,
                         fontStyle: "bold",
                         letterSpacing: 2,
-                        padding: 30,
                     }
                 )
                 .setOrigin(0.5, 0.5)
@@ -129,7 +128,6 @@ export default class Preloader extends Scene {
 
         this.load.image("questionMark", "questionMark.png");
 
-        this.load.audio("bgFin", "bgFin.jpg");
         this.load.audio("stonescrape", "stonescrape.mp3");
         this.load.audio("unselect", "unselect.mp3");
 
@@ -159,6 +157,9 @@ export default class Preloader extends Scene {
         // level 2
         this.load.setPath("assets/l2");
 
+        this.load.image("arrowL", "arrowL.png");
+        this.load.image("arrowR", "arrowR.png");
+        this.load.image("rotacion", "rotacion.png");
         this.load.image("gem", "gem.png");
         this.load.image("womb-piedra", "womb-piedra.png");
         this.load.image("womb-gemas", "womb-gemas.png");
@@ -184,6 +185,9 @@ export default class Preloader extends Scene {
         this.load.audio("gRhodes", "G rhodes.mp3");
         this.load.audio("clave", "clave.mp3");
         this.load.audio("gruntBirthdayParty", "gruntBirthdayParty.mp3");
+
+        // fin
+        this.load.image("bgFin", "bgFin.jpg");
     }
 
     create() {

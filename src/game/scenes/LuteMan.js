@@ -59,6 +59,21 @@ export default class WombTetris extends Phaser.Scene {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
         this.sound.add("gruntBirthdayParty");
 
+        // add titles
+        this.add
+            .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
+                fontFamily: "nobody",
+                fontSize: 38,
+                align: "center",
+                color: "#cccccc",
+                fontStyle: "bold",
+                lineSpacing: 30,
+                letterSpacing: 2,
+                padding: 37,
+            })
+            .setOrigin(0.5, 0.5)
+            .setBackgroundColor("#33333344");
+
         // luteman enters
         this.luteMan = this.add
             .sprite(950, 3000, "luteManClosed")
