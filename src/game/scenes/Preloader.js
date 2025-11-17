@@ -31,11 +31,11 @@ export default class Preloader extends Scene {
 
         //  A simple progress bar. This is the outline of the bar.
         this.add
-            .rectangle(dims.w / 2, 1550, 468, 50)
+            .rectangle(dims.w / 2, 1720, 468, 50)
             .setStrokeStyle(1, 0x333333);
 
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-        const bar = this.add.rectangle(dims.w / 2 - 230, 1550, 4, 46, 0x333333);
+        const bar = this.add.rectangle(dims.w / 2 - 230, 1720, 4, 46, 0x333333);
 
         //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
         this.load.on("progress", (progress) => {
@@ -43,31 +43,25 @@ export default class Preloader extends Scene {
             bar.width = 4 + 460 * progress;
         });
 
-        // const startSequence = () => {
-        //     this.cameras.main
-        //         .fadeOut(1000, 0, 0, 0)
-        //         .on("camerafadeoutcomplete", () =>
-        //             this.scene.start("AuroSymbology")
-        //         );
-        // };
+        this.add
+            .rectangle(1080 / 2, 1660, 700, 450)
+            .setStrokeStyle(2, 0x333333);
 
-        // enable rock to be clicked to start game
         this.load.on("complete", () => {
             this.add
                 .text(
                     dims.w / 2,
-                    1465,
-                    "CLICK ON THE ROCK TO BEGIN THE GAME >>>>",
+                    1565,
+                    "CLICK ON THE ROCK\nTO BEGIN THE GAME\n>>>>",
                     {
-                        fontFamily: "roobert",
-                        fontSize: 28,
+                        fontFamily: "nobody",
+                        fontSize: 38,
                         align: "center",
                         color: "#333333",
-                        lineSpacing: 40,
+                        lineSpacing: 30,
                         fontStyle: "bold",
-                        letterSpacing: 3,
-                        strokeThickness: 2,
-                        stroke: "#333333",
+                        letterSpacing: 2,
+                        padding: 30,
                     }
                 )
                 .setOrigin(0.5, 0.5)
@@ -76,21 +70,20 @@ export default class Preloader extends Scene {
             this.add
                 .text(
                     dims.w / 2,
-                    1700,
-                    "Please make sure your phone is unmuted.\nWearing headphones is recommended.",
+                    1827,
+                    "PLEASE MAKE SURE YOUR PHONE IS UNMUTED\nWEARING HEADPHONES IS RECOMMENDED",
+                    // "Please make sure your phone is unmuted.\nWearing headphones is recommended.",
                     {
                         fontFamily: "roobert",
-                        fontSize: 28,
+                        fontSize: 20,
                         align: "center",
                         color: "#333333",
-                        lineSpacing: 40,
+                        lineSpacing: 15,
                     }
                 )
                 .setOrigin(0.5, 0.5)
                 .setDepth(100);
         });
-
-        // tooltip
 
         // level skips for dev
         preProd &&
@@ -129,8 +122,8 @@ export default class Preloader extends Scene {
                     return error;
                 });
         };
-        loadFont("nobody", "/assets/NOBODY-Sick.otf");
-        loadFont("roobert", "/assets/RoobertTRIALVF.ttf");
+        loadFont("nobody", "/assets/nobody.otf");
+        loadFont("roobert", "/assets/roobert.ttf");
 
         this.load.setPath("./assets");
 

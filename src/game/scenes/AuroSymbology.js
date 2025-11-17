@@ -23,6 +23,20 @@ export default class AuroSymbology extends Phaser.Scene {
 
     preload() {
         this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
+
+        const loadFont = (name, url) => {
+            var newFont = new FontFace(name, `url(${url})`);
+            newFont
+                .load()
+                .then(function (loaded) {
+                    document.fonts.add(loaded);
+                })
+                .catch(function (error) {
+                    return error;
+                });
+        };
+        loadFont("nobody", "/assets/nobody.otf");
+        loadFont("roobert", "/assets/roobert.ttf");
     }
 
     create() {
@@ -35,21 +49,48 @@ export default class AuroSymbology extends Phaser.Scene {
             .setScale(450 / 1920)
             .setDepth(0);
 
+        // add titles
+        this.add
+            .text(1080 / 2, 125, "SOUND TO SYMBOL ASSOCIATION", {
+                fontFamily: "nobody",
+                fontSize: 38,
+                align: "center",
+                color: "#cccccc",
+                fontStyle: "bold",
+                lineSpacing: 30,
+                letterSpacing: 2,
+                padding: 37,
+            })
+            .setOrigin(0.5, 0.5)
+            .setBackgroundColor("#33333344");
+
         // add tooltip
         const questionMark = this.add
             .image(1080 / 2, 1920 - 100, "questionMark")
             .setScale(0.12);
-        const rect = this.add.rectangle(0, -50, 750, 320, 0xcccccc);
+        const rect = this.add
+            .rectangle(0, -50, 920, 400, "#333333")
+            .setAlpha(0.67);
         const text = this.add
             .text(
                 0,
-                -150,
+                -180,
                 "Tap on the sonic rocks to hear each typing sound\nand match it with the respective typed symbol",
-                { align: "center", color: 0xccc }
+                {
+                    fontFamily: "roobert",
+                    fontStyle: "bold",
+                    fontSize: 26,
+                    align: "center",
+                    color: "#cccccc",
+                }
             )
             .setOrigin(0.5, 1);
         // .setOrigin(0.5, 0.5);
-        const keyboard = this.add.image(0, -20, "keyboard").setScale(0.5);
+        const keyboard = this.add
+            .image(0, -20, "keyboard")
+            .setScale(0.65)
+            .setAlpha(0.9);
+        // .setAlpha(0.5);
         // .setOrigin(0.5, 1);
         const tooltipContent = this.add.container(0, 0, [rect, keyboard, text]);
         addTooltip(1080 / 2, 1920 - 100, questionMark, tooltipContent, this);
