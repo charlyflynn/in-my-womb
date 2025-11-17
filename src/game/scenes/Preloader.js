@@ -47,30 +47,44 @@ export default class Preloader extends Scene {
             this.add
                 .text(
                     dims.w / 2,
-                    200,
-                    "Resolve the next 3 sonic puzzles to receive a free song by elsas",
+                    275,
+                    "resolve the next 3 sonic puzzles\nto receive a free song by elsas",
                     {
                         fontFamily: "roobert",
-                        fontSize: 26,
+                        fontSize: 36,
                         align: "center",
                         color: "#333333",
-                        lineSpacing: 30,
+                        lineSpacing: 15,
                         letterSpacing: 1.2,
+                        strokeThickness: 2,
+                        stroke: "#333333",
                     }
                 )
                 .setOrigin(0.5, 0.5);
             this.add
+                .text(dims.w / 2, 1375, "↑", {
+                    fontFamily: "nobody",
+                    fontSize: 78,
+                    align: "center",
+                    color: "#333333",
+                    lineSpacing: 30,
+                    letterSpacing: 1.5,
+                    fontStyle: "bold",
+                })
+                .setOrigin(0.5, 0.5);
+            this.add
                 .text(
                     dims.w / 2,
-                    1450,
-                    "↑\nClick on the rock to begin the game",
+                    1460,
+                    "\nclick on the rock to begin the game",
                     {
                         fontFamily: "nobody",
-                        fontSize: 30,
+                        fontSize: 26,
                         align: "center",
                         color: "#333333",
                         lineSpacing: 30,
                         letterSpacing: 1.5,
+                        fontStyle: "bold",
                     }
                 )
                 .setOrigin(0.5, 0.5);
@@ -78,10 +92,10 @@ export default class Preloader extends Scene {
                 .text(
                     dims.w / 2,
                     1715,
-                    "Please make sure your phone is unmuted\nWearing headphones is recommended",
+                    "please make sure your phone is unmuted\nwearing headphones is recommended",
                     {
                         fontFamily: "roobert",
-                        fontSize: 26,
+                        fontSize: 30,
                         align: "center",
                         color: "#e34727",
                         lineSpacing: 15,
