@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Tooltip, { addTooltip } from "../phaserTooltip";
 
 export default class AuroSymbology extends Phaser.Scene {
     constructor() {
@@ -20,20 +21,37 @@ export default class AuroSymbology extends Phaser.Scene {
         };
     }
 
+    preload() {
+        this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
+    }
+
     create() {
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+
+        // add womb speifically for animation
         this.womb = this.add
             .image(1080 - 225, (5 / 6) * 1920, "womb-piedra")
             .setOrigin(0.5, 0.5)
             .setScale(450 / 1920)
             .setDepth(0);
 
+        // add tooltip
+        const questionMark = this.add
+            .image(100, 1820, "questionMark")
+            .setScale(0.12);
+        const tooltipContent = this.add.container(0, 0);
+        const rect = this.add.rectangle(0, 0, 300, 300, 0x333333);
+        tooltipContent.add(rect);
+        addTooltip(100, 1820, questionMark, tooltipContent, this);
+
+        // add all other elements
         this.elements.forEach(({ key }) => {
             this.audio[key] = this.sound.add(key, { volume: 3 });
         });
         this.audio.stonescrape = this.sound.add("stonescrape", { volume: 0.3 });
         this.audio.unselect = this.sound.add("unselect", { volume: 1 });
 
+        // shuffle game to be unique
         const shuffledElements = this.elements
             .map((element) => ({
                 ...element,
@@ -54,7 +72,7 @@ export default class AuroSymbology extends Phaser.Scene {
                 )
                 .setOrigin(0.5, 0.5)
                 .setScale(0.5)
-                .setInteractive({ useHandCursor: true })
+                .setInteractive({ useHandCursor: true, pixelPerfect: true })
                 .on("pointerup", () => {
                     this.elements.forEach(({ key }) => {
                         this.audioElements[key].input.enabled &&
@@ -75,10 +93,10 @@ export default class AuroSymbology extends Phaser.Scene {
                 )
                 .setOrigin(0.5, 0.5)
                 .setScale(0.5)
-                .setInteractive({ useHandCursor: true })
+                .setInteractive({ useHandCursor: true, pixelPerfect: true })
                 .on("pointerup", () => {
                     if (this.selectedAudio === key) {
-                        // corect audio-symbol matching logic
+                        // win condition where audio matches symbol
                         this.audioElements[key].setTexture("altavoz-in");
                         this.audioElements[key].clearTint();
                         this.audioElements[key].disableInteractive();

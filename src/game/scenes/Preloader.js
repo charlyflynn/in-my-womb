@@ -1,5 +1,4 @@
 import { Scene } from "phaser";
-// import Tooltip from "../phaserTooltip";
 
 const preProd = true;
 const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
@@ -49,7 +48,6 @@ export default class Preloader extends Scene {
                     {
                         fontFamily: "roobert",
                         fontSize: 28,
-
                         align: "center",
                         color: "#333333",
                         lineSpacing: 40,
@@ -152,9 +150,9 @@ export default class Preloader extends Scene {
         loadFont("nobody", "/assets/NOBODY-Sick.otf");
         loadFont("roobert", "/assets/RoobertTRIALVF.ttf");
 
-        // this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
-
         this.load.setPath("./assets");
+
+        this.load.image("questionMark", "questionMark.png");
 
         this.load.audio("bgFin", "bgFin.jpg");
         this.load.audio("stonescrape", "stonescrape.mp3");
