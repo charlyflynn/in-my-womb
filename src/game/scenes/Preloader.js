@@ -6,10 +6,23 @@ export default class Preloader extends Scene {
     constructor() {
         super("Preloader");
         this.levelButtons = {};
+        this.startSequence;
     }
 
+    startSequence() {}
     init() {
-        this.add.image(0, 0, "bgMain").setOrigin(0, 0);
+        this.add.image(0, 0, "bgWelcome").setOrigin(0, 0);
+        this.add
+            .image(0, 0, "bgWelcomeRock")
+            .setOrigin(0, 0)
+            .setInteractive({ cursor: "pointer", pixelPerfect: true })
+            .on("pointerup", () => {
+                this.cameras.main
+                    .fadeOut(1000, 0, 0, 0)
+                    .on("camerafadeoutcomplete", () =>
+                        this.scene.start("AuroSymbology")
+                    );
+            });
 
         const dims = {
             h: this.sys.game.canvas.height,
@@ -30,13 +43,13 @@ export default class Preloader extends Scene {
             bar.width = 4 + 460 * progress;
         });
 
-        const startSequence = () => {
-            this.cameras.main
-                .fadeOut(1000, 0, 0, 0)
-                .on("camerafadeoutcomplete", () =>
-                    this.scene.start("AuroSymbology")
-                );
-        };
+        // const startSequence = () => {
+        //     this.cameras.main
+        //         .fadeOut(1000, 0, 0, 0)
+        //         .on("camerafadeoutcomplete", () =>
+        //             this.scene.start("AuroSymbology")
+        //         );
+        // };
 
         // enable rock to be clicked to start game
         this.load.on("complete", () => {
@@ -75,37 +88,6 @@ export default class Preloader extends Scene {
                 )
                 .setOrigin(0.5, 0.5)
                 .setDepth(100);
-
-            // rock clickable overlapping areas
-            this.add
-                .rectangle(
-                    this.sys.game.canvas.width / 2,
-                    this.sys.game.canvas.height / 2 - 100,
-                    890,
-                    550
-                )
-                .setOrigin(0.5, 0.5)
-                .setInteractive({ useHandCursor: true })
-                .setAlpha(0.5)
-                .on("pointerup", () => {
-                    startSequence();
-                });
-            this.add
-                .rectangle(350, 550, 500, 250)
-                .setOrigin(0.5, 0.5)
-                .setInteractive({ useHandCursor: true })
-                .setAlpha(0.5)
-                .on("pointerup", () => {
-                    startSequence();
-                });
-            this.add
-                .rectangle(600, 1065, 500, 250)
-                .setOrigin(0.5, 0.5)
-                .setInteractive({ useHandCursor: true })
-                .setAlpha(0.5)
-                .on("pointerup", () => {
-                    startSequence();
-                });
         });
 
         // tooltip
