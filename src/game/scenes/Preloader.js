@@ -1,4 +1,5 @@
 import { Scene } from "phaser";
+// import Tooltip from "../phaserTooltip";
 
 const preProd = true;
 const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
@@ -43,10 +44,31 @@ export default class Preloader extends Scene {
             this.add
                 .text(
                     dims.w / 2,
+                    1465,
+                    "CLICK ON THE ROCK TO BEGIN THE GAME >>>>",
+                    {
+                        fontFamily: "roobert",
+                        fontSize: 28,
+
+                        align: "center",
+                        color: "#333333",
+                        lineSpacing: 40,
+                        fontStyle: "bold",
+                        letterSpacing: 3,
+                        strokeThickness: 2,
+                        stroke: "#333333",
+                    }
+                )
+                .setOrigin(0.5, 0.5)
+                .setDepth(100);
+
+            this.add
+                .text(
+                    dims.w / 2,
                     1700,
                     "Please make sure your phone is unmuted.\nWearing headphones is recommended.",
                     {
-                        fontFamily: "nobody",
+                        fontFamily: "roobert",
                         fontSize: 28,
                         align: "center",
                         color: "#333333",
@@ -55,6 +77,7 @@ export default class Preloader extends Scene {
                 )
                 .setOrigin(0.5, 0.5)
                 .setDepth(100);
+
             // rock clickable overlapping areas
             this.add
                 .rectangle(
@@ -87,6 +110,8 @@ export default class Preloader extends Scene {
                 });
         });
 
+        // tooltip
+
         // level skips for dev
         preProd &&
             levelKeys.forEach((levelKey, i) => {
@@ -113,8 +138,6 @@ export default class Preloader extends Scene {
     }
 
     preload() {
-        this.load.setPath("./assets");
-
         const loadFont = (name, url) => {
             var newFont = new FontFace(name, `url(${url})`);
             newFont
@@ -126,10 +149,14 @@ export default class Preloader extends Scene {
                     return error;
                 });
         };
-
         loadFont("nobody", "/assets/NOBODY-Sick.otf");
-        this.load.audio("bgFin", "bgFin.jpg");
+        loadFont("roobert", "/assets/RoobertTRIALVF.ttf");
 
+        // this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
+
+        this.load.setPath("./assets");
+
+        this.load.audio("bgFin", "bgFin.jpg");
         this.load.audio("stonescrape", "stonescrape.mp3");
         this.load.audio("unselect", "unselect.mp3");
 
