@@ -23,20 +23,6 @@ export default class AuroSymbology extends Phaser.Scene {
 
     preload() {
         this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
-
-        const loadFont = (name, url) => {
-            var newFont = new FontFace(name, `url(${url})`);
-            newFont
-                .load()
-                .then(function (loaded) {
-                    document.fonts.add(loaded);
-                })
-                .catch(function (error) {
-                    return error;
-                });
-        };
-        loadFont("nobody", "/assets/nobody.otf");
-        loadFont("roobert", "/assets/roobert.ttf");
     }
 
     create() {
@@ -53,7 +39,7 @@ export default class AuroSymbology extends Phaser.Scene {
         const title = this.add
             .text(1080 / 2, 125, "SOUND TO SYMBOL ASSOCIATION", {
                 fontFamily: "nobody",
-                fontSize: 38,
+                fontSize: 32,
                 align: "center",
                 color: "#cccccc",
                 fontStyle: "bold",
@@ -66,34 +52,45 @@ export default class AuroSymbology extends Phaser.Scene {
 
         // add tooltip
         const questionMark = this.add
-            .image(1080 / 2, 1920 - 100, "questionMark")
-            .setScale(0.12);
+            .image(1080 - 60, 125, "questionMark")
+            .setScale(0.08)
+            // .image(1080 - 60, 125, "questionMark")
+            .setAlpha(0.5)
+            .on("pointerover", () => {
+                questionMark.setAlpha(1);
+            })
+            .on("pointerout", () => {
+                questionMark.setAlpha(0.5);
+            });
+
         const rect = this.add
             .rectangle(0, -50, 920, 400, "#333333")
-            .setAlpha(0.67);
-        const text = this.add
-            .text(
-                0,
-                -180,
-                "Tap on the sonic rocks to hear each typing sound\nand match it with the respective typed symbol",
-                {
-                    fontFamily: "roobert",
-                    fontStyle: "bold",
-                    fontSize: 26,
-                    align: "center",
-                    color: "#cccccc",
-                }
-            )
-            .setOrigin(0.5, 1);
-        // .setOrigin(0.5, 0.5);
+            .setAlpha(0.87);
+
+        const text = this.add.text(
+            -250,
+            -240,
+            "Tap on the sonic rocks to hear each typing sound\nand match it with the respective typed symbol",
+            {
+                fontFamily: "roobert",
+                fontStyle: "bold",
+                fontSize: 26,
+                align: "center",
+                color: "#e34727",
+            }
+        );
+        // .setOrigin(0, 0);
+
         const keyboard = this.add
             .image(0, -20, "keyboard")
             .setScale(0.65)
             .setAlpha(0.9);
-        // .setAlpha(0.5);
-        // .setOrigin(0.5, 1);
-        const tooltipContent = this.add.container(0, 0, [rect, keyboard, text]);
-        addTooltip(1080 / 2, 1920 - 100, questionMark, tooltipContent, this);
+        const tooltipContent = this.add.container(0, 550, [
+            rect,
+            keyboard,
+            text,
+        ]);
+        addTooltip(545, 0, questionMark, tooltipContent, this);
 
         // add all other elements
         this.elements.forEach(({ key }) => {

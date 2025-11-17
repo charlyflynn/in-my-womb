@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Tooltip, { addTooltip } from "../phaserTooltip";
 
 const speed = { x: 200, y: 350 };
 const speedScale = [1, 1.3, 1.6, 1.8, 2.0];
@@ -82,11 +83,61 @@ export default class WombTetris extends Phaser.Scene {
         this.colliders = {};
     }
 
-    preload() {}
+    preload() {
+        this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
+    }
 
     create() {
         // set up game environment
         this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+
+        // add titles
+        this.add
+            .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
+                fontFamily: "nobody",
+                fontSize: 32,
+                align: "center",
+                color: "#cccccc",
+                fontStyle: "bold",
+                lineSpacing: 30,
+                letterSpacing: 2,
+                padding: 37,
+            })
+            .setOrigin(0.5, 0.5)
+            .setBackgroundColor("#33333344");
+
+        // add tooltip
+        const questionMark = this.add
+            .image(1080 - 65, 125, "questionMark")
+            .setScale(0.08);
+
+        const rect = this.add
+            .rectangle(0, -50, 920, 120, "#333333")
+            .setAlpha(0.87)
+            .on("pointerover", () => {
+                questionMark.setAlpha(1);
+            })
+            .on("pointerout", () => {
+                questionMark.setAlpha(0.5);
+            });
+
+        const text = this.add
+            .text(
+                0,
+                -25,
+                "Set the gems into the slots using the\narrow and rotation buttons to build the song.",
+                {
+                    fontFamily: "roobert",
+                    fontStyle: "bold",
+                    fontSize: 26,
+                    align: "center",
+                    color: "#e34727",
+                }
+            )
+            .setOrigin(0.5, 1);
+
+        const tooltipContent = this.add.container(0, 550, [rect, text]);
+        addTooltip(545, 0, questionMark, tooltipContent, this);
 
         // set up audio channel
         const audioConfig = { loop: true, volume: 0 };

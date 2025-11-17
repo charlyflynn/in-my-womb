@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import Tooltip, { addTooltip } from "../phaserTooltip";
 
 // 150BPM converted to ms
 const beatMs = 571;
@@ -53,6 +54,8 @@ export default class WombTetris extends Phaser.Scene {
         this.load.texture("luteManOpen", {
             IMG: { textureURL: "assets/l3/luteManOpen.png" },
         });
+
+        this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
     }
 
     create() {
@@ -63,7 +66,7 @@ export default class WombTetris extends Phaser.Scene {
         this.add
             .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
                 fontFamily: "nobody",
-                fontSize: 38,
+                fontSize: 32,
                 align: "center",
                 color: "#cccccc",
                 fontStyle: "bold",
@@ -73,6 +76,40 @@ export default class WombTetris extends Phaser.Scene {
             })
             .setOrigin(0.5, 0.5)
             .setBackgroundColor("#33333344");
+
+        // add tooltip
+        // add tooltip
+        const questionMark = this.add
+            .image(1080 - 65, 125, "questionMark")
+            .setScale(0.08);
+
+        const rect = this.add
+            .rectangle(0, -50, 920, 120, "#333333")
+            .setAlpha(0.87)
+            .on("pointerover", () => {
+                questionMark.setAlpha(1);
+            })
+            .on("pointerout", () => {
+                questionMark.setAlpha(0.5);
+            });
+
+        const text = this.add
+            .text(
+                0,
+                -25,
+                "Make the score for the lute-man to sing by positioning the coins\nin their slots, matching the melody you hear elsas sing.",
+                {
+                    fontFamily: "roobert",
+                    fontStyle: "bold",
+                    fontSize: 26,
+                    align: "center",
+                    color: "#e34727",
+                }
+            )
+            .setOrigin(0.5, 1);
+
+        const tooltipContent = this.add.container(0, 550, [rect, text]);
+        addTooltip(545, 0, questionMark, tooltipContent, this);
 
         // luteman enters
         this.luteMan = this.add

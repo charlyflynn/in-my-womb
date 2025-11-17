@@ -12,8 +12,10 @@ export default class Fin extends Scene {
             this.cameras.main
                 .fadeOut(1500, 255, 255, 255)
                 .on("camerafadeoutcomplete", () => {
-                    // acceptButton.destroy();
                     bg.destroy();
+                    gratitude.destroy();
+                    instruction.destroy();
+                    stroke.destroy();
                     const success = document.getElementById("success");
                     success.style.zIndex = -1;
                     success.style.display = "block";
@@ -26,6 +28,41 @@ export default class Fin extends Scene {
                 });
         };
 
+        // text
+        const gratitude = this.add
+            .text(1080 / 2, 250, "CONGRATULATIONS", {
+                fontFamily: "nobody",
+                fontSize: 72,
+                align: "center",
+                color: "#e34727",
+                lineSpacing: 30,
+                fontStyle: "bold",
+                letterSpacing: 2,
+            })
+            .setOrigin(0.5, 0.5);
+
+        const instruction = this.add
+            .text(
+                1080 / 2,
+                1600,
+                "CLICK ON THE ROCK\nTO CLAIM YOUR PRIZE\n>>>>",
+                {
+                    fontFamily: "nobody",
+                    fontSize: 38,
+                    align: "center",
+                    color: "#333333",
+                    lineSpacing: 30,
+                    fontStyle: "bold",
+                    letterSpacing: 2,
+                }
+            )
+            .setOrigin(0.5, 0.5);
+
+        const stroke = this.add
+            .rectangle(1080 / 2, 1600, 700, 250)
+            .setStrokeStyle(2, 0x333333);
+
+        //clickable area mask
         this.add
             .rectangle(400, 600, 700, 325)
             .setInteractive({ useHandCursor: true })
@@ -66,70 +103,8 @@ export default class Fin extends Scene {
                 endSequence();
             });
 
-        this.add
-            .rectangle(1080 / 2, 1660, 700, 450)
-            .setStrokeStyle(2, 0x333333);
-
-        this.add
-            .text(
-                1080 / 2,
-                1665,
-                "CONGRATULATIONS\nCLICK ON THE ROCK\nTO CLAIM YOUR PRIZE\n>>>>",
-                {
-                    fontFamily: "nobody",
-                    fontSize: 38,
-                    align: "center",
-                    color: "#333333",
-                    lineSpacing: 30,
-                    fontStyle: "bold",
-                    letterSpacing: 2,
-                }
-            )
-            .setOrigin(0.5, 0.5)
-            .setDepth(100);
-
-        // const dims = {
-        //     h: this.sys.game.canvas.height,
-        //     w: this.sys.game.canvas.width,
-        // };
-
-        // const acceptButton = this.add
-        //     .text(dims.w / 2, dims.h / 2, "CLAIM\nYOUR\nPRIZE", {
-        //         fontFamily: "Arial Black",
-        //         fontSize: 72,
-        //         color: "#333333",
-        //         padding: 30,
-        //         backgroundColor: "#cccccc",
-        //         align: "center",
-        //         letterSpacing: 20,
-        //         wordWrap: { width: 450, useAdvancedWrap: false },
-        //     })
-        //     .setOrigin(0.5, 0.5)
-        //     .setDepth(100)
-        //     .setInteractive({ useHandCursor: true })
-        //     .on("pointerup", () => {
-        //         this.cameras.main
-        //             .fadeOut(1500, 255, 255, 255)
-        //             .on("camerafadeoutcomplete", () => {
-        //                 acceptButton.destroy();
-        //                 bgMain.destroy();
-        //                 const success = document.getElementById("success");
-        //                 success.style.zIndex = -1;
-        //                 success.style.display = "block";
-        //                 // this.cameras.main.setBackgroundColor(0xffffff);
-        //                 this.cameras.main
-        //                     .fadeIn(1500, 255, 255, 255)
-        //                     .on("camerafadeincomplete", () => {
-        //                         success.style.zIndex = 0;
-        //                     });
-        //             });
-
         EventBus.emit("current-scene-ready", this);
         this.cameras.main.fadeIn(1500);
-    }
-
-    changeScene() {
-        // this.scene.start("MainMenu");
     }
 }
 
