@@ -25,20 +25,31 @@ export function addTooltip(x, y, item, content, scene) {
     item.setInteractive({ useHandCursor: true, pixelPerfect: true });
 
     item.on(
-        "pointerover",
+        "pointerup",
         () => {
-            scene.tooltip.showTooltip(tooltipID, true);
+            scene.tooltip.showing = !scene.tooltip.showing;
+            if (scene.tooltip.showing)
+                scene.tooltip.hideTooltip(tooltipID, true);
+            else scene.tooltip.showTooltip(tooltipID, true);
         },
         scene
     );
 
-    item.on(
-        "pointerout",
-        () => {
-            scene.tooltip.hideTooltip(tooltipID, true);
-        },
-        scene
-    );
+    // item.on(
+    //     "pointerover",
+    //     () => {
+    //         scene.tooltip.showTooltip(tooltipID, true);
+    //     },
+    //     scene
+    // );
+
+    // item.on(
+    //     "pointerout",
+    //     () => {
+    //         scene.tooltip.hideTooltip(tooltipID, true);
+    //     },
+    //     scene
+    // );
 }
 
 export class PhaserTooltip {
@@ -113,6 +124,7 @@ export class PhaserTooltip {
 
         this.tooltipCollection = {};
         this.target = null;
+        this.showing = false;
     }
 
     /**
