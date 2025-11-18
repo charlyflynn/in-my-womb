@@ -27,10 +27,10 @@ export function addTooltip(x, y, item, content, scene) {
     item.on(
         "pointerup",
         () => {
-            scene.tooltip.showing = !scene.tooltip.showing;
             if (scene.tooltip.showing)
                 scene.tooltip.hideTooltip(tooltipID, true);
             else scene.tooltip.showTooltip(tooltipID, true);
+            scene.tooltip.showing = !scene.tooltip.showing;
         },
         scene
     );
