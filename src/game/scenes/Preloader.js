@@ -202,6 +202,7 @@ export default class Preloader extends Scene {
         this.load.image("backboard", "backboard.png");
         this.load.image("moneda", "moneda.png");
         this.load.image("bgPlates", "bgPlates.png");
+        this.load.image("bgFin", "bgFin.jpg");
 
         this.load.audio("eRhodes", "E rhodes.mp3");
         this.load.audio("fRhodes", "F rhodes.mp3");
@@ -209,8 +210,17 @@ export default class Preloader extends Scene {
         this.load.audio("clave", "clave.mp3");
         this.load.audio("gruntBirthdayParty", "gruntBirthdayParty.mp3");
 
-        // fin
-        this.load.image("bgFin", "bgFin.jpg");
+        this.load.setPath("assets/l3/sounds");
+        const notes = ["e", "f", "g"];
+        const syllables = ["in", "my", "wo", "omb"];
+        notes.forEach((note) => {
+            syllables.forEach((syllable) => {
+                this.load.audio(
+                    `${syllable}-${note}`,
+                    `${syllable}-${note}.mp3`
+                );
+            });
+        });
     }
 
     create() {

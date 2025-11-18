@@ -132,7 +132,7 @@ export default class WombTetris extends Phaser.Scene {
             .text(
                 0,
                 -25,
-                "Set the gems into the slots using the\narrow and rotation buttons to build the song.",
+                "set the gems into the slots using the\narrow and rotation buttons to build the song",
                 {
                     fontFamily: "roobert",
                     fontStyle: "bold",

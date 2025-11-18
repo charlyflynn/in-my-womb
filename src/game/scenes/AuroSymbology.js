@@ -69,7 +69,7 @@ export default class AuroSymbology extends Phaser.Scene {
         const text = this.add.text(
             -330,
             -240,
-            "Tap on the sonic rocks to hear each typing sound\nand match it with its respective typed symbol",
+            "tap on the sonic rocks to hear each typing sound\nand match it with its respective typed symbol",
             {
                 fontFamily: "roobert",
                 fontSize: 26,

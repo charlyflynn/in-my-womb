@@ -16,31 +16,56 @@ export default class WombTetris extends Phaser.Scene {
         this.backBoard;
         this.selectedTones = [3, 3, 3, 3];
         this.win = false;
+        this.winPlayed = false;
         this.targetPositions = [
             [
-                { x: 182, y: 642 },
-                { x: 425, y: 642 },
-                { x: 666, y: 642 },
-                { x: 905, y: 642 },
+                { x: 178, y: 645, sound: "in-g" },
+                { x: 423, y: 645, sound: "my-g" },
+                { x: 668, y: 645, sound: "wo-g" },
+                { x: 910, y: 645, sound: "omb-g" },
             ],
             [
-                { x: 182, y: 885 },
-                { x: 425, y: 885 },
-                { x: 666, y: 885 },
-                { x: 905, y: 885 },
+                { x: 178, y: 885, sound: "in-f" },
+                { x: 423, y: 885, sound: "my-f" },
+                { x: 668, y: 885, sound: "wo-f" },
+                { x: 910, y: 885, sound: "omb-f" },
             ],
             [
-                { x: 182, y: 1130 },
-                { x: 425, y: 1130 },
-                { x: 666, y: 1130 },
-                { x: 905, y: 1130 },
+                { x: 178, y: 1130, sound: "in-e" },
+                { x: 423, y: 1130, sound: "my-e" },
+                { x: 668, y: 1130, sound: "wo-e" },
+                { x: 910, y: 1130, sound: "omb-e" },
             ],
             [
-                { x: 182, y: 295 },
-                { x: 425, y: 295 },
-                { x: 666, y: 295 },
-                { x: 905, y: 295 },
+                { x: 178, y: 295, sound: "clave" },
+                { x: 423, y: 295, sound: "clave" },
+                { x: 668, y: 295, sound: "clave" },
+                { x: 910, y: 295, sound: "clave" },
             ],
+            // [
+            //     { x: 423, y: 645, sound: "gRhodes" },
+            //     { x: 178, y: 645, sound: "gRhodes" },
+            //     { x: 668, y: 645, sound: "gRhodes" },
+            //     { x: 910, y: 645, sound: "gRhodes" },
+            // ],
+            // [
+            //     { x: 178, y: 885, sound: "fRhodes" },
+            //     { x: 423, y: 885, sound: "fRhodes" },
+            //     { x: 668, y: 885, sound: "fRhodes" },
+            //     { x: 910, y: 885, sound: "fRhodes" },
+            // ],
+            // [
+            //     { x: 178, y: 1130, sound: "eRhodes" },
+            //     { x: 423, y: 1130, sound: "eRhodes" },
+            //     { x: 668, y: 1130, sound: "eRhodes" },
+            //     { x: 910, y: 1130, sound: "eRhodes" },
+            // ],
+            // [
+            //     { x: 178, y: 295, sound: "clave" },
+            //     { x: 423, y: 295, sound: "clave" },
+            //     { x: 668, y: 295, sound: "clave" },
+            //     { x: 910, y: 295, sound: "clave" },
+            // ],
         ];
         this.draggableObjects = [];
         this.dropZoneObjects = [];
@@ -60,6 +85,7 @@ export default class WombTetris extends Phaser.Scene {
     create() {
         this.background = this.add.image(0, 0, "bgPlates").setOrigin(0, 0);
         this.sound.add("gruntBirthdayParty");
+        this.cameras.main.fadeIn(1000);
 
         const tracks = [
             { sound: "wombBass", at: 0 },
@@ -125,7 +151,8 @@ export default class WombTetris extends Phaser.Scene {
             .text(
                 0,
                 -10,
-                "Make the score for the lute-man to sing\nby positioning the coins in their slots,\nmatching the melody you hear elsas sing.",
+                // "Make the score for the lute-man to sing\nby positioning the coins in their slots,\nmatching the melody you hear elsas sing.",
+                "build the ‘score’ for the lute-man to sing\nby positioning the coins (notes) in their slots,\nin order to match the melody you hear elsas sing",
                 {
                     fontFamily: "roobert",
                     fontStyle: "bold",
@@ -233,14 +260,23 @@ export default class WombTetris extends Phaser.Scene {
             });
         });
 
-        const timedEvents = beats
-            .map((beat, beatIndex) =>
-                sounds.map((sound, soundIndex) => ({
-                    sound,
+        const timedEvents = beats.map(
+            (beat, beatIndex) => {
+                return {
+                    // sound: this.targetPositions[beatIndex % 4][
+                    //     this.selectedTones[beatIndex % 4]
+                    // ].sound,
                     at: beat,
-                    if: () => this.selectedTones[beatIndex % 4] === soundIndex,
+                    // if: () => this.selectedTones[beatIndex % 4] === soundIndex,
                     run: () => {
                         // todo: replace with tween
+                        this.sound
+                            .add(
+                                this.targetPositions[
+                                    this.selectedTones[beatIndex % 4]
+                                ][beatIndex % 4].sound
+                            )
+                            .play();
                         this.draggableObjects[beatIndex % 4].setTint(0xcccccc);
                         if (this.selectedTones[beatIndex % 4] < 3)
                             this.anims.play("sing", [this.luteMan]);
@@ -249,9 +285,32 @@ export default class WombTetris extends Phaser.Scene {
                             this.draggableObjects[beatIndex % 4].clearTint();
                         }, 100);
                     },
-                }))
-            )
-            .flat();
+                };
+            }
+            // })
+            // )
+        );
+        console.log(timedEvents);
+        // .flat();
+        // const timedEvents = beats
+        //     .map((beat, beatIndex) =>
+        //         sounds.map((sound, soundIndex) => ({
+        //             sound,
+        //             at: beat,
+        //             if: () => this.selectedTones[beatIndex % 4] === soundIndex,
+        //             run: () => {
+        //                 // todo: replace with tween
+        //                 this.draggableObjects[beatIndex % 4].setTint(0xcccccc);
+        //                 if (this.selectedTones[beatIndex % 4] < 3)
+        //                     this.anims.play("sing", [this.luteMan]);
+
+        //                 setTimeout(() => {
+        //                     this.draggableObjects[beatIndex % 4].clearTint();
+        //                 }, 100);
+        //             },
+        //         }))
+        //     )
+        //     .flat();
 
         const winConditionCheck = [
             {
