@@ -15,7 +15,6 @@ export default class WombTetris extends Phaser.Scene {
         this.luteMan;
         this.backBoard;
         this.selectedTones = [3, 3, 3, 3];
-        this.selection;
         this.win = false;
         this.targetPositions = [
             [
@@ -62,6 +61,29 @@ export default class WombTetris extends Phaser.Scene {
         this.background = this.add.image(0, 0, "bgPlates").setOrigin(0, 0);
         this.sound.add("gruntBirthdayParty");
 
+        const tracks = [
+            { sound: "wombBass", at: 0 },
+            { sound: "wombStrings", at: 0 },
+            { sound: "wombHiPerc", at: 0 },
+            { sound: "wombLoPerc", at: 0 },
+            { sound: "wombChords", at: 0 },
+            { sound: "wombVox", at: 0 },
+        ];
+
+        const sounds = ["gRhodes", "fRhodes", "eRhodes", "clave"]; // hi, med, low, no pitch respectively
+        const soundObjects = sounds.map((sound) => this.sound.add(sound));
+
+        const beats = [
+            bar3,
+            bar3 + beatMs,
+            bar3 + 2 * beatMs,
+            bar3 + 3 * beatMs,
+            bar7,
+            bar7 + beatMs,
+            bar7 + 2 * beatMs,
+            bar7 + 3 * beatMs,
+        ];
+
         // // add titles
         // this.add
         //     .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
@@ -77,8 +99,6 @@ export default class WombTetris extends Phaser.Scene {
         //     .setOrigin(0.5, 0.5)
         //     .setBackgroundColor("#33333344");
 
-        // add tooltip
-        // add tooltip
         // add tooltip
         const questionMark = this.add
             .image(1080 - 120, 100, "questionMark")
@@ -186,13 +206,15 @@ export default class WombTetris extends Phaser.Scene {
                 )
                 .on("dragend", () => {
                     // snap to target zones
+
+                    soundObjects[this.selectedTones[objectIndex]].play();
+                    // this.anims.play("sing", [this.luteMan]);
                     object.setY(
                         this.targetPositions[this.selectedTones[objectIndex]][
                             this.selectedTones[objectIndex]
                         ].y
                     );
                 });
-            // snap to position
             object.setScale(objectScale);
             object.body.setSize(
                 objectSize / objectScale,
@@ -211,26 +233,6 @@ export default class WombTetris extends Phaser.Scene {
             });
         });
 
-        const tracks = [
-            { sound: "wombBass", at: 0 },
-            { sound: "wombStrings", at: 0 },
-            { sound: "wombHiPerc", at: 0 },
-            { sound: "wombLoPerc", at: 0 },
-            { sound: "wombChords", at: 0 },
-            { sound: "wombVox", at: 0 },
-        ];
-
-        const sounds = ["gRhodes", "fRhodes", "eRhodes", "clave"]; // hi, med, low, no pitch respectively
-        const beats = [
-            bar3,
-            bar3 + beatMs,
-            bar3 + 2 * beatMs,
-            bar3 + 3 * beatMs,
-            bar7,
-            bar7 + beatMs,
-            bar7 + 2 * beatMs,
-            bar7 + 3 * beatMs,
-        ];
         const timedEvents = beats
             .map((beat, beatIndex) =>
                 sounds.map((sound, soundIndex) => ({

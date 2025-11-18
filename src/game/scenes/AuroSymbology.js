@@ -93,7 +93,7 @@ export default class AuroSymbology extends Phaser.Scene {
         this.elements.forEach(({ key }) => {
             this.audio[key] = this.sound.add(key, { volume: 3 });
         });
-        this.audio.stonescrape = this.sound.add("stonescrape", { volume: 0.3 });
+        this.audio.stonescrape = this.sound.add("stonescrape", { volume: 0.1 });
         this.audio.unselect = this.sound.add("unselect", { volume: 1 });
 
         // shuffle game to be unique

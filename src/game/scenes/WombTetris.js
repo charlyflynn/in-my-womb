@@ -149,7 +149,7 @@ export default class WombTetris extends Phaser.Scene {
         // set up audio channel
         const audioConfig = { loop: true, volume: 0 };
         this.audio.stonescrape = this.sound.add("stonescrape", {
-            volume: 1,
+            volume: 0.2,
         });
 
         this.elements.slice(1).forEach(({ key }) => {
