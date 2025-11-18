@@ -17,6 +17,8 @@ export default class WombTetris extends Phaser.Scene {
         this.selectedTones = [3, 3, 3, 3];
         this.win = false;
         this.winPlayed = false;
+        this.timeline;
+        this.lutemanSings = true;
         this.targetPositions = [
             [
                 { x: 178, y: 645, sound: "in-g" },
@@ -86,6 +88,14 @@ export default class WombTetris extends Phaser.Scene {
         this.background = this.add.image(0, 0, "bgPlates").setOrigin(0, 0);
         this.sound.add("gruntBirthdayParty");
         this.cameras.main.fadeIn(1000);
+
+        const notes = ["e", "f", "g"];
+        const syllables = ["in", "my", "wo", "omb"];
+        notes.forEach((note) => {
+            syllables.forEach((syllable) => {
+                this.sound.add(`${syllable}-${note}`);
+            });
+        });
 
         const tracks = [
             { sound: "wombBass", at: 0 },
@@ -270,13 +280,13 @@ export default class WombTetris extends Phaser.Scene {
                     // if: () => this.selectedTones[beatIndex % 4] === soundIndex,
                     run: () => {
                         // todo: replace with tween
-                        this.sound
-                            .add(
+                        if (this.lutemanSings)
+                            this.sound.play(
                                 this.targetPositions[
                                     this.selectedTones[beatIndex % 4]
-                                ][beatIndex % 4].sound
-                            )
-                            .play();
+                                ][beatIndex % 4].sound,
+                                { volume: 2 }
+                            );
                         this.draggableObjects[beatIndex % 4].setTint(0xcccccc);
                         if (this.selectedTones[beatIndex % 4] < 3)
                             this.anims.play("sing", [this.luteMan]);
@@ -290,7 +300,6 @@ export default class WombTetris extends Phaser.Scene {
             // })
             // )
         );
-        console.log(timedEvents);
         // .flat();
         // const timedEvents = beats
         //     .map((beat, beatIndex) =>
@@ -319,7 +328,8 @@ export default class WombTetris extends Phaser.Scene {
                     this.selectedTones[0] === 1 &&
                     this.selectedTones[1] === 2 &&
                     this.selectedTones[2] === 0 &&
-                    this.selectedTones[3] === 1,
+                    this.selectedTones[3] === 1 &&
+                    !this.win,
                 run: () => {
                     this.win = true;
                     this.sound.get("gruntBirthdayParty").play();
@@ -329,8 +339,9 @@ export default class WombTetris extends Phaser.Scene {
                 at: barMs * 4,
                 if: () => this.win,
                 run: () => {
-                    timeline.stop();
-                    this.scene.start("Fin");
+                    // timeline.stop();
+                    if (this.lutemanSings) this.game.scene.start("Fin");
+                    this.lutemanSings = false;
                 },
             },
             {
@@ -339,7 +350,8 @@ export default class WombTetris extends Phaser.Scene {
                     this.selectedTones[0] === 1 &&
                     this.selectedTones[1] === 2 &&
                     this.selectedTones[2] === 0 &&
-                    this.selectedTones[3] === 1,
+                    this.selectedTones[3] === 1 &&
+                    !this.win,
                 run: () => {
                     this.win = true;
                     this.sound.get("gruntBirthdayParty").play();
@@ -349,20 +361,21 @@ export default class WombTetris extends Phaser.Scene {
                 at: barMs * 8,
                 if: () => this.win,
                 run: () => {
-                    timeline.stop();
-                    this.scene.start("Fin");
+                    // timeline.stop();
+                    if (this.lutemanSings) this.game.scene.start("Fin");
+                    this.lutemanSings = false;
                 },
             },
         ];
 
-        const timeline = this.add.timeline([
+        this.timeline = this.add.timeline([
             ...tracks,
             ...timedEvents,
             ...winConditionCheck,
             { at: 18272 },
         ]);
 
-        timeline.repeat().play();
+        this.timeline.repeat().play();
     }
 
     update() {}

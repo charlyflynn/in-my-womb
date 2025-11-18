@@ -68,7 +68,7 @@ export default class WombTetris extends Phaser.Scene {
                 },
             },
             {
-                key: "wombVox",
+                // key: "wombVox",
                 shape: "womb-gemas",
                 position: {
                     x: 1080 - 230,
@@ -477,10 +477,22 @@ export default class WombTetris extends Phaser.Scene {
                         duration: 1000,
                         ease: "Quart.easeInOut",
                         onComplete: () => {
-                            this.sound.stopAll();
-                            this.scene.start("LuteMan");
+                            // this.audio.forEach((audio) => {
+                            this.tweens
+                                .add({
+                                    targets: [this.audio],
+                                    volume: 0,
+                                    duration: 1500,
+                                    ease: "Linear",
+                                })
+                                .on("complete", () => {
+                                    this.cameras.main.fadeOut(1000);
+                                    this.sound.stopAll();
+                                    this.scene.start("LuteMan");
 
-                            this.scene.destroy();
+                                    this.scene.destroy();
+                                });
+                            // });
                         },
                     });
                 }
