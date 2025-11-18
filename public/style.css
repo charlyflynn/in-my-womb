@@ -48,7 +48,7 @@ body {
 }
 
 #game-container {
-    background-image: url("/assets/bgSite.jpg");
+    background-image: url("/assets/init/bgSite.jpg");
     /* display: flex;
     flex-direction: col;
     align-items: center;

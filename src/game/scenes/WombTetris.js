@@ -31,7 +31,7 @@ export default class WombTetris extends Phaser.Scene {
             {
                 key: "wombStrings",
                 shape: "womb-gemas",
-                position: { x: 235, y: (4 / 5) * 1920 + 12 },
+                position: { x: 235, y: 1432 + 12 },
                 size: {
                     x: 70,
                     y: 70,
@@ -40,7 +40,7 @@ export default class WombTetris extends Phaser.Scene {
             {
                 key: "wombHiPerc",
                 shape: "womb-parentesis-l",
-                position: { x: 366, y: (4 / 5) * 1920 },
+                position: { x: 366, y: 1432 },
                 size: {
                     x: 70,
                     y: 70,
@@ -49,7 +49,7 @@ export default class WombTetris extends Phaser.Scene {
             {
                 key: "wombLoPerc",
                 shape: "womb-0",
-                position: { x: 540, y: (4 / 5) * 1920 - 22 },
+                position: { x: 540, y: 1432 - 22 },
                 size: {
                     x: 70,
                     y: 70,
@@ -60,7 +60,7 @@ export default class WombTetris extends Phaser.Scene {
                 shape: "womb-parentesis-r",
                 position: {
                     x: 1080 - 364,
-                    y: (4 / 5) * 1920,
+                    y: 1432,
                 },
                 size: {
                     x: 70,
@@ -72,7 +72,7 @@ export default class WombTetris extends Phaser.Scene {
                 shape: "womb-gemas",
                 position: {
                     x: 1080 - 230,
-                    y: (4 / 5) * 1920 + 12,
+                    y: 1432 + 12,
                 },
                 size: {
                     x: 70,
@@ -89,27 +89,34 @@ export default class WombTetris extends Phaser.Scene {
 
     create() {
         // set up game environment
-        this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+        this.background = this.add.image(0, 0, "bg").setOrigin(0, 0);
 
-        // add titles
-        this.add
-            .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
-                fontFamily: "nobody",
-                fontSize: 32,
-                align: "center",
-                color: "#cccccc",
-                fontStyle: "bold",
-                lineSpacing: 30,
-                letterSpacing: 2,
-                padding: 37,
-            })
-            .setOrigin(0.5, 0.5)
-            .setBackgroundColor("#33333344");
+        // // add titles
+        // this.add
+        //     .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
+        //         fontFamily: "nobody",
+        //         fontSize: 32,
+        //         align: "center",
+        //         color: "#cccccc",
+        //         fontStyle: "bold",
+        //         lineSpacing: 30,
+        //         letterSpacing: 2,
+        //         padding: 37,
+        //     })
+        //     .setOrigin(0.5, 0.5)
+        //     .setBackgroundColor("#33333344");
 
         // add tooltip
         const questionMark = this.add
-            .image(1080 - 65, 125, "questionMark")
-            .setScale(0.08);
+            .image(1080 - 120, 100, "questionMark")
+            .setScale(0.15)
+            .setAlpha(0.5)
+            .on("pointerover", () => {
+                questionMark.setAlpha(1);
+            })
+            .on("pointerout", () => {
+                questionMark.setAlpha(0.5);
+            });
 
         const rect = this.add
             .rectangle(0, -50, 920, 120, "#333333")
@@ -136,7 +143,7 @@ export default class WombTetris extends Phaser.Scene {
             )
             .setOrigin(0.5, 1);
 
-        const tooltipContent = this.add.container(0, 550, [rect, text]);
+        const tooltipContent = this.add.container(0, 415, [rect, text]);
         addTooltip(545, 0, questionMark, tooltipContent, this);
 
         // set up audio channel
@@ -213,6 +220,22 @@ export default class WombTetris extends Phaser.Scene {
                 this
             );
         });
+
+        // // extra collisions to handle similar gems
+        // this.colliders["wombVox-alt"] = this.physics.add.overlap(
+        //     this.targets.wombVox,
+        //     this.players.wombStrings,
+        //     () => this.onCollision("wombVox"),
+        //     null,
+        //     this
+        // );
+        // this.colliders["wombStrings-alt"] = this.physics.add.overlap(
+        //     this.targets.wombStrings,
+        //     this.players.wombVox,
+        //     () => this.onCollision("wombVox"),
+        //     null,
+        //     this
+        // );
     }
 
     addControls() {
@@ -371,7 +394,7 @@ export default class WombTetris extends Phaser.Scene {
         this.tweens.add({
             targets: this.womb,
             x: 540,
-            y: (4 / 5) * 1920,
+            y: 1432,
             scale: 0.5625,
             delay: 1000,
             duration: 1500,

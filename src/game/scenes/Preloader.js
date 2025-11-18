@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 
-const preProd = false;
+const preProd = true;
 const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
 export default class Preloader extends Scene {
     constructor() {
@@ -110,13 +110,13 @@ export default class Preloader extends Scene {
         preProd &&
             levelKeys.forEach((levelKey, i) => {
                 this.levelButtons[levelKey] = this.add
-                    .text(25, 50 + i * 100, `L${i + 1}: ${levelKey}`, {
-                        fill: "#333333",
-                        backgroundColor: "#cccccc",
-                        padding: 24,
-                        fontSize: 40,
+                    .text(25, 35 + i * 56, `L${i + 1}: ${levelKey}`, {
+                        fontFamily: "roobert",
+                        fill: "#cccccc",
+                        backgroundColor: "#333333",
+                        padding: 10,
+                        fontSize: 28,
                         align: "left",
-                        fontFamily: "Arial Black",
                     })
                     .setOrigin(0, 0.5)
                     .setInteractive({ useHandCursor: true })
@@ -143,19 +143,19 @@ export default class Preloader extends Scene {
                     return error;
                 });
         };
-        loadFont("nobody", "/assets/nobody.otf");
-        loadFont("roobert", "/assets/roobert.otf");
+        loadFont("nobody", "/assets/init/nobody.otf");
+        loadFont("roobert", "/assets/init/roobert.otf");
 
-        this.load.setPath("./assets");
+        this.load.setPath("./assets/init");
 
         this.load.image("questionMark", "questionMark.png");
-
         this.load.audio("stonescrape", "stonescrape.mp3");
         this.load.audio("unselect", "unselect.mp3");
 
         // level 1
         this.load.setPath("assets/l1");
 
+        this.load.image("bg", "bg.png");
         this.load.image("keyboard", "keyboard.png");
         this.load.image("altavoz-in", "altavoz-in.png");
         this.load.image("altavoz-out", "altavoz-out.png");
@@ -201,6 +201,7 @@ export default class Preloader extends Scene {
 
         this.load.image("backboard", "backboard.png");
         this.load.image("moneda", "moneda.png");
+        this.load.image("bgPlates", "bgPlates.png");
 
         this.load.audio("eRhodes", "E rhodes.mp3");
         this.load.audio("fRhodes", "F rhodes.mp3");

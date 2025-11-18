@@ -14,8 +14,10 @@ export default class Fin extends Scene {
                 .on("camerafadeoutcomplete", () => {
                     bg.destroy();
                     gratitude.destroy();
-                    instruction.destroy();
-                    stroke.destroy();
+                    win.destroy();
+                    click.destroy();
+                    arrow.destroy();
+
                     const success = document.getElementById("success");
                     success.style.zIndex = -1;
                     success.style.display = "block";
@@ -30,37 +32,56 @@ export default class Fin extends Scene {
 
         // text
         const gratitude = this.add
-            .text(1080 / 2, 250, "CONGRATULATIONS", {
-                fontFamily: "nobody",
+            .text(1080 / 2, 200, "congratulations!", {
+                fontFamily: "roobert",
                 fontSize: 72,
                 align: "center",
                 color: "#e34727",
-                lineSpacing: 30,
+                lineSpacing: 60,
                 fontStyle: "bold",
                 letterSpacing: 2,
             })
             .setOrigin(0.5, 0.5);
 
-        const instruction = this.add
-            .text(
-                1080 / 2,
-                1600,
-                "CLICK ON THE ROCK\nTO CLAIM YOUR PRIZE\n>>>>",
-                {
-                    fontFamily: "nobody",
-                    fontSize: 38,
-                    align: "center",
-                    color: "#333333",
-                    lineSpacing: 30,
-                    fontStyle: "bold",
-                    letterSpacing: 2,
-                }
-            )
+        const win = this.add
+            .text(1080 / 2, 225, "\nyou won", {
+                fontFamily: "nobody",
+                fontSize: 72,
+                align: "center",
+                color: "#e34727",
+                lineSpacing: 60,
+                fontStyle: "bold",
+                letterSpacing: 2,
+            })
             .setOrigin(0.5, 0.5);
 
-        const stroke = this.add
-            .rectangle(1080 / 2, 1600, 700, 250)
-            .setStrokeStyle(2, 0x333333);
+        const click = this.add
+            .text(1080 / 2, 1460, "\nclick on the rock to claim your prize", {
+                fontFamily: "nobody",
+                fontSize: 26,
+                align: "center",
+                color: "#333333",
+                lineSpacing: 30,
+                letterSpacing: 1.5,
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5, 0.5);
+
+        // const stroke = this.add
+        //     .rectangle(1080 / 2, 1600, 700, 250)
+        //     .setStrokeStyle(2, 0x333333);
+
+        const arrow = this.add
+            .text(1080 / 2, 1375, "↑", {
+                fontFamily: "nobody",
+                fontSize: 78,
+                align: "center",
+                color: "#333333",
+                lineSpacing: 30,
+                letterSpacing: 1.5,
+                fontStyle: "bold",
+            })
+            .setOrigin(0.5, 0.5);
 
         //clickable area mask
         this.add

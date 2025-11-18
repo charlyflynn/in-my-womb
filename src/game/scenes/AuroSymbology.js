@@ -26,35 +26,34 @@ export default class AuroSymbology extends Phaser.Scene {
     }
 
     create() {
-        this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+        this.background = this.add.image(0, 0, "bg").setOrigin(0, 0);
 
-        // add womb speifically for animation
+        // add womb specifically for animation
         this.womb = this.add
             .image(1080 - 225, (5 / 6) * 1920, "womb-piedra")
             .setOrigin(0.5, 0.5)
             .setScale(450 / 1920)
             .setDepth(0);
 
-        // add titles
-        const title = this.add
-            .text(1080 / 2, 125, "SOUND TO SYMBOL ASSOCIATION", {
-                fontFamily: "nobody",
-                fontSize: 32,
-                align: "center",
-                color: "#cccccc",
-                fontStyle: "bold",
-                lineSpacing: 30,
-                letterSpacing: 2,
-                padding: 37,
-            })
-            .setOrigin(0.5, 0.5)
-            .setBackgroundColor("#33333344");
+        // // add titles
+        // const title = this.add
+        //     .text(1080 / 2, 125, "SOUND TO SYMBOL ASSOCIATION", {
+        //         fontFamily: "nobody",
+        //         fontSize: 32,
+        //         align: "center",
+        //         color: "#cccccc",
+        //         fontStyle: "bold",
+        //         lineSpacing: 30,
+        //         letterSpacing: 2,
+        //         padding: 37,
+        //     })
+        //     .setOrigin(0.5, 0.5)
+        //     .setBackgroundColor("#33333344");
 
         // add tooltip
         const questionMark = this.add
-            .image(1080 - 60, 125, "questionMark")
-            .setScale(0.08)
-            // .image(1080 - 60, 125, "questionMark")
+            .image(1080 - 120, 100, "questionMark")
+            .setScale(0.15)
             .setAlpha(0.5)
             .on("pointerover", () => {
                 questionMark.setAlpha(1);
@@ -68,18 +67,16 @@ export default class AuroSymbology extends Phaser.Scene {
             .setAlpha(0.87);
 
         const text = this.add.text(
-            -250,
+            -330,
             -240,
-            "Tap on the sonic rocks to hear each typing sound\nand match it with the respective typed symbol",
+            "Tap on the sonic rocks to hear each typing sound\nand match it with its respective typed symbol",
             {
                 fontFamily: "roobert",
-                fontStyle: "bold",
                 fontSize: 26,
                 align: "center",
                 color: "#e34727",
             }
         );
-        // .setOrigin(0, 0);
 
         const keyboard = this.add
             .image(0, -20, "keyboard")
@@ -170,7 +167,7 @@ export default class AuroSymbology extends Phaser.Scene {
                                             (symbolKey) =>
                                                 this.symbolElements[symbolKey]
                                         ),
-                                    title,
+                                    // title,
                                 ],
                                 duration: 1000,
                                 alpha: 0,

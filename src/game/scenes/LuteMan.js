@@ -59,29 +59,37 @@ export default class WombTetris extends Phaser.Scene {
     }
 
     create() {
-        this.background = this.add.image(0, 0, "background").setOrigin(0, 0);
+        this.background = this.add.image(0, 0, "bgPlates").setOrigin(0, 0);
         this.sound.add("gruntBirthdayParty");
 
-        // add titles
-        this.add
-            .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
-                fontFamily: "nobody",
-                fontSize: 32,
-                align: "center",
-                color: "#cccccc",
-                fontStyle: "bold",
-                lineSpacing: 30,
-                letterSpacing: 2,
-                padding: 37,
-            })
-            .setOrigin(0.5, 0.5)
-            .setBackgroundColor("#33333344");
+        // // add titles
+        // this.add
+        //     .text(1080 / 2, 125, "GEM-STONE SONG BUILDING", {
+        //         fontFamily: "nobody",
+        //         fontSize: 32,
+        //         align: "center",
+        //         color: "#cccccc",
+        //         fontStyle: "bold",
+        //         lineSpacing: 30,
+        //         letterSpacing: 2,
+        //         padding: 37,
+        //     })
+        //     .setOrigin(0.5, 0.5)
+        //     .setBackgroundColor("#33333344");
 
+        // add tooltip
         // add tooltip
         // add tooltip
         const questionMark = this.add
-            .image(1080 - 65, 125, "questionMark")
-            .setScale(0.08);
+            .image(1080 - 120, 100, "questionMark")
+            .setScale(0.15)
+            .setAlpha(0.5)
+            .on("pointerover", () => {
+                questionMark.setAlpha(1);
+            })
+            .on("pointerout", () => {
+                questionMark.setAlpha(0.5);
+            });
 
         const rect = this.add
             .rectangle(0, -50, 920, 120, "#333333")
@@ -96,8 +104,8 @@ export default class WombTetris extends Phaser.Scene {
         const text = this.add
             .text(
                 0,
-                -25,
-                "Make the score for the lute-man to sing by positioning the coins\nin their slots, matching the melody you hear elsas sing.",
+                -10,
+                "Make the score for the lute-man to sing\nby positioning the coins in their slots,\nmatching the melody you hear elsas sing.",
                 {
                     fontFamily: "roobert",
                     fontStyle: "bold",
@@ -108,7 +116,7 @@ export default class WombTetris extends Phaser.Scene {
             )
             .setOrigin(0.5, 1);
 
-        const tooltipContent = this.add.container(0, 550, [rect, text]);
+        const tooltipContent = this.add.container(0, 415, [rect, text]);
         addTooltip(545, 0, questionMark, tooltipContent, this);
 
         // luteman enters
