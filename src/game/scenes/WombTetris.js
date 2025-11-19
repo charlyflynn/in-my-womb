@@ -68,7 +68,7 @@ export default class WombTetris extends Phaser.Scene {
                 },
             },
             {
-                // key: "wombVox",
+                key: "wombVox",
                 shape: "womb-gemas",
                 position: {
                     x: 1080 - 230,
