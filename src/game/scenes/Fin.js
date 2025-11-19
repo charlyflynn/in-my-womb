@@ -10,7 +10,7 @@ export default class Fin extends Scene {
         const bg = this.add.image(0, 0, "bgFin").setOrigin(0, 0);
         const endSequence = () => {
             this.cameras.main
-                .fadeOut(1000, 255, 255, 255)
+                .fadeOut(500, 255, 255, 255)
                 .on("camerafadeoutcomplete", () => {
                     bg.destroy();
                     gratitude.destroy();
@@ -21,9 +21,9 @@ export default class Fin extends Scene {
                     const success = document.getElementById("success");
                     success.style.zIndex = -1;
                     success.style.display = "block";
-                    // this.cameras.main.setBackgroundColor(0xffffff);
+                    this.cameras.main.setBackgroundColor(0xffffff);
                     this.cameras.main
-                        .fadeIn(1000, 255, 255, 255)
+                        .fadeIn(500, 255, 255, 255)
                         .on("camerafadeincomplete", () => {
                             success.style.zIndex = 0;
                         });
