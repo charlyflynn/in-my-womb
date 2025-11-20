@@ -17,10 +17,9 @@ export default class Fin extends Scene {
                     win.destroy();
                     click.destroy();
                     arrow.destroy();
+                    credits1.destroy();
+                    credits2.destroy();
 
-                    // const success = document.getElementById("success");
-                    // success.style.zIndex = -1;
-                    // success.style.display = "block";
                     this.cameras.main.setBackgroundColor(0xffffff);
                     this.cameras.main
                         .fadeIn(500, 255, 255, 255)
@@ -70,9 +69,32 @@ export default class Fin extends Scene {
             })
             .setOrigin(0.5, 0.5);
 
-        // const stroke = this.add
-        //     .rectangle(1080 / 2, 1600, 700, 250)
-        //     .setStrokeStyle(2, 0x333333);
+        const credits1 = this.add
+            .text(1040, 1920 - 70, "game developed by Charlie Flynn ⧉", {
+                fontFamily: "roobert",
+                fontSize: 28,
+                align: "center",
+                color: "#333333",
+                lineSpacing: 60,
+                fontStyle: "bold",
+                letterSpacing: 1,
+            })
+            .setInteractive({ cursor: "pointer" })
+            .on("pointerup", () => {
+                window.open("https://instagram.com/flarliechynn", "_blank");
+            })
+            .setOrigin(1, 1);
+        const credits2 = this.add
+            .text(1040, 1920 - 20, "textures designed by Emerson Blanco", {
+                fontFamily: "roobert",
+                fontSize: 28,
+                align: "center",
+                color: "#333333",
+                lineSpacing: 60,
+                fontStyle: "bold",
+                letterSpacing: 1,
+            })
+            .setOrigin(1, 1);
 
         const arrow = this.add
             .text(1080 / 2, 1375, "↑", {
