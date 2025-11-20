@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 
-const preProd = true;
+const preProd = false;
 const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
 export default class Preloader extends Scene {
     constructor() {
