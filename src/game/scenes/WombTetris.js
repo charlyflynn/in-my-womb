@@ -225,20 +225,20 @@ export default class WombTetris extends Phaser.Scene {
         });
 
         // extra collisions to handle similar gems
-        this.colliders["wombVox-alt"] = this.physics.add.overlap(
-            this.targets.wombVox,
-            this.players.wombStrings,
-            () => this.onCollision("wombVox"),
-            null,
-            this
-        );
-        this.colliders["wombStrings-alt"] = this.physics.add.overlap(
-            this.targets.wombStrings,
-            this.players.wombVox,
-            () => this.onCollision("wombStrings"),
-            null,
-            this
-        );
+        // this.colliders["wombVox-alt"] = this.physics.add.overlap(
+        //     this.targets.wombVox,
+        //     this.players.wombStrings,
+        //     () => this.onCollision("wombVox"),
+        //     null,
+        //     this
+        // );
+        // this.colliders["wombStrings-alt"] = this.physics.add.overlap(
+        //     this.targets.wombStrings,
+        //     this.players.wombVox,
+        //     () => this.onCollision("wombStrings"),
+        //     null,
+        //     this
+        // );
     }
 
     addControls() {
