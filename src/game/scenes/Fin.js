@@ -27,6 +27,7 @@ export default class Fin extends Scene {
                         .on("camerafadeincomplete", () => {
                             window.open(
                                 "https://elsas.os.fan/in-my-womb-pre-save--download"
+                                // "_self"
                             );
                         });
                 });
