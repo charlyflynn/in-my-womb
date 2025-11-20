@@ -26,8 +26,8 @@ export default class Fin extends Scene {
                         .fadeIn(500, 255, 255, 255)
                         .on("camerafadeincomplete", () => {
                             window.open(
-                                "https://elsas.os.fan/in-my-womb-pre-save--download"
-                                // "_self"
+                                "https://elsas.os.fan/in-my-womb-pre-save--download",
+                                "_self"
                             );
                         });
                 });
