@@ -3,6 +3,7 @@ import Tooltip, { addTooltip } from "../phaserTooltip";
 
 const speed = { x: 200, y: 350 };
 const speedScale = [1, 1.3, 1.6, 1.8, 2.0];
+const shuffled = false;
 
 export default class WombTetris extends Phaser.Scene {
     constructor() {
@@ -176,7 +177,9 @@ export default class WombTetris extends Phaser.Scene {
         this.addTargets();
         this.addCollisions();
 
-        const playerKey = this.randomPlayerKey();
+        const playerKey = shuffled
+            ? this.randomPlayerKey()
+            : this.elements[1].key;
         this.setPlayer(playerKey);
         this.player.body.allowGravity = true;
         this.addControls();
@@ -221,21 +224,21 @@ export default class WombTetris extends Phaser.Scene {
             );
         });
 
-        // // extra collisions to handle similar gems
-        // this.colliders["wombVox-alt"] = this.physics.add.overlap(
-        //     this.targets.wombVox,
-        //     this.players.wombStrings,
-        //     () => this.onCollision("wombVox"),
-        //     null,
-        //     this
-        // );
-        // this.colliders["wombStrings-alt"] = this.physics.add.overlap(
-        //     this.targets.wombStrings,
-        //     this.players.wombVox,
-        //     () => this.onCollision("wombVox"),
-        //     null,
-        //     this
-        // );
+        // extra collisions to handle similar gems
+        this.colliders["wombVox-alt"] = this.physics.add.overlap(
+            this.targets.wombVox,
+            this.players.wombStrings,
+            () => this.onCollision("wombVox"),
+            null,
+            this
+        );
+        this.colliders["wombStrings-alt"] = this.physics.add.overlap(
+            this.targets.wombStrings,
+            this.players.wombVox,
+            () => this.onCollision("wombStrings"),
+            null,
+            this
+        );
     }
 
     addControls() {
@@ -332,17 +335,19 @@ export default class WombTetris extends Phaser.Scene {
         // falling gems to match to slots
 
         // set play order randomly
-        const shuffledElements = this.elements
-            .slice(1)
-            .map((element) => ({
-                ...element,
-                index: Math.random(),
-            }))
-            .sort((a, b) => {
-                if (a.index < b.index) return -1;
-                else if (a.index > b.index) return 1;
-                else return 0;
-            });
+        const shuffledElements = shuffled
+            ? this.elements
+                  .slice(1)
+                  .map((element) => ({
+                      ...element,
+                      index: Math.random(),
+                  }))
+                  .sort((a, b) => {
+                      if (a.index < b.index) return -1;
+                      else if (a.index > b.index) return 1;
+                      else return 0;
+                  })
+            : this.elements.slice(1);
 
         shuffledElements.forEach(({ key, shape, size: { x, y } }) => {
             this.players[key] = this.physics.add
@@ -457,7 +462,13 @@ export default class WombTetris extends Phaser.Scene {
                 this.tween.shadow[key].stop();
 
                 if (this.score.remaining.size > 0) {
-                    const newPlayerKey = this.randomPlayerKey();
+                    const newPlayerKey = shuffled
+                        ? this.randomPlayerKey()
+                        : this.elements[
+                              this.elements.findIndex(
+                                  (element) => element.key === key
+                              ) + 1
+                          ].key;
                     this.setPlayer(newPlayerKey);
                     this.player.setMaxVelocity(
                         speed.x * speedScale[this.score.matched.size],
