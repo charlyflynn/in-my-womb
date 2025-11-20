@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 
-const preProd = true;
+const preProd = false;
 const levelKeys = ["AuroSymbology", "WombTetris", "LuteMan", "Fin"];
 export default class Preloader extends Scene {
     constructor() {
@@ -204,14 +204,14 @@ export default class Preloader extends Scene {
         this.load.image("bgPlates", "bgPlates.png");
         this.load.image("bgFin", "bgFin.jpg");
 
+        this.load.image("luteManClosed", "luteManClosed.png");
+        this.load.image("luteManOpen", "luteManOpen.png");
+
+        this.load.audio("gruntBirthdayParty", "gruntBirthdayParty.mp3");
         this.load.audio("eRhodes", "E rhodes.mp3");
         this.load.audio("fRhodes", "F rhodes.mp3");
         this.load.audio("gRhodes", "G rhodes.mp3");
         this.load.audio("clave", "clave.mp3");
-
-        this.load.image("luteManClosed", "luteManClosed.png");
-        this.load.image("luteManOpen", "luteManOpen.png");
-
         this.load.setPath("assets/l3/sounds");
         const notes = ["e", "f", "g"];
         const syllables = ["in", "my", "wo", "omb"];
