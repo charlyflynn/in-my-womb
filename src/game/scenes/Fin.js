@@ -18,9 +18,9 @@ export default class Fin extends Scene {
                     click.destroy();
                     arrow.destroy();
 
-                    const success = document.getElementById("success");
-                    success.style.zIndex = -1;
-                    success.style.display = "block";
+                    // const success = document.getElementById("success");
+                    // success.style.zIndex = -1;
+                    // success.style.display = "block";
                     this.cameras.main.setBackgroundColor(0xffffff);
                     this.cameras.main
                         .fadeIn(500, 255, 255, 255)

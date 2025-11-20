@@ -44,43 +44,12 @@ export default class WombTetris extends Phaser.Scene {
                 { x: 668, y: 295, sound: "clave" },
                 { x: 910, y: 295, sound: "clave" },
             ],
-            // [
-            //     { x: 423, y: 645, sound: "gRhodes" },
-            //     { x: 178, y: 645, sound: "gRhodes" },
-            //     { x: 668, y: 645, sound: "gRhodes" },
-            //     { x: 910, y: 645, sound: "gRhodes" },
-            // ],
-            // [
-            //     { x: 178, y: 885, sound: "fRhodes" },
-            //     { x: 423, y: 885, sound: "fRhodes" },
-            //     { x: 668, y: 885, sound: "fRhodes" },
-            //     { x: 910, y: 885, sound: "fRhodes" },
-            // ],
-            // [
-            //     { x: 178, y: 1130, sound: "eRhodes" },
-            //     { x: 423, y: 1130, sound: "eRhodes" },
-            //     { x: 668, y: 1130, sound: "eRhodes" },
-            //     { x: 910, y: 1130, sound: "eRhodes" },
-            // ],
-            // [
-            //     { x: 178, y: 295, sound: "clave" },
-            //     { x: 423, y: 295, sound: "clave" },
-            //     { x: 668, y: 295, sound: "clave" },
-            //     { x: 910, y: 295, sound: "clave" },
-            // ],
         ];
         this.draggableObjects = [];
         this.dropZoneObjects = [];
     }
 
     preload() {
-        this.load.texture("luteManClosed", {
-            IMG: { textureURL: "assets/l3/luteManClosed.png" },
-        });
-        this.load.texture("luteManOpen", {
-            IMG: { textureURL: "assets/l3/luteManOpen.png" },
-        });
-
         this.load.scenePlugin("Tooltip", Tooltip, "Tooltip", "tooltip");
     }
 
@@ -161,7 +130,6 @@ export default class WombTetris extends Phaser.Scene {
             .text(
                 0,
                 -10,
-                // "Make the score for the lute-man to sing\nby positioning the coins in their slots,\nmatching the melody you hear elsas sing.",
                 "build the ‘score’ for the lute-man to sing\nby positioning the coins (notes) in their slots,\nin order to match the melody you hear elsas sing",
                 {
                     fontFamily: "roobert",
