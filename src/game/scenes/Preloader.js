@@ -12,17 +12,6 @@ export default class Preloader extends Scene {
     startSequence() {}
     init() {
         this.add.image(0, 0, "bgWelcome").setOrigin(0, 0);
-        this.add
-            .image(0, 0, "bgWelcomeRock")
-            .setOrigin(0, 0)
-            .setInteractive({ cursor: "pointer", pixelPerfect: true })
-            .on("pointerup", () => {
-                this.cameras.main
-                    .fadeOut(1000, 0, 0, 0)
-                    .on("camerafadeoutcomplete", () =>
-                        this.scene.start("AuroSymbology")
-                    );
-            });
 
         const dims = {
             h: this.sys.game.canvas.height,
@@ -44,6 +33,17 @@ export default class Preloader extends Scene {
         });
 
         this.load.on("complete", () => {
+            this.add
+                .image(0, 0, "bgWelcomeRock")
+                .setOrigin(0, 0)
+                .setInteractive({ cursor: "pointer", pixelPerfect: true })
+                .on("pointerup", () => {
+                    this.cameras.main
+                        .fadeOut(1000, 0, 0, 0)
+                        .on("camerafadeoutcomplete", () =>
+                            this.scene.start("AuroSymbology")
+                        );
+                });
             this.add
                 .text(
                     dims.w / 2,
