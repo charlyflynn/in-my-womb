@@ -30,7 +30,7 @@ export default class WombTetris extends Phaser.Scene {
                 img: "",
             },
             {
-                key: "wombStrings",
+                key: "wombChords",
                 shape: "womb-gemas",
                 position: { x: 235, y: 1432 + 12 },
                 size: {
@@ -39,7 +39,7 @@ export default class WombTetris extends Phaser.Scene {
                 },
             },
             {
-                key: "wombHiPerc",
+                key: "wombStrings",
                 shape: "womb-parentesis-l",
                 position: { x: 366, y: 1432 },
                 size: {
@@ -57,7 +57,7 @@ export default class WombTetris extends Phaser.Scene {
                 },
             },
             {
-                key: "wombChords",
+                key: "wombHiPerc",
                 shape: "womb-parentesis-r",
                 position: {
                     x: 1080 - 364,
@@ -235,7 +235,7 @@ export default class WombTetris extends Phaser.Scene {
         // this.colliders["wombStrings-alt"] = this.physics.add.overlap(
         //     this.targets.wombStrings,
         //     this.players.wombVox,
-        //     () => this.onCollision("wombStrings"),
+        //     () => this.onCollision("wombChords"),
         //     null,
         //     this
         // );
@@ -421,7 +421,7 @@ export default class WombTetris extends Phaser.Scene {
         // succesful hit with correct rotation
         if (this.player.rotation === this.targets[key].rotation) {
             this.audio.stonescrape.play();
-            this.tween[key].play();
+            if (key !== "wombVox") this.tween[key].play();
 
             // animate in place
             this.disableControls();
@@ -477,7 +477,6 @@ export default class WombTetris extends Phaser.Scene {
                     this.player.body.allowGravity = true;
                     this.enableControls();
                 } else {
-                    // Object.keys(this.controls).forEach((control) => {
                     this.tweens.add({
                         targets: [
                             this.controls.left,
@@ -488,22 +487,19 @@ export default class WombTetris extends Phaser.Scene {
                         duration: 1000,
                         ease: "Quart.easeInOut",
                         onComplete: () => {
-                            // this.audio.forEach((audio) => {
                             this.tweens
                                 .add({
-                                    targets: [this.audio],
+                                    targets: [this.sound],
                                     volume: 0,
-                                    duration: 1500,
+                                    duration: 1333,
                                     ease: "Linear",
                                 })
                                 .on("complete", () => {
                                     this.cameras.main.fadeOut(1000);
                                     this.sound.stopAll();
                                     this.scene.start("LuteMan");
-
                                     this.scene.destroy();
                                 });
-                            // });
                         },
                     });
                 }

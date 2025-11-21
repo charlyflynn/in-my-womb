@@ -176,6 +176,13 @@ export default class WombTetris extends Phaser.Scene {
             ],
         });
 
+        this.tweens.add({
+            targets: [this.sound],
+            volume: 1,
+            duration: 666,
+            ease: "Linear",
+        });
+
         // backboard setup
         this.backBoard = this.add
             .image(540, 888, "backboard")
