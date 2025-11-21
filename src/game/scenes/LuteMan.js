@@ -55,6 +55,7 @@ export default class WombTetris extends Phaser.Scene {
 
     create() {
         this.background = this.add.image(0, 0, "bgPlates").setOrigin(0, 0);
+        this.sound.pauseOnBlur = false;
         this.sound.add("gruntBirthdayParty");
         this.cameras.main.fadeIn(1000);
 
