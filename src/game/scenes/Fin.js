@@ -72,7 +72,7 @@ export default class Fin extends Scene {
         const credits1 = this.add
             .text(1040, 1920 - 70, "game developed by Charlie Flynn ⧉", {
                 fontFamily: "roobert",
-                fontSize: 28,
+                fontSize: 24,
                 align: "center",
                 color: "#333333",
                 lineSpacing: 60,
@@ -85,16 +85,20 @@ export default class Fin extends Scene {
             })
             .setOrigin(1, 1);
         const credits2 = this.add
-            .text(1040, 1920 - 20, "textures designed by Emerson Blanco", {
+            .text(1040, 1920 - 20, "textures designed by Emerson Blanco ⧉", {
                 fontFamily: "roobert",
-                fontSize: 28,
+                fontSize: 24,
                 align: "center",
                 color: "#333333",
                 lineSpacing: 60,
                 fontStyle: "bold",
                 letterSpacing: 1,
             })
-            .setOrigin(1, 1);
+            .setOrigin(1, 1)
+            .setInteractive({ cursor: "pointer" })
+            .on("pointerup", () => {
+                window.open("https://instagram.com/emersonyashin", "_blank");
+            });
 
         const arrow = this.add
             .text(1080 / 2, 1375, "↑", {
