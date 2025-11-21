@@ -41,6 +41,7 @@ export default class WombTetris extends Phaser.Scene {
             {
                 key: "wombStrings",
                 shape: "womb-gemas",
+                flip: true,
                 position: {
                     x: 1080 - 230,
                     y: 1432 + 12,
@@ -350,43 +351,50 @@ export default class WombTetris extends Phaser.Scene {
                   })
             : this.elements.slice(1);
 
-        shuffledElements.forEach(({ key, shape, size: { x, y } }) => {
-            this.players[key] = this.physics.add
-                .image(Phaser.Math.RND.integerInRange(100, 980), -400, shape)
-                .setOrigin(0.5, 0.5)
-                .setMaxVelocity(speed.x, speed.y)
-                // .setDisplaySize(200, 200)
-                .setScale(0.65)
-                .setDepth(2)
-                .setAngle(Phaser.Math.RND.integerInRange(0, 1) * 90);
-            // .setTint(tint);
-            this.players[key].body.setSize(x, y).allowGravity = false;
-            this.playerShadow[key] = this.players[key].postFX.addShadow(
-                -15,
-                15,
-                0.006,
-                0.7,
-                0x333333,
-                2,
-                0.7
-            );
-            this.tween.hover[key] = this.tweens.add({
-                targets: this.players[key],
-                displayHeight: this.players[key].displayHeight + 10,
-                displayWidth: this.players[key].displayWidth + 10,
-                duration: 500,
-                yoyo: true,
-                repeat: -1,
-            });
-            this.tween.shadow[key] = this.tweens.add({
-                targets: this.playerShadow[key],
-                x: this.playerShadow[key].x - 8,
-                y: this.playerShadow[key].y + 8,
-                duration: 500,
-                yoyo: true,
-                repeat: -1,
-            });
-        });
+        shuffledElements.forEach(
+            ({ key, shape, size: { x, y }, flip = false }) => {
+                this.players[key] = this.physics.add
+                    .image(
+                        Phaser.Math.RND.integerInRange(100, 980),
+                        -400,
+                        shape
+                    )
+                    .setFlipX(flip)
+                    .setOrigin(0.5, 0.5)
+                    .setMaxVelocity(speed.x, speed.y)
+                    // .setDisplaySize(200, 200)
+                    .setScale(0.65)
+                    .setDepth(2)
+                    .setAngle(Phaser.Math.RND.integerInRange(0, 1) * 90);
+                // .setTint(tint);
+                this.players[key].body.setSize(x, y).allowGravity = false;
+                this.playerShadow[key] = this.players[key].postFX.addShadow(
+                    -15,
+                    15,
+                    0.006,
+                    0.7,
+                    0x333333,
+                    2,
+                    0.7
+                );
+                this.tween.hover[key] = this.tweens.add({
+                    targets: this.players[key],
+                    displayHeight: this.players[key].displayHeight + 10,
+                    displayWidth: this.players[key].displayWidth + 10,
+                    duration: 500,
+                    yoyo: true,
+                    repeat: -1,
+                });
+                this.tween.shadow[key] = this.tweens.add({
+                    targets: this.playerShadow[key],
+                    x: this.playerShadow[key].x - 8,
+                    y: this.playerShadow[key].y + 8,
+                    duration: 500,
+                    yoyo: true,
+                    repeat: -1,
+                });
+            }
+        );
     }
 
     addTargets() {
