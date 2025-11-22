@@ -27,6 +27,8 @@ export default class Fin extends Scene {
                             window.location.replace(
                                 "https://elsas.os.fan/in-my-womb-pre-save--download"
                             );
+                            window.location.href =
+                                "https://elsas.os.fan/in-my-womb-pre-save--download";
                         });
                 });
         };
