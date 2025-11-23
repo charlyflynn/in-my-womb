@@ -355,18 +355,18 @@ export default class WombTetris extends Phaser.Scene {
             ({ key, shape, size: { x, y }, flip = false }) => {
                 this.players[key] = this.physics.add
                     .image(
-                        Phaser.Math.RND.integerInRange(100, 980),
+                        key !== "wombLoPerc"
+                            ? Phaser.Math.RND.integerInRange(100, 980)
+                            : 235,
                         -400,
                         shape
                     )
                     .setFlipX(flip)
                     .setOrigin(0.5, 0.5)
                     .setMaxVelocity(speed.x, speed.y)
-                    // .setDisplaySize(200, 200)
                     .setScale(0.65)
                     .setDepth(2)
                     .setAngle(Phaser.Math.RND.integerInRange(0, 1) * 90);
-                // .setTint(tint);
                 this.players[key].body.setSize(x, y).allowGravity = false;
                 this.playerShadow[key] = this.players[key].postFX.addShadow(
                     -15,
