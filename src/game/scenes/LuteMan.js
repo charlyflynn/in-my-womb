@@ -179,7 +179,7 @@ export default class WombTetris extends Phaser.Scene {
         this.tweens.add({
             targets: [this.sound],
             volume: 1,
-            duration: 666,
+            duration: 444,
             ease: "Linear",
         });
 
